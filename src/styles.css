@@ -1,0 +1,62 @@
+*,
+*::before,
+*::after {
+    /* Spacing */
+    box-sizing: border-box !important;
+    /* Animation */
+    scroll-behavior: smooth;
+}
+
+body {
+    /* Display */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Spacing */
+    margin: 0px;
+    /* Sizing */
+    width: 100%;
+    min-width: 100%;
+    /* Colors */
+    background: rgb(26,26,46);
+    background: linear-gradient(365deg, rgba(26,26,46,1) 0%, rgba(22,33,62,1) 35%, rgba(15,52,96,1) 100%);
+}
+
+main {
+    /* Display */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    /* Sizing */
+    width: 100%;
+    height: auto;
+}
+
+footer{
+    /* Display */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* Spacing */
+    margin-top: auto;
+    /* Sizing */
+    width: 100%;
+    min-width: 100%;
+}
+
+#root{
+    /* Position */
+    position: relative;
+    /* Display */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Spacing */
+    width: 100%;
+    min-width: 100%;
+    height: 100vh;
+    min-height: 100vh;
+}

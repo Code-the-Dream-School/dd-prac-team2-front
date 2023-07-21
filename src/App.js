@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { getAllData } from './util/index';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React from 'react';
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
+import NavigationBar from "./components/NavigationBar/NavigationBar";
+import { Route, Routes } from 'react-router-dom';
 
-const URL = 'http://localhost:8000/api/v1/';
-
-function App() {
-
-const [message, setMessage] = useState(''); 
-
-  useEffect(() => {
-
-    (async () => {
-      const myData = await getAllData(URL)
-      setMessage(myData.data);
-    })();
-      
-    return () => {
-      console.log('unmounting');
-    }
-
-  }, []);
-
+const App = () => {
   return (
     <>
-      <h1>{message}</h1>
+      <header>
+        <NavigationBar/>
+      </header>
+      <main>
+        <Routes>
+          <Route
+            path='/'
+            exact
+          />
+        </Routes>
+      </main>
+      <footer>
+
+      </footer>
     </>
   );
 }
