@@ -3,20 +3,34 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react';
+import React, { useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
+
 /*
     ==========================
     =       COMPONENTS       =
     ==========================
 */
 import NavigationBar from "./components/NavigationBar/NavigationBar";
-import { Route, Routes } from 'react-router-dom';
 
 const App = () => {
+/*
+    ==========================
+    =         STATES         =
+    ==========================
+*/
+  //1. User auth status:
+  const [auth, setAuth] = useState(false);
+
+  /*
+    ==========================
+    =    COMPONENT RENDER    =
+    ==========================
+  */
   return (
     <>
       <header>
-        <NavigationBar/>
+        <NavigationBar auth={auth}/>
       </header>
       <main>
         <Routes>
@@ -27,7 +41,6 @@ const App = () => {
         </Routes>
       </main>
       <footer>
-
       </footer>
     </>
   );
