@@ -20,7 +20,7 @@ const App = () => {
     ==========================
 */
   //1. User auth status:
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(true);
 
   /*
     ==========================
