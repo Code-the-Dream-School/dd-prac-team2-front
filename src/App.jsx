@@ -5,6 +5,11 @@
 */
 import React, { useState } from 'react';
 import { Route, Routes } from 'react-router-dom';
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 
 /*
     ==========================
@@ -12,7 +17,24 @@ import { Route, Routes } from 'react-router-dom';
     ==========================
 */
 import NavigationBar from "./components/NavigationBar/NavigationBar";
+import { ThemeProvider, createTheme } from '@mui/material';
+/*
+    ==========================
+    =    AUX MUI VARIABLES   =
+    ==========================
+*/
+const font =  "Montserrat, sans-serif";
 
+const theme = createTheme({
+  typography: {
+    allVariants: {
+      fontFamily: font,
+      fontWeight: "bold",
+      textTransform: "none",
+      fontSize: 16
+    }
+  }
+});
 const App = () => {
 /*
     ==========================
@@ -29,19 +51,21 @@ const App = () => {
   */
   return (
     <>
-      <header>
-        <NavigationBar auth={auth}/>
-      </header>
-      <main>
-        <Routes>
-          <Route
-            path='/'
-            exact
-          />
-        </Routes>
-      </main>
-      <footer>
-      </footer>
+        <header>
+        <ThemeProvider theme={theme}>
+          <NavigationBar auth={auth}/>
+        </ThemeProvider> 
+        </header>
+        <main>
+          <Routes>
+            <Route
+              path='/'
+              exact
+            />
+          </Routes>
+        </main>
+        <footer>
+        </footer>
     </>
   );
 }

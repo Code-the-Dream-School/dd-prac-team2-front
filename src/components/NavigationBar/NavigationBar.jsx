@@ -19,6 +19,7 @@ import { Link } from 'react-router-dom';
     ==========================
 */
 import styles from "./NavigationBar.module.css";
+import NavigationBarButton from './NavigationBarButton';
 
 const drawerWidth = "auto";
 
@@ -76,15 +77,24 @@ const NavigationBar = ({auth}) => {
         ==========================
     */
     //1. Handler for opening the nav-bar hamburguer menu.
-    const handleDrawerToggling = (open) => {
-       setAnchorNav(open);
+    const handleDrawerToggling = (open, event) => {
+        //If the user moves the selected list item using the tab key or enters a list item using enter key: do not close the drawer.
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) 
+        {
+            return;
+        }
+        setAnchorNav(open);
     }
     //2. Handler for opening the user settings menu.
     const handleOpenUserMenu = (event) => {
         setAnchorElUser(event.currentTarget);
     }
     //3. Handler for closing the user settings menu.
-    const handleCloseUserMenu = () => {
+    const handleCloseUserMenu = (event) => {
+        if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) 
+        {
+            return;
+        }
         setAnchorElUser(null);
     }
 
@@ -106,7 +116,7 @@ const NavigationBar = ({auth}) => {
                                         aria-label="Menu options for current user"
                                         aria-controls="menu-appbar"
                                         aria-haspopup="true"
-                                        onClick={()=>anchorNav ? handleDrawerToggling(false) : handleDrawerToggling(true)}
+                                        onClick={(event)=>anchorNav ? handleDrawerToggling(false, event) : handleDrawerToggling(true, event)}
                                         color="inherit"
                                     >
                                         <MenuRounded/>
@@ -122,13 +132,11 @@ const NavigationBar = ({auth}) => {
                         {
                             auth && (
                                 <>
-                                    <Box sx={{flexGrow:1, display:{xs:"none", md:"flex"}}}>
+                                    <Box sx={{flexGrow:1, display:{xs:"none", md:"flex"}, justifyContent:"flex-start"}}>
                                         {
                                             pages.map((page) => {
                                                 return(
-                                                    <Button key={page} onClick={()=>handleDrawerToggling(false)} sx={{my:2, mx:2, color: "white", display:"block"}}>
-                                                        {page}
-                                                    </Button>
+                                                    <NavigationBarButton key={page} text={page} onDrawerToggling={(event)=>handleDrawerToggling(false, event)}/>
                                                 );
                                             })
                                         }
@@ -140,7 +148,21 @@ const NavigationBar = ({auth}) => {
                                             </IconButton>
                                         </Tooltip>
                                         <Menu
-                                            sx={{mt: "45px"}}
+                                            sx={
+                                                {
+                                                    mt: "45px", 
+                                                    "& .MuiMenu-paper": {
+                                                        bgcolor: "#16213E", 
+                                                        color: "white", 
+                                                        "& .MuiMenuItem-root:hover":{
+                                                            bgcolor:"#C84B31"
+                                                        },
+                                                    },
+                                                    "& .MuiList-root": {
+                                                        py: "0px"
+                                                    }
+                                                }
+                                            }
                                             id="menu-appbar"
                                             anchorEl={anchorElUser}
                                             anchorOrigin={{vertical: "top", horizontal: "right"}}
@@ -169,28 +191,49 @@ const NavigationBar = ({auth}) => {
                 </Container>
             </AppBar>
             <SwipeableDrawer
-                sx={{display:{xs:"float", md:"none"}, width: drawerWidth, flexShrink: 0, "& .MuiDrawer-paper": {width: drawerWidth, boxSizing: "border-box"}}}
+                sx={
+                    {
+                        display:{xs:"float", md:"none"}, 
+                        width: drawerWidth, 
+                        flexShrink: 0, 
+                        "& .MuiDrawer-paper": {width: drawerWidth, boxSizing: "border-box"},
+                    }}
                 anchor="top"
                 open={anchorNav}
-                onClose={()=>handleDrawerToggling(false)}
-                onOpen={()=>handleDrawerToggling(true)}
+                onClose={(event)=>handleDrawerToggling(false, event)}
+                onOpen={(event)=>handleDrawerToggling(true, event)}
             >
                 <DrawerHeader/>
                 <Box
                     role="presentation"
-                    onClick={()=>handleDrawerToggling(false)}
-                    onKeyDown={()=>handleDrawerToggling(false)}
+                    onClick={(event)=>handleDrawerToggling(false, event)}
+                    onKeyDown={(event)=>handleDrawerToggling(false, event)}
+                    sx={{bgcolor: "#16213E"}}
                 >
-                    <List>
+                    <List
+                        sx={{
+                            // hover states
+                            '& .MuiListItemButton-root:hover': {
+                              bgcolor: '#C84B31',
+                              '&, & .MuiListItemIcon-root': {
+                                color: '#ECDBBA',
+                              },
+                            },
+                            '& .MuiListItemButton-root:focus':{
+                                bgcolor: '#C84B31'
+                            },
+                            paddingBottom:"0px"
+                          }}
+                    >
                         {
                             pages.map((page)=>{
                                 return(
                                     <ListItem key={page} disablePadding>
                                         <ListItemButton>
                                             <ListItemIcon>
-                                                <CalendarMonth/>
+                                                <CalendarMonth sx={{color:"#FFFFFF"}}/>
                                             </ListItemIcon>
-                                            <ListItemText primary={page}/>
+                                            <ListItemText sx={{color:"#FFFFFF"}} primary={page}/>
                                         </ListItemButton>
                                     </ListItem>
                                 );
