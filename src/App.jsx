@@ -18,6 +18,7 @@ import { Route, Routes } from 'react-router-dom';
 */
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import { ThemeProvider, createTheme } from '@mui/material';
+import Footer from './components/Footer/Footer';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -31,7 +32,7 @@ const theme = createTheme({
       fontFamily: font,
       fontWeight: "bold",
       textTransform: "none",
-      fontSize: 16
+      fontSize: 16,
     }
   }
 });
@@ -42,7 +43,7 @@ const App = () => {
     ==========================
 */
   //1. User auth status:
-  const [auth, setAuth] = useState(true);
+  const [auth, setAuth] = useState(false);
 
   /*
     ==========================
@@ -65,6 +66,9 @@ const App = () => {
           </Routes>
         </main>
         <footer>
+        <ThemeProvider theme={theme}>
+          <Footer></Footer>
+        </ThemeProvider>
         </footer>
     </>
   );
