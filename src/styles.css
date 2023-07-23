@@ -3,8 +3,6 @@
 *,
 *::before,
 *::after {
-    /* Spacing */
-    box-sizing: border-box !important;
     /* Animation */
     scroll-behavior: smooth;
 }
@@ -24,13 +22,20 @@ body {
     background: rgb(26,26,46);
     background: linear-gradient(365deg, rgba(26,26,46,1) 0%, rgba(22,33,62,1) 35%, rgba(15,52,96,1) 100%);
 }
+header{
+    /* Sizing */
+    min-height: 70px;
+    width: 100%;
+    height: auto;
+}
 
 main {
     /* Display */
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
-    flex: 1;
+    flex: 1 1;
     /* Sizing */
     width: 100%;
     height: auto;

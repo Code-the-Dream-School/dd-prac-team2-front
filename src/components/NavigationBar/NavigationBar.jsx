@@ -19,7 +19,7 @@ import { Link } from 'react-router-dom';
     ==========================
 */
 import styles from "./NavigationBar.module.css";
-import NavigationBarButton from './NavigationBarButton';
+import NavigationBarButton from '../NavigationBar/NavigationBarButton';
 
 const drawerWidth = "auto";
 
@@ -125,8 +125,8 @@ const NavigationBar = ({auth}) => {
                             )
                         }
                         <Box sx={{display: {xs: "flex", md:"flex"}, justifySelf:"center"}}>
-                            <Link to="/" className={styles.MentorUpLogoLink} > 
-                                <img className={styles.MentorUpLogo} src='/images/logo.png'/>                    
+                            <Link to="/" className={styles.mentorUpLogoLink} > 
+                                <img className={styles.mentorUpLogo} src='/images/logo.png'/>                    
                             </Link>
                         </Box>
                         {

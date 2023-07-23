@@ -50,11 +50,8 @@ const Footer = () => {
     <Paper
         sx={
             {
-                position: "fixed", 
-                bottom: 0, 
-                left: 0, 
-                right: 0,
-                bgcolor: "#1A1A2E"
+                width: "100%",
+                bgcolor: "#1A1A2E",
             }
         }
         elevation={3}
@@ -65,7 +62,7 @@ const Footer = () => {
             justifyContent="center" 
             alignItems="center"
             flexDirection="column"
-            sx={{color: "#FFFFFF", padding: "10px", textAlign:"center"}}
+            sx={{color: "#FFFFFF", padding: "5px", textAlign:"center"}}
         >
             {`© MENTORUP ${getCurrentYear()} - ALL RIGHTS RESERVED`}
         </Typography>
@@ -80,9 +77,9 @@ const Footer = () => {
                 }
             }
         >
-            <Chip label="MADE BY" sx={{bgcolor:"#C84B31", color: "#FFFFFF"}}/>
+            <Chip label={<Typography>MADE BY</Typography>} sx={{bgcolor:"#C84B31", color: "#FFFFFF"}}/>
         </Divider>
-        <List sx={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:"row", padding:1}}>
+        <List sx={{display:"flex", justifyContent:"center", alignItems:"center", flexDirection:"row", flexWrap:"wrap", paddingBottom:1}}>
             {
                 contributors.map((contributor)=>{
                     return(

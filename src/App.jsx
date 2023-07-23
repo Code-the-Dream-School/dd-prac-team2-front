@@ -10,6 +10,7 @@ import { Route, Routes } from 'react-router-dom';
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
+import { ThemeProvider, createTheme } from '@mui/material';
 
 /*
     ==========================
@@ -17,8 +18,8 @@ import { Route, Routes } from 'react-router-dom';
     ==========================
 */
 import NavigationBar from "./components/NavigationBar/NavigationBar";
-import { ThemeProvider, createTheme } from '@mui/material';
 import Footer from './components/Footer/Footer';
+import Login from './pages/Login/Login';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -62,6 +63,15 @@ const App = () => {
             <Route
               path='/'
               exact
+              element={
+                auth ? (null) : (                  
+                  <>
+                    <ThemeProvider theme={theme}>
+                      <Login/>
+                    </ThemeProvider> 
+                  </>
+                )
+              }
             />
           </Routes>
         </main>
