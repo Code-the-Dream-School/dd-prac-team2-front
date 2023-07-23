@@ -57,9 +57,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     ==========================
 */
 const pages = ["Option1", "Option2", "Option3"];
-const settings = ["Option1", "Option2", "Option3"];
+const settings = ["Option1", "Option2", "Sign out"];
 
-const NavigationBar = ({auth}) => {
+const NavigationBar = ({auth, onExpireAuth}) => {
     /*
         ==========================
         =         STATES         =
@@ -90,12 +90,18 @@ const NavigationBar = ({auth}) => {
         setAnchorElUser(event.currentTarget);
     }
     //3. Handler for closing the user settings menu.
-    const handleCloseUserMenu = (event) => {
+    const handleCloseUserMenu = (event, setting) => {
         if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) 
         {
             return;
         }
-        setAnchorElUser(null);
+        if(setting === "Sign out"){
+            setAnchorElUser(null);
+            onExpireAuth(false);
+        }
+        else{
+            setAnchorElUser(null);
+        }
     }
 
     /*
@@ -174,7 +180,7 @@ const NavigationBar = ({auth}) => {
                                             {
                                                 settings.map((setting)=>{
                                                     return(
-                                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                                        <MenuItem key={setting} onClick={(event)=>handleCloseUserMenu(event, setting)}>
                                                             <Typography textAlign="center">
                                                                 {setting}
                                                             </Typography>

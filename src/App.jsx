@@ -55,8 +55,15 @@ const App = () => {
       setTimeout(()=>{
         console.log("Authorized!");
         setAuth(true);
-      }, 2000)
+      }, 2000);
     }
+  }
+
+  const handleExpireAuth = (authStatus) => {
+    setTimeout(()=>{
+      console.log("Signed out!");
+      setAuth(false);
+    }, 2000);
   }
   /*
     ==========================
@@ -67,7 +74,7 @@ const App = () => {
     <>
         <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar auth={auth}/>
+          <NavigationBar auth={auth} onExpireAuth={handleExpireAuth}/>
         </ThemeProvider> 
         </header>
         <main>
