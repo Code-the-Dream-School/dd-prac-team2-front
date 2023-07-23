@@ -86,7 +86,7 @@ const Footer = () => {
             {
                 contributors.map((contributor)=>{
                     return(
-                        <Tooltip title={contributor.name} placement="bottom" sx={{mx:1}}>
+                        <Tooltip key={contributor.name} title={contributor.name} placement="bottom" sx={{mx:1}}>
                             <Link href={contributor.url} target="_blank">
                                 <Avatar alt={contributor.name} src={contributor.picture} />
                             </Link>
