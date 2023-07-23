@@ -38,14 +38,26 @@ const theme = createTheme({
   }
 });
 const App = () => {
-/*
-    ==========================
-    =         STATES         =
-    ==========================
-*/
+  /*
+      ==========================
+      =         STATES         =
+      ==========================
+  */
   //1. User auth status:
   const [auth, setAuth] = useState(false);
-
+  /*
+      ==========================
+      =        HANDLERS        =
+      ==========================
+  */
+  const handleAuth = (authUser) => {
+    if (authUser.email && authUser.password){
+      setTimeout(()=>{
+        console.log("Authorized!");
+        setAuth(true);
+      }, 2000)
+    }
+  }
   /*
     ==========================
     =    COMPONENT RENDER    =
@@ -67,7 +79,7 @@ const App = () => {
                 auth ? (null) : (                  
                   <>
                     <ThemeProvider theme={theme}>
-                      <Login/>
+                      <Login onAuth={handleAuth}/>
                     </ThemeProvider> 
                   </>
                 )
