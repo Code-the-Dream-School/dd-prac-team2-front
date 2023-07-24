@@ -97,6 +97,7 @@ const NavigationBar = ({auth, onExpireAuth}) => {
             return;
         }
         if(setting === "Sign out"){
+            setAnchorNav(false);
             setAnchorElUser(null);
             onExpireAuth(false);
         }
