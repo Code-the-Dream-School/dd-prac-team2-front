@@ -3,13 +3,14 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Button, Icon, styled } from '@mui/material'
+import { Button, Icon, styled } from '@mui/material';
+import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react'
+import React from 'react';
 
 const AppButton = ({children, text, type, width, handlerFunction}) => {
     const StyledButton = styled(Button)(() => ({
@@ -42,4 +43,12 @@ const AppButton = ({children, text, type, width, handlerFunction}) => {
     )
 }
 
-export default AppButton
+export default AppButton;
+
+AppButton.propTypes = {
+    children: PropTypes.node, 
+    text: PropTypes.string.isRequired, 
+    type: PropTypes.string.isRequired, 
+    width: PropTypes.string.isRequired, 
+    handlerFunction: PropTypes.func.isRequired
+};

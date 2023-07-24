@@ -3,22 +3,23 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Divider, FormControl, Paper, Typography } from '@mui/material'
+import { Box, Container, Divider, FormControl, Paper, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react'
+import React from 'react';
 /*
     ==========================
     =         STYLES         =
     ==========================
 */
-import styles from './Login.module.css'
-import FormTextField from '../../components/TextField/FormTextField'
-import { AccountCircleRounded, Google, LockRounded, PasswordRounded } from '@mui/icons-material'
-import AppButton from '../../components/Button/AppButton'
+import styles from './Login.module.css';
+import FormTextField from '../../components/TextField/FormTextField';
+import { AccountCircleRounded, Google, LockRounded, PasswordRounded } from '@mui/icons-material';
+import AppButton from '../../components/Button/AppButton';
 
 const Login = ({onAuth}) => {
     /*
@@ -106,4 +107,8 @@ const Login = ({onAuth}) => {
     )
 }
 
-export default Login
+export default Login;
+
+Login.propTypes = {
+    onAuth: PropTypes.func.isRequired
+};

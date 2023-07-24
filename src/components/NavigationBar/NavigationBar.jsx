@@ -3,15 +3,16 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import {Avatar, Box, Button, Container, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, SwipeableDrawer, Toolbar, Tooltip, Typography, styled, useTheme } from '@mui/material'
+import {Avatar, Box, Button, Container, Divider, IconButton, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Menu, MenuItem, SwipeableDrawer, Toolbar, Tooltip, Typography, styled, useTheme } from '@mui/material';
 import { CalendarMonth, MenuRounded } from '@mui/icons-material';
-import MuiAppBar from '@mui/material/AppBar'
+import MuiAppBar from '@mui/material/AppBar';
+import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 /*
     ==========================
@@ -252,4 +253,9 @@ const NavigationBar = ({auth, onExpireAuth}) => {
     )
 }
 
-export default NavigationBar
+export default NavigationBar;
+
+NavigationBar.propTypes = {
+    auth: PropTypes.bool.isRequired,
+    onExpireAuth: PropTypes.func.isRequired
+};

@@ -3,13 +3,14 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { TextField } from '@mui/material'
+import { TextField } from '@mui/material';
+import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 
 const FormTextField = ({required, type, label, name, isFocused, width}) => {
     /*
@@ -66,4 +67,13 @@ const FormTextField = ({required, type, label, name, isFocused, width}) => {
     );
 }
 
-export default FormTextField
+export default FormTextField;
+
+FormTextField.propTypes = {
+    required: PropTypes.bool.isRequired,
+    type: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    isFocused: PropTypes.bool.isRequired,
+    width: PropTypes.string.isRequired
+};

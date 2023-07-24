@@ -3,13 +3,14 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import {Avatar, Chip, Divider, Link, List, ListItem, Paper, Tooltip, Typography } from '@mui/material'
+import {Avatar, Chip, Divider, Link, List, ListItem, Paper, Tooltip, Typography } from '@mui/material';
+import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react'
+import React from 'react';
 /*
     ==========================
     =         UTILS          =
@@ -96,4 +97,8 @@ const Footer = () => {
   )
 }
 
-export default Footer
+export default Footer;
+
+Footer.propTypes = {
+
+};
