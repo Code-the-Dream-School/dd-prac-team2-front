@@ -11,7 +11,7 @@ import { TextField } from '@mui/material'
 */
 import React, { useState } from 'react'
 
-const FormTextField = ({required, type, label, name}) => {
+const FormTextField = ({required, type, label, name, isFocused, width}) => {
     /*
         ==========================
         =         STATES         =
@@ -37,6 +37,7 @@ const FormTextField = ({required, type, label, name}) => {
             value={text}
             onChange={handleTextChange}
             sx={{
+                width: width,
                 "& label": { color: "white"},
                 "& label.Mui-focused": {
                     color: "#FFFFFF"
@@ -60,6 +61,7 @@ const FormTextField = ({required, type, label, name}) => {
                     "&.Mui-focused fieldset" : {borderColor: "#C84B31"}
                 }
             }}
+            inputRef={(input) => (input && isFocused) && input.focus()}
         />
     );
 }

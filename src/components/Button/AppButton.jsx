@@ -11,10 +11,10 @@ import { Button, Icon, styled } from '@mui/material'
 */
 import React from 'react'
 
-const AppButton = ({children, text, type, handlerFunction}) => {
+const AppButton = ({children, text, type, width, handlerFunction}) => {
     const StyledButton = styled(Button)(() => ({
         backgroundColor: "#C84B31",
-        width: "100%",
+        width: width,
         transform: "scale(1.0)",
         transition: "all 0.2s ease-in-out",
         "&:hover": {

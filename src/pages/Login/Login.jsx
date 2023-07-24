@@ -72,15 +72,15 @@ const Login = ({onAuth}) => {
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
                             <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", padding: "5px"}}>
                                 <AccountCircleRounded fontSize="large"></AccountCircleRounded>
-                                <FormTextField required type="text" label="Email" name="email"></FormTextField>
+                                <FormTextField required type="text" label="Email" name="email" isFocused={true} width="100%"></FormTextField>
                             </FormControl>
                             <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", padding: "5px"}}>
                                 <LockRounded fontSize="large"></LockRounded>
-                                <FormTextField required type="password" label="Password" name="password"></FormTextField>
+                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%"></FormTextField>
                             </FormControl>
-                            <AppButton text={"Sign in"} type="submit" handlerFunction={()=>{}}>
+                            <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
-                            <AppButton text={"Sign in with Google"} type="submit" handlerFunction={()=>{}}>
+                            <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
                                 <Google></Google>
                             </AppButton>
                             <Divider 
@@ -96,7 +96,7 @@ const Login = ({onAuth}) => {
                             >
                                 <Typography sx={{textAlign:"center", marginTop:"15px", marginBottom:"15px"}}>Don't have an account?</Typography>
                             </Divider>    
-                            <AppButton text={"Register"} type="button" handlerFunction={()=>{}}>
+                            <AppButton text={"Register"} type="button" width="100%" handlerFunction={()=>{}}>
                             </AppButton> 
                         </div>
                     </Box>
