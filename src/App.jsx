@@ -50,6 +50,13 @@ const App = () => {
       =        HANDLERS        =
       ==========================
   */
+
+  const handleRegister = (registeredUser) => {
+    setTimeout(()=>{
+      console.log("User registered!", registeredUser);
+    }, 2000)
+  }
+
   const handleAuth = (authUser) => {
     if (authUser.email && authUser.password){
       setTimeout(()=>{
@@ -86,7 +93,7 @@ const App = () => {
                 auth ? (null) : (                  
                   <>
                     <ThemeProvider theme={theme}>
-                      <Login onAuth={handleAuth}/>
+                      <Login onRegister={handleRegister} onAuth={handleAuth} />
                     </ThemeProvider> 
                   </>
                 )

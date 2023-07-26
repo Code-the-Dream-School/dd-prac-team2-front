@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 */
 import React, { useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width}) => {
+const FormTextField = ({required, type, label, name, isFocused, width, variant}) => {
     /*
         ==========================
         =         STATES         =
@@ -39,9 +39,9 @@ const FormTextField = ({required, type, label, name, isFocused, width}) => {
             onChange={handleTextChange}
             sx={{
                 width: width,
-                "& label": { color: "white"},
+                "& label": { color: variant==="light" ? "white":"#1A1A2E"},
                 "& label.Mui-focused": {
-                    color: "#FFFFFF"
+                    color: variant==="light" ? "white":"#1A1A2E"
                 },
                 "& .MuiOutlinedInput-root fieldset": {
                     borderWidth: 2,
@@ -53,11 +53,11 @@ const FormTextField = ({required, type, label, name, isFocused, width}) => {
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
-                    color:"white"
+                    color: variant==="light" ? "white" : "#1A1A2E"
                 },
                 "& .MuiOutlinedInput-root" : {
-                    "& input:":{color:"white"},
-                    "&.Mui-focused input": {color:"white"},
+                    "& input:":{color: variant==="light" ? "white" : "#1A1A2E"},
+                    "&.Mui-focused input": {color: variant==="light" ? "white" : "#1A1A2E"},
                     "& fieldset": {borderColor:"#0F3460"},
                     "&.Mui-focused fieldset" : {borderColor: "#C84B31"}
                 }
@@ -75,5 +75,6 @@ FormTextField.propTypes = {
     label: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     isFocused: PropTypes.bool.isRequired,
-    width: PropTypes.string.isRequired
+    width: PropTypes.string.isRequired,
+    variant: PropTypes.string.isRequired
 };

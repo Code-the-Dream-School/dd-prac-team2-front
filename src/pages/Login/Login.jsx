@@ -3,14 +3,15 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Divider, FormControl, Paper, Typography } from '@mui/material';
+import { Box, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Paper, Slide, Typography } from '@mui/material';
+import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react';
+import React, {useState } from 'react';
 /*
     ==========================
     =         STYLES         =
@@ -18,15 +19,23 @@ import React from 'react';
 */
 import styles from './Login.module.css';
 import FormTextField from '../../components/TextField/FormTextField';
-import { AccountCircleRounded, Google, LockRounded, PasswordRounded } from '@mui/icons-material';
 import AppButton from '../../components/Button/AppButton';
+import Register from '../Register/Register';
 
-const Login = ({onAuth}) => {
+const Login = ({onAuth, onRegister}) => {
     /*
-    ==========================
-    =        HANDLERS        =
-    ==========================
+        ==========================
+        =         STATES         =
+        ==========================
     */
+    const [openDialog, setOpenDialog] = useState(false);
+
+    /*
+        ==========================
+        =        HANDLERS        =
+        ==========================
+    */
+    //1. Form submit:
     const handleFormSubmit = (event) => {
         event.preventDefault();
         const userAuth = {
@@ -34,6 +43,15 @@ const Login = ({onAuth}) => {
             password: event.target.password.value
         }
         onAuth(userAuth);
+    }
+
+    //2. Dialog opening & closing
+    const handleOpenRegisterDialog = () => {
+        setOpenDialog(true);
+    }
+
+    const handleCloseRegisterDialog = () => {
+        setOpenDialog(false);
     }
 
     return (
@@ -71,38 +89,41 @@ const Login = ({onAuth}) => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", padding: "5px"}}>
-                                <AccountCircleRounded fontSize="large"></AccountCircleRounded>
-                                <FormTextField required type="text" label="Email" name="email" isFocused={true} width="100%"></FormTextField>
+                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px" ,padding: "5px"}}>
+                                <Email fontSize="large"></Email>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light"></FormTextField>
                             </FormControl>
-                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", padding: "5px"}}>
+                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
                                 <LockRounded fontSize="large"></LockRounded>
-                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%"></FormTextField>
+                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light"></FormTextField>
                             </FormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
                             <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
                                 <Google></Google>
                             </AppButton>
-                            <Divider 
-                                flexItem 
-                                sx={
-                                    {
-                                        "&::before, &::after": {
-                                            borderColor: "white",
-                                            borderWidth: '1px'
-                                        }
-                                    }
-                                }
-                            >
-                                <Typography sx={{textAlign:"center", marginTop:"15px", marginBottom:"15px"}}>Don't have an account?</Typography>
-                            </Divider>    
-                            <AppButton text={"Register"} type="button" width="100%" handlerFunction={()=>{}}>
-                            </AppButton> 
                         </div>
                     </Box>
+                    <Divider 
+                        flexItem 
+                        sx={
+                            {
+                                "&::before, &::after": {
+                                    borderColor: "white",
+                                    borderWidth: '1px'
+                                }
+                            }
+                        }
+                        textAlign='center'
+                    >
+                        <Typography sx={{textAlign:"center", marginTop:"15px", marginBottom:"15px"}}>Don't have an account?</Typography>
+                    </Divider>    
+                    <div className={styles.formContainer}>
+                        <AppButton text={"Register"} type="button" width="100%" handlerFunction={()=>{handleOpenRegisterDialog()}}/>
+                    </div>
                 </Paper>  
             </Container>
+            <Register openDialog={openDialog} onCloseRegisterDialog={handleCloseRegisterDialog} onRegister={onRegister}/>
         </>
     )
 }
@@ -110,5 +131,6 @@ const Login = ({onAuth}) => {
 export default Login;
 
 Login.propTypes = {
-    onAuth: PropTypes.func.isRequired
+    onAuth: PropTypes.func.isRequired,
+    onRegister: PropTypes.func.isRequired
 };
