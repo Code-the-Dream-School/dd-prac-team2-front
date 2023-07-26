@@ -52,8 +52,7 @@ const [selectValue, setSelectValue] = useState("");
         const userRegistered = {
             name: event.target["full-name"].value,
             email: event.target.email.value,
-            password: event.target.password.value,
-            timezone: event.target.timezone.value
+            password: event.target.password.value
         }
         onRegister(userRegistered);
         onCloseRegisterDialog(false);
@@ -91,12 +90,6 @@ const [selectValue, setSelectValue] = useState("");
                         <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
                             <LockRounded fontSize="large"></LockRounded>
                             <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="dark"></FormTextField>
-                        </FormControl>
-                        <FormControl  sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}} required>
-                            <AccessTime fontSize="large"></AccessTime>
-                            <FormControl variant='standard' fullWidth>
-                                <FormSelect id={"timezone"} label={"Timezone:"} selectValue={selectValue} onSelectValue={handleSelectValue} list={["PST", "MST", "EST"]}></FormSelect>
-                            </FormControl>
                         </FormControl>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
