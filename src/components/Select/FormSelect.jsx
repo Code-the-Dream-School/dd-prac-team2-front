@@ -1,5 +1,12 @@
 /*
     ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
+import PropTypes from "prop-types";
+
+/*
+    ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
@@ -53,3 +60,11 @@ const handleChange = (event) => {
 }
 
 export default FormSelect;
+
+FormSelect.propTypes = {
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
+    selectValue: PropTypes.string.isRequired,
+    onSelectValue: PropTypes.func.isRequired,
+    list: PropTypes.array.isRequired
+};
