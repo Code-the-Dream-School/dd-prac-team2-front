@@ -23,7 +23,7 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
-const Login = ({onAuth, onRegister}) => {
+const Login = ({onAuth}) => {
     /*
         ==========================
         =         STATES         =
@@ -124,7 +124,7 @@ const Login = ({onAuth, onRegister}) => {
                     </div>
                 </Paper>  
             </Container>
-            <Register openDialog={openDialog} onCloseRegisterDialog={handleCloseRegisterDialog} onRegister={onRegister}/>
+            <Register openDialog={openDialog} onCloseRegisterDialog={handleCloseRegisterDialog}/>
         </>
     )
 }
@@ -133,5 +133,4 @@ export default Login;
 
 Login.propTypes = {
     onAuth: PropTypes.func.isRequired,
-    onRegister: PropTypes.func.isRequired
 };

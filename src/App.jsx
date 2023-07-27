@@ -11,6 +11,7 @@ import { Route, Routes } from 'react-router-dom';
     ==========================
 */
 import { ThemeProvider, createTheme } from '@mui/material';
+import axios from "./api/axios";
 
 /*
     ==========================
@@ -51,12 +52,6 @@ const App = () => {
       ==========================
   */
 
-  const handleRegister = (registeredUser) => {
-    setTimeout(()=>{
-      console.log("User registered!", registeredUser);
-    }, 2000)
-  }
-
   const handleAuth = (authUser) => {
     if (authUser.email && authUser.password){
       setTimeout(()=>{
@@ -93,7 +88,7 @@ const App = () => {
                 auth ? (null) : (                  
                   <>
                     <ThemeProvider theme={theme}>
-                      <Login onRegister={handleRegister} onAuth={handleAuth} />
+                      <Login onAuth={handleAuth} />
                     </ThemeProvider> 
                   </>
                 )

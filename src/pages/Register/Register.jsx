@@ -4,8 +4,9 @@
     ==========================
 */
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Slide, Typography } from '@mui/material';
-import { AccessTime, BadgeRounded, Close, Email, LockRounded } from '@mui/icons-material';
+import { BadgeRounded, Close, Email, LockRounded } from '@mui/icons-material';
 import PropTypes from "prop-types";
+import axios from "../../api/axios";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -30,22 +31,41 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Register = ({openDialog, onCloseRegisterDialog, onRegister}) => {
+const Register = ({openDialog, onCloseRegisterDialog}) => {
     /*
         ==========================
         =        HANDLERS        =
         ==========================
     */
-   const handleRegister = (event) => {
+   const handleRegister = async(event) => {
         event.preventDefault();
         const userRegistered = {
             name: event.target["full-name"].value,
             email: event.target["email-password"].value,
             password: event.target["register-password"].value
         }
-        onRegister(userRegistered);
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REGISTER}`,
+                JSON.stringify(userRegistered),
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        withCredentials: true
+                    }
+                }
+            );
+            if(response.data){
+                //Send toast notification with success
+                console.log(response.data);
+                console.log(response.data.token);
+            }
+          } catch (error) {
+            //Send toast notification with error message
+            console.error(error.response.data);
+          }
         onCloseRegisterDialog(false);
    };
+
     return (
         <Dialog open={openDialog} TransitionComponent={Transition} onClose={onCloseRegisterDialog} fullWidth maxWidth="xs">
             <DialogTitle display={"flex"} justifyContent={"space-between"} alignItems={"center"} gap={"5px"} component={"div"}> 
@@ -98,5 +118,4 @@ export default Register;
 Register.propTypes = {
     openDialog: PropTypes.bool.isRequired, 
     onCloseRegisterDialog: PropTypes.func.isRequired, 
-    onRegister: PropTypes.func.isRequired
 }
