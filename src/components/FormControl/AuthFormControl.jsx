@@ -10,6 +10,7 @@ import React from 'react'
     ==========================
 */
 import { FormControl, styled } from '@mui/material';
+import PropTypes from "prop-types";
 
 const AuthFormControl = ({children}) => {
     /*
@@ -34,3 +35,7 @@ const AuthFormControl = ({children}) => {
 }
 
 export default AuthFormControl;
+
+AuthFormControl.propTypes = {
+    children: PropTypes.node.isRequired
+};
