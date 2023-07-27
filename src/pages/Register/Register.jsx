@@ -19,7 +19,7 @@ import React, { forwardRef, useState } from 'react';
 */
 import AppButton from '../../components/Button/AppButton';
 import FormTextField from '../../components/TextField/FormTextField';
-import FormSelect from '../../components/Select/FormSelect';
+import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
 /*
     ==========================
@@ -33,26 +33,15 @@ const Transition = forwardRef(function Transition(props, ref) {
 const Register = ({openDialog, onCloseRegisterDialog, onRegister}) => {
     /*
         ==========================
-        =         STATES         =
-        ==========================
-    */
-const [selectValue, setSelectValue] = useState("");
-
-    /*
-        ==========================
         =        HANDLERS        =
         ==========================
     */
-   const handleSelectValue = (newSelectValue) => {
-    setSelectValue(newSelectValue);
-   };
-
    const handleRegister = (event) => {
         event.preventDefault();
         const userRegistered = {
             name: event.target["full-name"].value,
-            email: event.target.email.value,
-            password: event.target.password.value
+            email: event.target["email-password"].value,
+            password: event.target["register-password"].value
         }
         onRegister(userRegistered);
         onCloseRegisterDialog(false);
@@ -79,18 +68,18 @@ const [selectValue, setSelectValue] = useState("");
                 onSubmit={handleRegister}
             >
                 <DialogContent dividers >
-                        <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
+                        <AuthFormControl>
                             <BadgeRounded fontSize={"large"}></BadgeRounded>
                             <FormTextField required type="text" label="Full name: " name="full-name" isFocused={true} width="100%" variant="dark"></FormTextField>
-                        </FormControl>
-                        <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
+                        </AuthFormControl>
+                        <AuthFormControl>
                             <Email fontSize={"large"}></Email>
-                            <FormTextField required type="text" label="E-mail: " name="email" isFocused={false} width="100%" variant="dark"></FormTextField>
-                        </FormControl>
-                        <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
+                            <FormTextField required type="text" label="E-mail: " name="email-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                        </AuthFormControl>
+                        <AuthFormControl>
                             <LockRounded fontSize="large"></LockRounded>
-                            <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="dark"></FormTextField>
-                        </FormControl>
+                            <FormTextField required type="password" label="Password" name="register-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                        </AuthFormControl>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
                         <AppButton text={"Create an account"} type="submit" width='100%' handlerFunction={()=>{}} />

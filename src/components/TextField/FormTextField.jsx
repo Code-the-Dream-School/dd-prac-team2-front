@@ -32,7 +32,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant})
         <TextField
             required={required}
             type={type}
-            id={label}
+            id={name}
             name={name}
             label={label}
             value={text}
