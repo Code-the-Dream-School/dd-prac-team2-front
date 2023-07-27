@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Paper, Slide, Typography } from '@mui/material';
+import { Box, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Paper, Slide, Typography, styled } from '@mui/material';
 import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 /*
@@ -23,6 +23,21 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 
 const Login = ({onAuth, onRegister}) => {
+    /*
+        ==========================
+        =    STYLED COMPONENTS   =
+        ==========================
+    */
+   const LoginFormControl = styled(FormControl)(()=>({
+    //Display
+    display: "flex",
+    flexDirection:"row",
+    alignItems:"center",
+    gap:"10px",
+    //Spacing
+    padding: "5px"
+   }));
+
     /*
         ==========================
         =         STATES         =
@@ -89,14 +104,14 @@ const Login = ({onAuth, onRegister}) => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px" ,padding: "5px"}}>
+                            <LoginFormControl>
                                 <Email fontSize="large"></Email>
                                 <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light"></FormTextField>
-                            </FormControl>
-                            <FormControl sx={{display:"flex", flexDirection:"row",alignItems:"center", gap:"10px", padding: "5px"}}>
+                            </LoginFormControl>
+                            <LoginFormControl>
                                 <LockRounded fontSize="large"></LockRounded>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light"></FormTextField>
-                            </FormControl>
+                            </LoginFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
                             <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
