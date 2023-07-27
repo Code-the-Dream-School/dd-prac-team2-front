@@ -78,7 +78,11 @@ const Register = ({openDialog, onCloseRegisterDialog, onRegister}) => {
                         </AuthFormControl>
                         <AuthFormControl>
                             <LockRounded fontSize="large"></LockRounded>
-                            <FormTextField required type="password" label="Password" name="register-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                            <FormTextField required type="password" label="Password:" name="register-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                        </AuthFormControl>
+                        <AuthFormControl>
+                            <LockRounded fontSize="large"></LockRounded>
+                            <FormTextField required type="password" label="Confirm password:" name="register-confirm-password" isFocused={false} width="100%" variant="dark"></FormTextField>
                         </AuthFormControl>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
