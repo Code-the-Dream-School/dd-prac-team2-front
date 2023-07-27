@@ -21,23 +21,9 @@ import styles from './Login.module.css';
 import FormTextField from '../../components/TextField/FormTextField';
 import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
+import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
 const Login = ({onAuth, onRegister}) => {
-    /*
-        ==========================
-        =    STYLED COMPONENTS   =
-        ==========================
-    */
-   const LoginFormControl = styled(FormControl)(()=>({
-    //Display
-    display: "flex",
-    flexDirection:"row",
-    alignItems:"center",
-    gap:"10px",
-    //Spacing
-    padding: "5px"
-   }));
-
     /*
         ==========================
         =         STATES         =
@@ -104,14 +90,14 @@ const Login = ({onAuth, onRegister}) => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            <LoginFormControl>
+                            <AuthFormControl>
                                 <Email fontSize="large"></Email>
                                 <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light"></FormTextField>
-                            </LoginFormControl>
-                            <LoginFormControl>
+                            </AuthFormControl>
+                            <AuthFormControl>
                                 <LockRounded fontSize="large"></LockRounded>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light"></FormTextField>
-                            </LoginFormControl>
+                            </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
                             <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
