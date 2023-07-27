@@ -10,15 +10,25 @@ import PropTypes from 'prop-types';
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant}) => {
+const FormTextField = ({required, type, label, name, isFocused, width, variant, reset}) => {
     /*
         ==========================
         =         STATES         =
         ==========================
     */  
     const [text, setText] = useState("");
+    /*
+        ==========================
+        =        EFFECTS         =
+        ==========================
+    */  
+    useEffect(()=>{
+        if(reset){
+            setText("");
+        }
+    }, [reset]);
     /*
         ==========================
         =        HANDLERS        =
@@ -76,5 +86,6 @@ FormTextField.propTypes = {
     name: PropTypes.string.isRequired,
     isFocused: PropTypes.bool.isRequired,
     width: PropTypes.string.isRequired,
-    variant: PropTypes.string.isRequired
+    variant: PropTypes.string.isRequired,
+    reset: PropTypes.bool.isRequired
 };

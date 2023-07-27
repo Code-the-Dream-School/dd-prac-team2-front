@@ -3,7 +3,8 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import AuthContext from './context/AuthProvider'
 import { Route, Routes } from 'react-router-dom';
 /*
     ==========================
@@ -11,7 +12,6 @@ import { Route, Routes } from 'react-router-dom';
     ==========================
 */
 import { ThemeProvider, createTheme } from '@mui/material';
-import axios from "./api/axios";
 
 /*
     ==========================
@@ -41,25 +41,17 @@ const theme = createTheme({
 const App = () => {
   /*
       ==========================
-      =         STATES         =
+      =        CONTEXT         =
       ==========================
   */
   //1. User auth status:
-  const [auth, setAuth] = useState(false);
+  const {auth, setAuth} = useContext(AuthContext);
+
   /*
       ==========================
       =        HANDLERS        =
       ==========================
   */
-
-  const handleAuth = (authUser) => {
-    if (authUser.email && authUser.password){
-      setTimeout(()=>{
-        console.log("Authorized!");
-        setAuth(true);
-      }, 2000);
-    }
-  }
 
   const handleExpireAuth = (authStatus) => {
     setTimeout(()=>{
@@ -76,7 +68,7 @@ const App = () => {
     <>
         <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar auth={auth} onExpireAuth={handleExpireAuth}/>
+          <NavigationBar auth={auth.loggedIn} onExpireAuth={handleExpireAuth}/>
         </ThemeProvider> 
         </header>
         <main>
@@ -85,10 +77,10 @@ const App = () => {
               path='/'
               exact
               element={
-                auth ? (null) : (                  
+                auth.loggedIn ? (null) : (                  
                   <>
                     <ThemeProvider theme={theme}>
-                      <Login onAuth={handleAuth} />
+                      <Login/>
                     </ThemeProvider> 
                   </>
                 )

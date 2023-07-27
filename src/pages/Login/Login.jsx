@@ -6,12 +6,14 @@
 import { Box, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Paper, Slide, Typography, styled } from '@mui/material';
 import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
+import axios from "../../api/axios";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, {useState } from 'react';
+import React, {useState, useContext} from 'react';
+import AuthContext from '../../context/AuthProvider'
 /*
     ==========================
     =         STYLES         =
@@ -23,13 +25,20 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
-const Login = ({onAuth}) => {
+const Login = () => {
+    /*
+        ==========================
+        =        CONTEXT         =
+        ==========================
+    */
+   const {auth, setAuth} = useContext(AuthContext);
     /*
         ==========================
         =         STATES         =
         ==========================
     */
     const [openDialog, setOpenDialog] = useState(false);
+    const [reset, setReset] = useState(false);
 
     /*
         ==========================
@@ -37,13 +46,33 @@ const Login = ({onAuth}) => {
         ==========================
     */
     //1. Form submit:
-    const handleFormSubmit = (event) => {
+    const handleFormSubmit = async (event) => {
         event.preventDefault();
-        const userAuth = {
-            email: event.target.email.value,
-            password: event.target.password.value
+        const loggedUser = {
+            email: (event.target.email.value.trim()).toLowerCase(),
+            password: event.target.password.value.trim()
+        };
+
+        try{
+            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+                JSON.stringify(loggedUser),
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        withCredentials: true
+                    },
+                }
+            );
+            console.log(response.data);
+            const userName = response.data.user.name;
+            const accessToken = response.data.token;
+            console.log("Welcome: ", userName);
+            console.log("Access token: ", accessToken);
+            setAuth({userName, loggedUser, role:"admin", loggedIn:true, accessToken});
+            setReset(true);
+        } catch(error){
+            console.error(error.response.data);
         }
-        onAuth(userAuth);
     }
 
     //2. Dialog opening & closing
@@ -92,11 +121,11 @@ const Login = ({onAuth}) => {
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
                             <AuthFormControl>
                                 <Email fontSize="large"></Email>
-                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light"></FormTextField>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AuthFormControl>
                                 <LockRounded fontSize="large"></LockRounded>
-                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light"></FormTextField>
+                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
@@ -132,5 +161,4 @@ const Login = ({onAuth}) => {
 export default Login;
 
 Login.propTypes = {
-    onAuth: PropTypes.func.isRequired,
 };

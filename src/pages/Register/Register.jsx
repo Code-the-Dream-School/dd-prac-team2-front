@@ -34,6 +34,12 @@ const Transition = forwardRef(function Transition(props, ref) {
 const Register = ({openDialog, onCloseRegisterDialog}) => {
     /*
         ==========================
+        =         STATES         =
+        ==========================
+    */
+    const [reset, setReset] = useState(false);
+    /*
+        ==========================
         =        HANDLERS        =
         ==========================
     */
@@ -41,7 +47,7 @@ const Register = ({openDialog, onCloseRegisterDialog}) => {
         event.preventDefault();
         const userRegistered = {
             name: event.target["full-name"].value,
-            email: event.target["email-password"].value,
+            email: (event.target["email-password"].value.trim()).toLowerCase(),
             password: event.target["register-password"].value
         }
         try {
@@ -58,6 +64,7 @@ const Register = ({openDialog, onCloseRegisterDialog}) => {
                 //Send toast notification with success
                 console.log(response.data);
                 console.log(response.data.token);
+                setReset(true);
             }
           } catch (error) {
             //Send toast notification with error message
@@ -90,19 +97,19 @@ const Register = ({openDialog, onCloseRegisterDialog}) => {
                 <DialogContent dividers >
                         <AuthFormControl>
                             <BadgeRounded fontSize={"large"}></BadgeRounded>
-                            <FormTextField required type="text" label="Full name: " name="full-name" isFocused={true} width="100%" variant="dark"></FormTextField>
+                            <FormTextField required type="text" label="Full name: " name="full-name" isFocused={true} width="100%" variant="dark" reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl>
                             <Email fontSize={"large"}></Email>
-                            <FormTextField required type="text" label="E-mail: " name="email-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                            <FormTextField required type="text" label="E-mail: " name="email-password" isFocused={false} width="100%" variant="dark" reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl>
                             <LockRounded fontSize="large"></LockRounded>
-                            <FormTextField required type="password" label="Password:" name="register-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                            <FormTextField required type="password" label="Password:" name="register-password" isFocused={false} width="100%" variant="dark" reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl>
                             <LockRounded fontSize="large"></LockRounded>
-                            <FormTextField required type="password" label="Confirm password:" name="register-confirm-password" isFocused={false} width="100%" variant="dark"></FormTextField>
+                            <FormTextField required type="password" label="Confirm password:" name="register-confirm-password" isFocused={false} width="100%" variant="dark" reset={false}></FormTextField>
                         </AuthFormControl>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
