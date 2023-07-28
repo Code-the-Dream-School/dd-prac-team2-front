@@ -1,8 +1,10 @@
 import React from 'react'
+import useRefreshToken from '../../hooks/useRefreshToken';
 
 const AdminHome = () => {
+    const refresh = useRefreshToken();
     return (
-        <div>Home</div>
+        <button onClick={()=>refresh()}>Refresh</button>
     )
 }
 
