@@ -1,12 +1,38 @@
-import { React, useEffect } from 'react';
-import { axiosPrivate } from '../api/axios'
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
+import { axiosPrivate } from '../api/axios';
+
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import {useEffect } from 'react';
+
+/*
+    ==========================
+    =      CUSTOM HOOKS      =
+    ==========================
+*/
 import useRefreshToken from './useRefreshToken';
 import useAuth from './useAuth';
 
 const useAxiosPrivate = () => {
+    /*
+        ==========================
+        =      CUSTOM HOOKS      =
+        ==========================
+    */
     const refresh = useRefreshToken();
     const {auth} = useAuth();
-
+    /*
+        ==========================
+        =        EFFECTS         =
+        ==========================
+    */
     useEffect(()=>{
         const requestIntercept = axiosPrivate.interceptors.request.use(
             config => {
@@ -40,4 +66,4 @@ const useAxiosPrivate = () => {
     return axiosPrivate;
 }
 
-export default useAxiosPrivate
+export default useAxiosPrivate;

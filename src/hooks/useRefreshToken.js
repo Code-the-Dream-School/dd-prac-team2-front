@@ -1,10 +1,22 @@
-import React from 'react';
-import axios from "../api/axios";
+/*
+    ==========================
+    =      CUSTOM HOOKS      =
+    ==========================
+*/
 import useAuth from "./useAuth";
 
 const useRefreshToken = () => {
+    /*
+        ==========================
+        =      CUSTOM HOOKS      =
+        ==========================
+    */    
     const {setAuth} = useAuth();
-
+    /*
+        ==========================
+        =     ASYNC FUNCTONS     =
+        ==========================
+    */ 
     const refresh = async () => {
         /*const response = await axios.get(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REFRESHTOKEN}`,
         {

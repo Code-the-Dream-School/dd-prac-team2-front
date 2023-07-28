@@ -4,7 +4,6 @@
     ==========================
 */
 import React, { useContext, useState } from 'react';
-import AuthContext from './context/AuthProvider'
 import { Navigate, Route, Routes } from 'react-router-dom';
 /*
     ==========================
@@ -25,6 +24,7 @@ import AdminHome from './pages/Home/AdminHome';
 import RequireAuth from './components/RequireAuth/RequireAuth';
 import Unauthorized from './pages/Unauthorized/Unauthorized';
 import PersistLogin from './components/PersistLogin/PersistLogin';
+import useAuth from './hooks/useAuth';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -49,7 +49,7 @@ const App = () => {
       ==========================
   */
   //1. User auth status:
-  const {auth, setAuth} = useContext(AuthContext);
+  const {auth, setAuth} = useAuth();
 
   /*
       ==========================

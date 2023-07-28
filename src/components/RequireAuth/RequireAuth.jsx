@@ -1,4 +1,20 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import { useLocation, Navigate, Outlet } from "react-router-dom";
+/*
+    ==========================
+    =      CUSTOM HOOKS      =
+    ==========================
+*/
 import useAuth from "../../hooks/useAuth";
 
 const RequireAuth = ({allowedRole}) => {
@@ -15,3 +31,7 @@ const RequireAuth = ({allowedRole}) => {
 };
 
 export default RequireAuth;
+
+RequireAuth.propTypes = {
+    allowedRole: PropTypes.string.isRequired
+};

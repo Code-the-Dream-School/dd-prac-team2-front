@@ -1,13 +1,42 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
+import { Box, Container, Divider, Paper, Typography } from '@mui/material';
+import { Lock } from '@mui/icons-material';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
 import AppButton from '../../components/Button/AppButton';
-import { Box, Container, Divider, Paper, Typography } from '@mui/material';
+/*
+    ==========================
+    =         STYLES         =
+    ==========================
+*/
 import styles from "./Unauthorized.module.css";
-import { Lock } from '@mui/icons-material';
 
 const Unauthorized = () => {
+    /*
+        ==========================
+        =         HOOKS          =
+        ==========================
+    */
     const navigate = useNavigate();
-
+    /*
+        ==========================
+        =        HANDLERS        =
+        ==========================
+    */
     const goBack = () => {
         navigate(-1);
     }
@@ -62,7 +91,6 @@ const Unauthorized = () => {
                     </div>
                 </Paper>  
             </Container>
-
         </div>
     )
 }

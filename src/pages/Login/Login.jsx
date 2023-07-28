@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Dialog, DialogActions, DialogContent, DialogTitle, Divider, FormControl, Paper, Slide, Typography, styled } from '@mui/material';
+import { Box, Container, Divider, Paper, Typography } from '@mui/material';
 import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import axios from "../../api/axios";
