@@ -12,8 +12,14 @@ import axios from "../../api/axios";
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, {useState, useContext} from 'react';
-import AuthContext from '../../context/AuthProvider'
+import React, {useState} from 'react';
+import {Link, useNavigate, useLocation} from "react-router-dom";
+/*
+    ==========================
+    =       CUSTOM HOOKS     =
+    ==========================
+*/
+import useAuth from '../../hooks/useAuth';
 /*
     ==========================
     =         STYLES         =
@@ -31,7 +37,7 @@ const Login = () => {
         =        CONTEXT         =
         ==========================
     */
-   const {auth, setAuth} = useContext(AuthContext);
+   const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -39,6 +45,14 @@ const Login = () => {
     */
     const [openDialog, setOpenDialog] = useState(false);
     const [reset, setReset] = useState(false);
+    /*
+        ==========================
+        =          HOOKS         =
+        ==========================
+    */
+   const navigate = useNavigate();
+   const location = useLocation();
+   const from = location.state?.from?.pathname || "/";
 
     /*
         ==========================
@@ -68,8 +82,9 @@ const Login = () => {
             const accessToken = response.data.token;
             console.log("Welcome: ", userName);
             console.log("Access token: ", accessToken);
-            setAuth({userName, loggedUser, role:"admin", loggedIn:true, accessToken});
+            setAuth({userName, loggedUser, role:"a", loggedIn:true, accessToken});
             setReset(true);
+            navigate(from, {replace: true});
         } catch(error){
             console.error(error.response.data);
         }

@@ -21,6 +21,9 @@ import { ThemeProvider, createTheme } from '@mui/material';
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import Footer from './components/Footer/Footer';
 import Login from './pages/Login/Login';
+import AdminHome from './pages/Home/AdminHome';
+import RequireAuth from './components/RequireAuth/RequireAuth';
+import Unauthorized from './pages/Unauthorized/Unauthorized';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -56,7 +59,13 @@ const App = () => {
   const handleExpireAuth = (authStatus) => {
     setTimeout(()=>{
       console.log("Signed out!");
-      setAuth(false);
+      setAuth({
+        userName: "",
+        loggedUser: {},
+        role: "",
+        loggedIn: false,
+        accessToken: ""
+      });
     }, 2000);
   }
   /*
@@ -73,19 +82,25 @@ const App = () => {
         </header>
         <main>
           <Routes>
+            {/* Public routes */}
             <Route
-              path='/'
-              exact
+              path='/login'
               element={
-                auth.loggedIn ? (null) : (                  
-                  <>
                     <ThemeProvider theme={theme}>
                       <Login/>
                     </ThemeProvider> 
-                  </>
-                )
               }
             />
+            <Route
+              path="/unauthorized"
+              element={
+                <Unauthorized></Unauthorized>
+              }
+            />
+            {/* Admin, Mentor, User shared route based on role. */}
+            <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
+              <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+            </Route>
           </Routes>
         </main>
         <footer>
