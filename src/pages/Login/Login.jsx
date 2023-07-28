@@ -71,7 +71,7 @@ const Login = () => {
             const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
                 JSON.stringify(loggedUser),
                 {
-                    withCredentials: true,
+                    //withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -83,7 +83,7 @@ const Login = () => {
             const accessToken = response.data.token;
             console.log("Welcome: ", userName);
             console.log("Access token: ", accessToken);
-            setAuth({userName, loggedUser, role:"admin", loggedIn:true, accessToken});
+            setAuth({userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
             setReset(true);
             navigate(from, {replace: true});
         } catch(error){

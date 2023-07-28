@@ -5,7 +5,7 @@
 */
 import React, { useContext, useState } from 'react';
 import AuthContext from './context/AuthProvider'
-import { Route, Routes } from 'react-router-dom';
+import { Navigate, Route, Routes } from 'react-router-dom';
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
@@ -24,6 +24,7 @@ import Login from './pages/Login/Login';
 import AdminHome from './pages/Home/AdminHome';
 import RequireAuth from './components/RequireAuth/RequireAuth';
 import Unauthorized from './pages/Unauthorized/Unauthorized';
+import PersistLogin from './components/PersistLogin/PersistLogin';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -83,23 +84,34 @@ const App = () => {
         <main>
           <Routes>
             {/* Public routes */}
-            <Route
-              path='/login'
-              element={
-                    <ThemeProvider theme={theme}>
-                      <Login/>
-                    </ThemeProvider> 
-              }
-            />
-            <Route
-              path="/unauthorized"
-              element={
-                <Unauthorized></Unauthorized>
-              }
-            />
+            <Route element={<PersistLogin></PersistLogin>}>
+              <Route
+                path='/login'
+                element={
+                  //auth.loggedIn
+                  false 
+                  ? (<Navigate to="/"></Navigate>)
+                  : (
+                      <ThemeProvider theme={theme}>
+                        <Login/>
+                      </ThemeProvider>
+                    )
+                }
+              />
+              <Route
+                path="/unauthorized"
+                element={
+                  <ThemeProvider theme={theme}>
+                    <Unauthorized/>
+                  </ThemeProvider>
+                }
+              />
+            </Route>
             {/* Admin, Mentor, User shared route based on role. */}
-            <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
-              <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+            <Route element={<PersistLogin></PersistLogin>}>
+              <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
+                <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+              </Route>
             </Route>
           </Routes>
         </main>
