@@ -71,7 +71,7 @@ const Login = () => {
             const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
                 JSON.stringify(loggedUser),
                 {
-                    //withCredentials: true,
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
                     },

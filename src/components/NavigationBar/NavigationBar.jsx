@@ -99,7 +99,7 @@ const NavigationBar = ({auth, onExpireAuth}) => {
         if(setting === "Sign out"){
             setAnchorNav(false);
             setAnchorElUser(null);
-            onExpireAuth(false);
+            onExpireAuth();
         }
         else{
             setAnchorElUser(null);
