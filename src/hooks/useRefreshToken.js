@@ -33,7 +33,8 @@ const useRefreshToken = () => {
             //console.log(response.data.accessToken);
             console.log("refresh", response);
             return {
-                userName: "Saul Ernesto Castillo Chamagua",
+                userId: response.data.user.userId,
+                userName: response.data.user.name,
                 userEmail: "secch97@gmail.com",
                 role: "admin",
                 loggedIn: true,
