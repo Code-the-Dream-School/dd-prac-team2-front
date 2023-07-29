@@ -31,6 +31,8 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
+import getGoogleOAuthURL from "../../util/getGoogleUrl"
+
 const Login = () => {
     /*
         ==========================
@@ -68,10 +70,10 @@ const Login = () => {
         };
 
         try{
-            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+            const response = await axios.post(`http://localhost:8000/api/v1/auth/login`,
                 JSON.stringify(loggedUser),
                 {
-                    //withCredentials: true,
+                    withCredentials: true,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -145,9 +147,13 @@ const Login = () => {
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
-                            <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
+                            <a href={getGoogleOAuthURL()} className="text-white ">
+                            {/* <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
                                 <Google></Google>
-                            </AppButton>
+                            </AppButton> */}
+                                Google Login
+                            </a>
+                     
                         </div>
                     </Box>
                     <Divider 
