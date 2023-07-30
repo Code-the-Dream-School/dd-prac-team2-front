@@ -146,9 +146,12 @@ const Login = () => {
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
-                            <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
+                            <a href={getGoogleOAuthURL()} className="text-white ">
+                            {/* <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
                                 <Google></Google>
-                            </AppButton>
+                            </AppButton> */}
+                                Google Login
+                            </a>
                         </div>
                     </Box>
                     <Divider 
