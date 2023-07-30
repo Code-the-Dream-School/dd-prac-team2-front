@@ -31,6 +31,8 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
+import getGoogleOAuthURL from '../../util/getGoogleUrl';
+
 const Login = () => {
     /*
         ==========================
