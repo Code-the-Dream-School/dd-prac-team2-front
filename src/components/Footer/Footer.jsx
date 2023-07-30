@@ -29,6 +29,11 @@ const contributors = [
         picture:undefined,
         url: "https://github.com/AbebeTesso"
     },
+    {
+        name: "Selam Yihew",
+        picture: "https://avatars.githubusercontent.com/u/99606714?v=4",
+        url: "https://github.com/sel4m"
+    },
     {    
         name: "Tam Pham",
         picture:"https://avatars.githubusercontent.com/u/109603295?v=4",
@@ -65,7 +70,7 @@ const Footer = () => {
             flexDirection="column"
             sx={{color: "#FFFFFF", padding: "5px", textAlign:"center"}}
         >
-            {`© MENTORUP ${getCurrentYear()} - ALL RIGHTS RESERVED`}
+            {` COPYRIGHT ${getCurrentYear()} © MENTORUP`}
         </Typography>
         <Divider 
             flexItem 
@@ -86,7 +91,7 @@ const Footer = () => {
                     return(
                         <Tooltip key={contributor.name} title={contributor.name} placement="bottom" sx={{mx:1}}>
                             <Link href={contributor.url} target="_blank">
-                                <Avatar alt={contributor.name} src={contributor.picture} />
+                                <Avatar alt={contributor.name} src={contributor.picture} sx={{margin:"2px"}} />
                             </Link>
                         </Tooltip>
                     );

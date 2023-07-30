@@ -17,7 +17,7 @@
     width: 65%;
 }
 
-@media (max-width: 300px){
+@media (max-width: 400px){
     .loginPicture{
         /* Sizing */
         width: 100px;

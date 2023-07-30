@@ -1,0 +1,10 @@
+.formContainer{
+    /* Display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 3px;
+    /* Sizing */
+    width: 65%;
+}

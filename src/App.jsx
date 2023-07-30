@@ -3,14 +3,15 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
 import { ThemeProvider, createTheme } from '@mui/material';
+import axios from './api/axios';
 
 /*
     ==========================
@@ -20,6 +21,11 @@ import { ThemeProvider, createTheme } from '@mui/material';
 import NavigationBar from "./components/NavigationBar/NavigationBar";
 import Footer from './components/Footer/Footer';
 import Login from './pages/Login/Login';
+import AdminHome from './pages/Home/AdminHome';
+import RequireAuth from './components/RequireAuth/RequireAuth';
+import Unauthorized from './pages/Unauthorized/Unauthorized';
+import PersistLogin from './components/PersistLogin/PersistLogin';
+import useAuth from './hooks/useAuth';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -40,30 +46,36 @@ const theme = createTheme({
 const App = () => {
   /*
       ==========================
-      =         STATES         =
+      =        CONTEXT         =
       ==========================
   */
   //1. User auth status:
-  const [auth, setAuth] = useState(false);
+  const {auth, setAuth} = useAuth();
+
   /*
       ==========================
       =        HANDLERS        =
       ==========================
   */
-  const handleAuth = (authUser) => {
-    if (authUser.email && authUser.password){
-      setTimeout(()=>{
-        console.log("Authorized!");
-        setAuth(true);
-      }, 2000);
-    }
-  }
 
-  const handleExpireAuth = (authStatus) => {
-    setTimeout(()=>{
-      console.log("Signed out!");
-      setAuth(false);
-    }, 2000);
+  const handleExpireAuth = async() => {
+    
+    try {
+      const response = await axios(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGOUT}`, {
+        withCredentials: true
+      });
+      console.log("LOGOUT", response);
+      setAuth({
+        userName: "",
+        loggedUser: {},
+        role: "",
+        loggedIn: false,
+        accessToken: ""
+      });
+    } catch (error) {
+      console.error(error);
+    }
+    
   }
   /*
     ==========================
@@ -74,24 +86,40 @@ const App = () => {
     <>
         <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar auth={auth} onExpireAuth={handleExpireAuth}/>
+          <NavigationBar auth={auth.loggedIn} onExpireAuth={handleExpireAuth}/>
         </ThemeProvider> 
         </header>
         <main>
           <Routes>
-            <Route
-              path='/'
-              exact
-              element={
-                auth ? (null) : (                  
-                  <>
-                    <ThemeProvider theme={theme}>
-                      <Login onAuth={handleAuth}/>
-                    </ThemeProvider> 
-                  </>
-                )
-              }
-            />
+            {/* Public routes */}
+            <Route element={<PersistLogin></PersistLogin>}>
+              <Route
+                path='/login'
+                element={
+                  auth.loggedIn
+                  ? (<Navigate to="/"></Navigate>)
+                  : (
+                      <ThemeProvider theme={theme}>
+                        <Login/>
+                      </ThemeProvider>
+                    )
+                }
+              />
+              <Route
+                path="/unauthorized"
+                element={
+                  <ThemeProvider theme={theme}>
+                    <Unauthorized/>
+                  </ThemeProvider>
+                }
+              />
+            </Route>
+            {/* Admin, Mentor, User shared route based on role. */}
+            <Route element={<PersistLogin></PersistLogin>}>
+              <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
+                <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+              </Route>
+            </Route>
           </Routes>
         </main>
         <footer>
