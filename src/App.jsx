@@ -100,7 +100,9 @@ const App = () => {
                   ? (<Navigate to="/"></Navigate>)
                   : (
                       <ThemeProvider theme={theme}>
+                        <br/>
                         <Login/>
+                        <br/>
                       </ThemeProvider>
                     )
                 }

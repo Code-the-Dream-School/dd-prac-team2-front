@@ -29,6 +29,7 @@ import { AuthProvider } from './context/AuthProvider';
     ==========================
 */
 import "./styles.css"
+import "animate.css"
 /*
     ==========================
     =         UTILS          =

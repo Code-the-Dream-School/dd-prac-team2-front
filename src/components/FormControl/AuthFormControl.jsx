@@ -11,14 +11,12 @@ import React from 'react'
 */
 import { FormControl, styled } from '@mui/material';
 import PropTypes from "prop-types";
-
-const AuthFormControl = ({children}) => {
-    /*
-        ==========================
-        =    STYLED COMPONENTS   =
-        ==========================
-    */
-   const StyledAuthFormControl = styled(FormControl)(()=>({
+/*
+    ==========================
+    =    STYLED COMPONENTS   =
+    ==========================
+*/
+const StyledAuthFormControl = styled(FormControl)(()=>({
     //Display
     display: "flex",
     flexDirection:"row",
@@ -26,7 +24,9 @@ const AuthFormControl = ({children}) => {
     gap:"10px",
     //Spacing
     padding: "5px"
-   }));
+}));
+
+const AuthFormControl = ({children}) => {
     return (
        <StyledAuthFormControl>
             {children}

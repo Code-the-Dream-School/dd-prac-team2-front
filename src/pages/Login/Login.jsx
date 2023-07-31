@@ -12,7 +12,7 @@ import axios from "../../api/axios";
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Link, useNavigate, useLocation} from "react-router-dom";
 /*
     ==========================
@@ -45,6 +45,13 @@ const Login = () => {
     */
     const [openDialog, setOpenDialog] = useState(false);
     const [reset, setReset] = useState(false);
+    const [formError, setFormError] = useState({
+        emailError: {
+            error: false,
+            errorMessage: "• You have entered an invalid email address."
+        }
+    });
+    const [isVisible, setIsVisible] = useState(false);
     /*
         ==========================
         =          HOOKS         =
@@ -68,25 +75,27 @@ const Login = () => {
         };
 
         try{
-            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
-                loggedUser,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            console.log(response);
-            console.log(response.data);
-            const userId = response.data.user.userId;
-            const userName = response.data.user.name;
-            const accessToken = response.data.token;
-            console.log("Welcome: ", userName, userId);
-            console.log("Access token: ", accessToken);
-            setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
-            setReset(true);
-            navigate(from, {replace: true});
+            if(!formError.emailError.error){
+                const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+                    loggedUser,
+                    {
+                        withCredentials: true,
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                console.log(response);
+                console.log(response.data);
+                const userId = response.data.user.userId;
+                const userName = response.data.user.name;
+                const accessToken = response.data.token;
+                console.log("Welcome: ", userName, userId);
+                console.log("Access token: ", accessToken);
+                setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
+                setReset(true);
+                navigate(from, {replace: true});
+            }
         } catch(error){
             console.error(error.response.data);
         }
@@ -100,6 +109,20 @@ const Login = () => {
     const handleCloseRegisterDialog = () => {
         setOpenDialog(false);
     }
+
+    //3. Error handlers
+    const handleEmailError = useCallback((inputError) => {
+        setFormError({
+            ...formError,
+            emailError: {
+                ...formError.emailError,
+                error: inputError,
+            }
+        });
+        if(inputError){
+            setIsVisible(true);
+        }
+    }, []);
 
     return (
         <>
@@ -136,9 +159,28 @@ const Login = () => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
+                            {
+                                (formError.emailError.error && isVisible) ? 
+                                    (
+                                        <Paper sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} className="animate__animated animate__bounceIn">
+                                            <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
+                                            <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
+                                        </Paper>
+                                    ) 
+                                    : 
+                                    (!formError.emailError.error && isVisible) ?
+                                        (
+                                            <Paper sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} className="animate__animated animate__bounceOut" onAnimationEnd={()=>setIsVisible(false)}>
+                                                <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
+                                                <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
+                                            </Paper>
+                                        )
+                                        :
+                                        (null)
+                            }
                             <AuthFormControl>
                                 <Email fontSize="large"></Email>
-                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" reset={reset}></FormTextField>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AuthFormControl>
                                 <LockRounded fontSize="large"></LockRounded>
