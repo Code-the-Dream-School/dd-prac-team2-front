@@ -1,5 +1,11 @@
 /*
     ==========================
+    =  THIRD PARTY LIBRARY   =
+    ==========================
+*/
+import axios from "../api/axios";
+/*
+    ==========================
     =      CUSTOM HOOKS      =
     ==========================
 */
@@ -18,27 +24,21 @@ const useRefreshToken = () => {
         ==========================
     */ 
     const refresh = async () => {
-        /*const response = await axios.get(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REFRESHTOKEN}`,
+        const response = await axios.get(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REFRESHTOKEN}`,
         {
         withCredentials: true
-        });*/
-        const response = {
-            userName: "Saul Ernesto Castillo Chamagua",
-            userEmail: "secch97@gmail.com",
-            role: "admin",
-            token: "newToken"
-        };
+        });
         setAuth((prevAuth) => {
-            console.log(prevAuth);
+            console.log("prevAuth", prevAuth);
             //console.log(response.data.accessToken);
-            console.log(response);
+            console.log("refresh", response);
             return {
-                userName: response.userName,
-                userEmail: response.userEmail,
-                role: response.role,
+                userId: response.data.user.userId,
+                userName: response.data.user.name,
+                userEmail: "secch97@gmail.com",
+                role: "admin",
                 loggedIn: true,
-                //accessToken: response.data.accessToken
-                accessToken: response.token
+                accessToken: response.data.token
             };
         });
         //return response.data.accessToken;

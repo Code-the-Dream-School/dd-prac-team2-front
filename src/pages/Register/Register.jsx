@@ -52,7 +52,7 @@ const Register = ({openDialog, onCloseRegisterDialog}) => {
         }
         try {
             const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REGISTER}`,
-                JSON.stringify(userRegistered),
+                userRegistered,
                 {
                     //withCredentials: true,
                     headers: {

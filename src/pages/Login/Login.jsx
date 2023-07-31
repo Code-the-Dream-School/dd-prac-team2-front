@@ -31,8 +31,6 @@ import AppButton from '../../components/Button/AppButton';
 import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
-import getGoogleOAuthURL from "../../util/getGoogleUrl"
-
 const Login = () => {
     /*
         ==========================
@@ -70,8 +68,8 @@ const Login = () => {
         };
 
         try{
-            const response = await axios.post(`http://localhost:8000/api/v1/auth/login`,
-                JSON.stringify(loggedUser),
+            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+                loggedUser,
                 {
                     withCredentials: true,
                     headers: {
@@ -81,11 +79,12 @@ const Login = () => {
             );
             console.log(response);
             console.log(response.data);
+            const userId = response.data.user.userId;
             const userName = response.data.user.name;
             const accessToken = response.data.token;
-            console.log("Welcome: ", userName);
+            console.log("Welcome: ", userName, userId);
             console.log("Access token: ", accessToken);
-            setAuth({userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
+            setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
             setReset(true);
             navigate(from, {replace: true});
         } catch(error){
@@ -100,6 +99,24 @@ const Login = () => {
 
     const handleCloseRegisterDialog = () => {
         setOpenDialog(false);
+    }
+
+    const handleGoogleAuthUrl = () => {
+        const rootURL = "https://accounts.google.com/o/oauth2/v2/auth"
+        const options = {
+            redirect_uri: "http://localhost:8000/auth/google/callback",
+            client_id: "490168595790-ndo2sl33jv0mg0ehm7na8flj3fhpq0dr.apps.googleusercontent.com",
+            access_type: "offline",
+            response_type: "code",
+            prompt: "consent",
+            scope: [
+                "https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+            ].join(" ")
+        }
+        const qs = new URLSearchParams(options)
+        console.log(qs.toString());
+        window.location.assign(`${rootURL}?${qs.toString()}`);
     }
 
     return (
@@ -147,13 +164,9 @@ const Login = () => {
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
-                            <a href={getGoogleOAuthURL()} className="text-white ">
-                            {/* <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
+                            <AppButton text={"Sign in with Google"} type="button" width="100%" handlerFunction={()=>{handleGoogleAuthUrl()}}>
                                 <Google></Google>
-                            </AppButton> */}
-                                Google Login
-                            </a>
-                     
+                            </AppButton>
                         </div>
                     </Box>
                     <Divider 

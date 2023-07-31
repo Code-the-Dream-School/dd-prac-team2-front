@@ -11,6 +11,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
     ==========================
 */
 import { ThemeProvider, createTheme } from '@mui/material';
+import axios from './api/axios';
 
 /*
     ==========================
@@ -57,9 +58,13 @@ const App = () => {
       ==========================
   */
 
-  const handleExpireAuth = (authStatus) => {
-    setTimeout(()=>{
-      console.log("Signed out!");
+  const handleExpireAuth = async() => {
+    
+    try {
+      const response = await axios(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGOUT}`, {
+        withCredentials: true
+      });
+      console.log("LOGOUT", response);
       setAuth({
         userName: "",
         loggedUser: {},
@@ -67,7 +72,10 @@ const App = () => {
         loggedIn: false,
         accessToken: ""
       });
-    }, 2000);
+    } catch (error) {
+      console.error(error);
+    }
+    
   }
   /*
     ==========================
@@ -88,8 +96,7 @@ const App = () => {
               <Route
                 path='/login'
                 element={
-                  //auth.loggedIn
-                  false 
+                  auth.loggedIn
                   ? (<Navigate to="/"></Navigate>)
                   : (
                       <ThemeProvider theme={theme}>
