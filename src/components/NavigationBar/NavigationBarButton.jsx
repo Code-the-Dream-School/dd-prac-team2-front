@@ -13,16 +13,21 @@ import PropTypes from 'prop-types';
 */
 import React from 'react';
 
-const NavigationBarButton = ({text, onDrawerToggling}) => {
-    const StyledButton = styled(Button)(() => ({
-        "&:hover": {
-            backgroundColor: "#C84B31"
-        },
-        '&:focus':{
-            backgroundColor: '#C84B31'
-        },
-    }));
+/*
+    ==========================
+    =         STYLES         =
+    ==========================
+*/
+const StyledButton = styled(Button)(() => ({
+    "&:hover": {
+        backgroundColor: "#C84B31"
+    },
+    '&:focus':{
+        backgroundColor: '#C84B31'
+    },
+}));
 
+const NavigationBarButton = ({text, onDrawerToggling}) => {
     return (
         <StyledButton 
             key={text} 
