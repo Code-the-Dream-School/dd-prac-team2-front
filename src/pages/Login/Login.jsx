@@ -101,6 +101,24 @@ const Login = () => {
         setOpenDialog(false);
     }
 
+    const handleGoogleAuthUrl = () => {
+        const rootURL = "https://accounts.google.com/o/oauth2/v2/auth"
+        const options = {
+            redirect_uri: "http://localhost:8000/auth/google/callback",
+            client_id: "490168595790-ndo2sl33jv0mg0ehm7na8flj3fhpq0dr.apps.googleusercontent.com",
+            access_type: "offline",
+            response_type: "code",
+            prompt: "consent",
+            scope: [
+                "https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+            ].join(" ")
+        }
+        const qs = new URLSearchParams(options)
+        console.log(qs.toString());
+        window.location.assign(`${rootURL}?${qs.toString()}`);
+    }
+
     return (
         <>
             <Container maxWidth="sm" >
@@ -146,7 +164,7 @@ const Login = () => {
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
-                            <AppButton text={"Sign in with Google"} type="submit" width="100%" handlerFunction={()=>{}}>
+                            <AppButton text={"Sign in with Google"} type="button" width="100%" handlerFunction={()=>{handleGoogleAuthUrl()}}>
                                 <Google></Google>
                             </AppButton>
                         </div>
