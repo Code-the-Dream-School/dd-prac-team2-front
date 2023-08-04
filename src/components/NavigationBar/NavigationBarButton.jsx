@@ -12,25 +12,42 @@ import PropTypes from 'prop-types';
     ==========================
 */
 import React from 'react';
+/*
+    ==========================
+    =    STYLED COMPONENTS   =
+    ==========================
+*/
+const StyledButton = styled(Button)(() => ({
+    /* Display */
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "3px",
+    /* Spacing */
+    marginTop: "0px",
+    marginBottom: "0px",
+    marginRight:"1px",
+    padding: "16px",
+    /* Colors */
+    color: "white",
+    "&:hover": {
+        backgroundColor: "#C84B31"
+    },
+    '&:focus':{
+        backgroundColor: '#C84B31'
+    },
+}));
 
-const NavigationBarButton = ({text, onDrawerToggling}) => {
-    const StyledButton = styled(Button)(() => ({
-        "&:hover": {
-            backgroundColor: "#C84B31"
-        },
-        '&:focus':{
-            backgroundColor: '#C84B31'
-        },
-    }));
+const NavigationBarButton = ({text, iconComponent, onDrawerToggling}) => {
+   
 
     return (
         <StyledButton 
             key={text} 
             onClick={(event)=>onDrawerToggling(false, event)} 
-            sx={{my:0, mx:0, color: "white", display:"flex", alignItems:"center"}}
             disableFocusRipple
         >
-            <LocalLibraryRounded></LocalLibraryRounded>
+            {iconComponent}
             {text}
         </StyledButton>
     )
@@ -40,5 +57,6 @@ export default NavigationBarButton;
 
 NavigationBarButton.propTypes = {
     text: PropTypes.string.isRequired,
+    iconComponent: PropTypes.node.isRequired,
     onDrawerToggling: PropTypes.func.isRequired,
 };
