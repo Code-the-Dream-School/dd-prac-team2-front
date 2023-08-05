@@ -39,8 +39,6 @@ const StyledButton = styled(Button)(() => ({
 }));
 
 const NavigationBarButton = ({text, iconComponent, onDrawerToggling}) => {
-   
-
     return (
         <StyledButton 
             key={text} 

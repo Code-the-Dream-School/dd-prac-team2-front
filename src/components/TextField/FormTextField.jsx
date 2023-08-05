@@ -10,15 +10,16 @@ import PropTypes from 'prop-types';
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant, reset}) => {
+const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, reset}) => {
     /*
         ==========================
         =         STATES         =
         ==========================
     */  
     const [text, setText] = useState("");
+    const [error, setError] = useState(false);
     /*
         ==========================
         =        EFFECTS         =
@@ -36,10 +37,22 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
     */  
     const handleTextChange = (event) => {
         setText(event.target.value);
+        if(regex){
+            const matchRegex = (event.target.value).match(regex);
+            if(!matchRegex){
+                setError(true);
+                onHandleError(true);
+            }
+            else{
+                setError(false);
+                onHandleError(false);
+            }
+        }
     }
     
     return (
         <TextField
+            error={error}
             required={required}
             type={type}
             id={name}
@@ -58,8 +71,8 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root:hover fieldset": {
-                    borderWidth: 2,
-                    borderColor: "#C84B31",
+                    borderWidth: error ? 4:2,
+                    borderColor: error ? "error" : "#C84B31",
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
@@ -69,7 +82,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     "& input:":{color: variant==="light" ? "white" : "#1A1A2E"},
                     "&.Mui-focused input": {color: variant==="light" ? "white" : "#1A1A2E"},
                     "& fieldset": {borderColor:"#0F3460"},
-                    "&.Mui-focused fieldset" : {borderColor: "#C84B31"}
+                    "&.Mui-focused fieldset" : {borderColor: error ? "error":"#C84B31", borderWidth: error ? 4:2}
                 }
             }}
             inputRef={(input) => (input && isFocused) && input.focus()}
@@ -77,7 +90,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
     );
 }
 
-export default FormTextField;
+export default memo(FormTextField);
 
 FormTextField.propTypes = {
     required: PropTypes.bool.isRequired,
@@ -87,5 +100,7 @@ FormTextField.propTypes = {
     isFocused: PropTypes.bool.isRequired,
     width: PropTypes.string.isRequired,
     variant: PropTypes.string.isRequired,
+    regex: PropTypes.any,
+    onHandleError: PropTypes.func,
     reset: PropTypes.bool.isRequired
 };
