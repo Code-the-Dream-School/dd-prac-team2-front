@@ -86,7 +86,7 @@ const App = () => {
     <>
         <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar auth={auth.loggedIn} onExpireAuth={handleExpireAuth}/>
+          <NavigationBar onExpireAuth={handleExpireAuth}/>
         </ThemeProvider> 
         </header>
         <main>
