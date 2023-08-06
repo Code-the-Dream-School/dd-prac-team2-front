@@ -49,7 +49,9 @@ const Login = () => {
             errorMessage: "Please enter a valid email address."
         }
     });
-    const [isVisible, setIsVisible] = useState(false);
+    const [isVisible, setIsVisible] = useState({
+        emailError: false,
+    });
     /*
         ==========================
         =          HOOKS         =
@@ -74,7 +76,7 @@ const Login = () => {
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
-                const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+                const response = await axios.post(`auth/login`,
                     loggedUser,
                     {
                         withCredentials: true,
@@ -101,15 +103,15 @@ const Login = () => {
 
     //2. Error handlers
     const handleEmailError = useCallback((inputError) => {
-        setFormError({
-            ...formError,
+        setFormError(prevState => ({
+            ...prevState,
             emailError: {
-                ...formError.emailError,
+                ...prevState.emailError,
                 error: inputError,
             }
-        });
+        }));
         if(inputError){
-            setIsVisible(true);
+            setIsVisible(prevState => ({...prevState, emailError: true}));
         }
     }, []);
 
@@ -167,11 +169,11 @@ const Login = () => {
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
                             {
-                                (isVisible && (
+                                (isVisible.emailError && (
                                     <Paper 
                                         sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} 
                                         className={formError.emailError.error ? "animate__animated animate__bounceIn":"animate__animated animate__bounceOut"}
-                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible(false) : null }
+                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible((prevState) => ({...prevState, emailError: false})) : null }
                                     >
                                         <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
                                         <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>

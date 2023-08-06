@@ -24,7 +24,7 @@ const useRefreshToken = () => {
         ==========================
     */ 
     const refresh = async () => {
-        const response = await axios.get(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_REFRESHTOKEN}`,
+        const response = await axios.get(`auth/refreshToken`,
         {
         withCredentials: true
         });
@@ -35,7 +35,7 @@ const useRefreshToken = () => {
             return {
                 userId: response.data.user.userId,
                 userName: response.data.user.name,
-                userEmail: "secch97@gmail.com",
+                userEmail: response.data.user.email,
                 role: "admin",
                 loggedIn: true,
                 accessToken: response.data.token
