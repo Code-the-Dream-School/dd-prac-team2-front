@@ -36,7 +36,7 @@ const useRefreshToken = () => {
                 userId: response.data.user.userId,
                 userName: response.data.user.name,
                 userEmail: response.data.user.email,
-                role: "admin",
+                role: response.data.user.role,
                 loggedIn: true,
                 accessToken: response.data.token
             };

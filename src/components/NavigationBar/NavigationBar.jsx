@@ -64,9 +64,9 @@ const DrawerHeader = styled("div")(({ theme }) => ({
     ==========================
 */
 const adminPages = [
-    {title: "Home", icon: <HomeRounded sx={{color: "white"}}/>}, 
-    {title: "Cohorts", icon: <SchoolRounded sx={{color: "white"}}/>}, 
-    {title: "Users", icon: <SupervisedUserCircleRounded sx={{color: "white"}}/>}
+    {title: "Home", icon: <HomeRounded sx={{color: "white"}}/>, link: "/"}, 
+    {title: "Cohorts", icon: <SchoolRounded sx={{color: "white"}}/>, link: "/cohorts"}, 
+    {title: "Users", icon: <SupervisedUserCircleRounded sx={{color: "white"}}/>, link: "/users"}
 ];
 
 const settings = ["Update profile", "Update password", "Sign out"];
@@ -181,14 +181,14 @@ const NavigationBar = ({onExpireAuth}) => {
                         auth.role === "admin"
                         ? adminPages.map((page) => {
                             return (
+                              <Link to={page.link}>
                                 <NavigationBarButton
-                                key={page.title}
-                                text={page.title}
-                                iconComponent={page.icon}
-                                onDrawerToggling={(event) =>
-                                    handleDrawerToggling(false, event)
-                                }
+                                  key={page.title}
+                                  text={page.title}
+                                  iconComponent={page.icon}
+                                  onDrawerToggling={(event) => handleDrawerToggling(false, event)}
                                 />
+                              </Link>
                             );
                         })
                         : auth.role === "mentor"

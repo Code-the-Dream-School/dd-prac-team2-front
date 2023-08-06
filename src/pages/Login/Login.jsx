@@ -90,9 +90,10 @@ const Login = () => {
                 const userId = response.data.user.userId;
                 const userName = response.data.user.name;
                 const accessToken = response.data.token;
+                const role = response.data.user.role;
                 console.log("Welcome: ", userName, userId);
                 console.log("Access token: ", accessToken);
-                setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
+                setAuth({userId, userName, userEmail:loggedUser.email, role, loggedIn:true, accessToken});
                 setReset(true);
                 navigate(from, {replace: true});
             }
