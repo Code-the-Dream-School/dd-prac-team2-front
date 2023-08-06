@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Divider, Paper, Typography } from '@mui/material';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import axios from "../../api/axios";
@@ -13,7 +13,7 @@ import axios from "../../api/axios";
     ==========================
 */
 import React, {useCallback, useState} from 'react';
-import {Link, useNavigate, useLocation} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 /*
     ==========================
     =       CUSTOM HOOKS     =
@@ -28,7 +28,6 @@ import useAuth from '../../hooks/useAuth';
 import styles from './Login.module.css';
 import FormTextField from '../../components/TextField/FormTextField';
 import AppButton from '../../components/Button/AppButton';
-import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
 const Login = () => {
@@ -43,12 +42,11 @@ const Login = () => {
         =         STATES         =
         ==========================
     */
-    const [openDialog, setOpenDialog] = useState(false);
     const [reset, setReset] = useState(false);
     const [formError, setFormError] = useState({
         emailError: {
             error: false,
-            errorMessage: "• You have entered an invalid email address."
+            errorMessage: "Please enter a valid email address."
         }
     });
     const [isVisible, setIsVisible] = useState(false);
@@ -73,9 +71,9 @@ const Login = () => {
             email: (event.target.email.value.trim()).toLowerCase(),
             password: event.target.password.value.trim()
         };
-
+        const errors = Object.values(formError);
         try{
-            if(!formError.emailError.error){
+            if(!errors.some((error)=>error.error===true)){
                 const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
                     loggedUser,
                     {
@@ -101,16 +99,7 @@ const Login = () => {
         }
     }
 
-    //2. Dialog opening & closing
-    const handleOpenRegisterDialog = () => {
-        setOpenDialog(true);
-    }
-
-    const handleCloseRegisterDialog = () => {
-        setOpenDialog(false);
-    }
-
-    //3. Error handlers
+    //2. Error handlers
     const handleEmailError = useCallback((inputError) => {
         setFormError({
             ...formError,
@@ -178,23 +167,16 @@ const Login = () => {
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
                             {
-                                (formError.emailError.error && isVisible) ? 
-                                    (
-                                        <Paper sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} className="animate__animated animate__bounceIn">
-                                            <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
-                                            <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
-                                        </Paper>
-                                    ) 
-                                    : 
-                                    (!formError.emailError.error && isVisible) ?
-                                        (
-                                            <Paper sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} className="animate__animated animate__bounceOut" onAnimationEnd={()=>setIsVisible(false)}>
-                                                <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
-                                                <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
-                                            </Paper>
-                                        )
-                                        :
-                                        (null)
+                                (isVisible && (
+                                    <Paper 
+                                        sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} 
+                                        className={formError.emailError.error ? "animate__animated animate__bounceIn":"animate__animated animate__bounceOut"}
+                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible(false) : null }
+                                    >
+                                        <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
+                                        <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
+                                    </Paper>
+                                )) 
                             }
                             <AuthFormControl>
                                 <Email fontSize="large"></Email>
@@ -211,26 +193,8 @@ const Login = () => {
                             </AppButton>
                         </div>
                     </Box>
-                    <Divider 
-                        flexItem 
-                        sx={
-                            {
-                                "&::before, &::after": {
-                                    borderColor: "white",
-                                    borderWidth: '1px'
-                                }
-                            }
-                        }
-                        textAlign='center'
-                    >
-                        <Typography sx={{textAlign:"center", marginTop:"15px", marginBottom:"15px"}}>Don't have an account?</Typography>
-                    </Divider>    
-                    <div className={styles.formContainer}>
-                        <AppButton text={"Register"} type="button" width="100%" handlerFunction={()=>{handleOpenRegisterDialog()}}/>
-                    </div>
                 </Paper>  
             </Container>
-            <Register openDialog={openDialog} onCloseRegisterDialog={handleCloseRegisterDialog}/>
         </>
     )
 }
