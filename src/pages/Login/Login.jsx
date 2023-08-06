@@ -76,7 +76,7 @@ const Login = () => {
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
-                const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
+                const response = await axios.post(`auth/login`,
                     loggedUser,
                     {
                         withCredentials: true,
