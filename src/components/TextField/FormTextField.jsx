@@ -85,7 +85,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     "&.Mui-focused fieldset" : {borderColor: error ? "error":"#C84B31", borderWidth: error ? 4:2}
                 }
             }}
-            inputRef={(input) => (input && isFocused) && input.focus()}
+            autoFocus={isFocused}
         />
     );
 }
