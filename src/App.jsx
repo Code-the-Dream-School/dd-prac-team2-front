@@ -26,6 +26,7 @@ import RequireAuth from './components/RequireAuth/RequireAuth';
 import Unauthorized from './pages/Unauthorized/Unauthorized';
 import PersistLogin from './components/PersistLogin/PersistLogin';
 import useAuth from './hooks/useAuth';
+import Cohorts from './pages/Admin/Cohorts/Cohorts';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -90,6 +91,7 @@ const App = () => {
         </ThemeProvider> 
         </header>
         <main>
+          <br/>
           <Routes>
             {/* Public routes */}
             <Route element={<PersistLogin></PersistLogin>}>
@@ -100,9 +102,7 @@ const App = () => {
                   ? (<Navigate to="/"></Navigate>)
                   : (
                       <ThemeProvider theme={theme}>
-                        <br/>
                         <Login/>
-                        <br/>
                       </ThemeProvider>
                     )
                 }
@@ -120,9 +120,11 @@ const App = () => {
             <Route element={<PersistLogin></PersistLogin>}>
               <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
                 <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+                <Route path="/cohorts" exact element={<Cohorts></Cohorts>}></Route>
               </Route>
             </Route>
           </Routes>
+          <br/>
         </main>
         <footer>
         <ThemeProvider theme={theme}>

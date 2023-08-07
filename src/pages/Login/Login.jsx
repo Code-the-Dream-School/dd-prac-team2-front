@@ -181,11 +181,11 @@ const Login = () => {
                                     </Paper>
                                 )) 
                             }
-                            <AuthFormControl>
+                            <AuthFormControl width="75%">
                                 <Email fontSize="large"></Email>
                                 <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} reset={reset}></FormTextField>
                             </AuthFormControl>
-                            <AuthFormControl>
+                            <AuthFormControl width="75%">
                                 <LockRounded fontSize="large"></LockRounded>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" reset={reset}></FormTextField>
                             </AuthFormControl>

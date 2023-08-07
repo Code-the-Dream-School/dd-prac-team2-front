@@ -181,9 +181,8 @@ const NavigationBar = ({onExpireAuth}) => {
                         auth.role === "admin"
                         ? adminPages.map((page) => {
                             return (
-                              <Link to={page.link}>
+                              <Link key={page.title} to={page.link}>
                                 <NavigationBarButton
-                                  key={page.title}
                                   text={page.title}
                                   iconComponent={page.icon}
                                   onDrawerToggling={(event) => handleDrawerToggling(false, event)}
