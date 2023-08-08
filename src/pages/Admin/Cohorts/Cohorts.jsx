@@ -5,14 +5,12 @@
 */
 import { Box, Button, Container, Paper, Typography, styled } from '@mui/material';
 import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
-import { DataGrid } from '@mui/x-data-grid';
-import { DatePicker } from '@mui/x-date-pickers';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react';
+import React, { useState } from 'react';
 /*
     ==========================
     =        STYLES          =
@@ -48,6 +46,8 @@ const RenderActions = (props) => {
     =     AUX VARIABLES      =
     ==========================
 */
+const classList = ["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"];
+
 const columns = [
     {field: "id", headerName: "ID", width: 130},
     {field: "cohort", headerName: "Cohort", width: 130},
@@ -64,6 +64,24 @@ const rows = [
 ];
 
 const Cohorts = () => {
+    /*
+        ==========================
+        =         STATES         =
+        ==========================
+    */
+    const [reset, setReset] = useState(false);
+    const [className, setClassName] = useState("");
+
+    /*
+        ==========================
+        =         HANDLERS       =
+        ==========================
+    */
+
+    const handleClassName = (selectedClassName) => {
+        setClassName(selectedClassName);
+    }
+
     return (
         <Container maxWidth="md">
             <Paper 
@@ -99,12 +117,12 @@ const Cohorts = () => {
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
                             <SchoolRounded fontSize="large"></SchoolRounded>
-                            <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={()=>{}} reset={null}></FormTextField>
+                            <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={()=>{}} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <LaptopRounded fontSize="large"/>
                             <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} label={"Class:"} selectValue={""} onSelectValue={()=>{}} list={["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"]}></FormSelect>
+                                <FormSelect id={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassName} list={classList}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">

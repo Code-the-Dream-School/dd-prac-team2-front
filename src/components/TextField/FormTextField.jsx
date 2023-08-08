@@ -80,6 +80,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
+                    fontWeight: "bold",
                     color: variant==="light" ? "white" : "#1A1A2E"
                 },
                 "& .MuiOutlinedInput-root" : {
