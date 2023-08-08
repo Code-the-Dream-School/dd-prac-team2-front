@@ -28,6 +28,7 @@ import FormSelect from "../../../components/Select/FormSelect"
 import AppButton from '../../../components/Button/AppButton';
 import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
 import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
+import dayjs from 'dayjs';
 
 const RenderActions = (props) => {
     return(
@@ -71,15 +72,26 @@ const Cohorts = () => {
     */
     const [reset, setReset] = useState(false);
     const [className, setClassName] = useState("");
+    const [startDate, setStartDate] = useState(dayjs());
+    const [endDate, setEndDate] = useState(dayjs());
+    console.log(startDate, endDate);
+
 
     /*
         ==========================
         =         HANDLERS       =
         ==========================
     */
-
-    const handleClassName = (selectedClassName) => {
+    const handleClassNameChange = (selectedClassName) => {
         setClassName(selectedClassName);
+    }
+
+    const handleStartDateChange = (newStartDate) => {
+        setStartDate(newStartDate);
+    }
+
+    const handleEndDateChange = (newEndDate) => {
+        setEndDate(newEndDate);
     }
 
     return (
@@ -122,13 +134,13 @@ const Cohorts = () => {
                         <AuthFormControl width="75%">
                             <LaptopRounded fontSize="large"/>
                             <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassName} list={classList}></FormSelect>
+                                <FormSelect id={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <CalendarMonthRounded fontSize="large"/>
-                            <AppDatePicker label={"Start date:"}></AppDatePicker>
-                            <AppDatePicker label={"End date:"}></AppDatePicker>
+                            <AppDatePicker label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
+                            <AppDatePicker label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>

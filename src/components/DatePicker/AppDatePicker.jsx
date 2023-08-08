@@ -3,7 +3,15 @@ import PropTypes from "prop-types";
 
 import React from 'react';
 
-const AppDatePicker = ({label}) => {
+const AppDatePicker = ({label, dateValue, onDateValueChange}) => {
+    /*
+        ==========================
+        =         HANDLERS       =
+        ==========================
+    */
+    const handleValueChange = (event) => {
+        onDateValueChange(event);
+    }
     return (
         <DatePicker 
             sx={
@@ -59,7 +67,7 @@ const AppDatePicker = ({label}) => {
                     sx: {
                     "&.MuiPickersDay-root.MuiPickersDay-today": {
                         color: "white",
-                        backgroundColor: "#C84B31",
+                        backgroundColor: "#1A1A2E",
                         border: 0
                         },
                     "&.MuiPickersDay-root.Mui-selected": {
@@ -81,6 +89,9 @@ const AppDatePicker = ({label}) => {
                 },
                 }}
             label={label} 
+            inputFormat="dd-MM-yyyy"
+            value={dateValue}
+            onChange={handleValueChange}
         />                            
     )
 }
@@ -88,5 +99,7 @@ const AppDatePicker = ({label}) => {
 export default AppDatePicker;
 
 AppDatePicker.propTypes = {
-    label: PropTypes.string.isRequired
+    label: PropTypes.string.isRequired,
+    dateValue: PropTypes.object.isRequired,
+    onDateValueChange: PropTypes.func.isRequired
 };
