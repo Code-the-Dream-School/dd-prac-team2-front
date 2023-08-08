@@ -26,9 +26,9 @@ const StyledAuthFormControl = styled(FormControl)(()=>({
     padding: "5px"
 }));
 
-const AuthFormControl = ({children, width}) => {
+const AuthFormControl = ({children, width, isNested}) => {
     return (
-       <StyledAuthFormControl sx={{width}}>
+       <StyledAuthFormControl sx={{width, padding: isNested ? "0px" : "5px"}}>
             {children}
        </StyledAuthFormControl> 
     );
@@ -38,5 +38,6 @@ export default AuthFormControl;
 
 AuthFormControl.propTypes = {
     children: PropTypes.node.isRequired,
-    width: PropTypes.string.isRequired
+    width: PropTypes.string.isRequired,
+    isNested: PropTypes.bool
 };

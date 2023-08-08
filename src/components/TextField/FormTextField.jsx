@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 */
 import React, { memo, useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, reset}) => {
+const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, errorMessage, reset}) => {
     /*
         ==========================
         =         STATES         =
@@ -53,6 +53,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
     return (
         <TextField
             error={error}
+            helperText={error ? errorMessage : null}
             required={required}
             type={type}
             id={name}
@@ -62,7 +63,10 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
             onChange={handleTextChange}
             sx={{
                 width: width,
-                "& label": { color: variant==="light" ? "white":"#1A1A2E"},
+                "& label": { 
+                    fontWeight: "bold",
+                    color: variant==="light" ? "white":"#1A1A2E",
+                },
                 "& label.Mui-focused": {
                     color: variant==="light" ? "white":"#1A1A2E"
                 },
@@ -102,5 +106,6 @@ FormTextField.propTypes = {
     variant: PropTypes.string.isRequired,
     regex: PropTypes.any,
     onHandleError: PropTypes.func,
+    errorMessage: PropTypes.string,
     reset: PropTypes.bool.isRequired
 };

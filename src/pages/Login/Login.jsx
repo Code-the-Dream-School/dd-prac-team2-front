@@ -49,9 +49,6 @@ const Login = () => {
             errorMessage: "Please enter a valid email address."
         }
     });
-    const [isVisible, setIsVisible] = useState({
-        emailError: false,
-    });
     /*
         ==========================
         =          HOOKS         =
@@ -111,11 +108,9 @@ const Login = () => {
                 error: inputError,
             }
         }));
-        if(inputError){
-            setIsVisible(prevState => ({...prevState, emailError: true}));
-        }
     }, []);
 
+    //3. Google log in
     const handleGoogleAuthUrl = () => {
         const rootURL = "https://accounts.google.com/o/oauth2/v2/auth"
         const options = {
@@ -169,21 +164,9 @@ const Login = () => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            {
-                                (isVisible.emailError && (
-                                    <Paper 
-                                        sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} 
-                                        className={formError.emailError.error ? "animate__animated animate__bounceIn":"animate__animated animate__bounceOut"}
-                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible((prevState) => ({...prevState, emailError: false})) : null }
-                                    >
-                                        <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
-                                        <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
-                                    </Paper>
-                                )) 
-                            }
                             <AuthFormControl width="75%">
                                 <Email fontSize="large"></Email>
-                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} reset={reset}></FormTextField>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} errorMessage={"Please enter a valid email address"} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AuthFormControl width="75%">
                                 <LockRounded fontSize="large"></LockRounded>

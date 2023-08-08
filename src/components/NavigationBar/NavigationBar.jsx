@@ -290,6 +290,7 @@ const NavigationBar = ({onExpireAuth}) => {
                 auth.role === "admin"
                 ?   adminPages.map((page) => {
                         return (
+                          <Link key={page.title} to={page.link}>
                             <ListItem key={page.title} disablePadding>
                                 <ListItemButton>
                                 <ListItemIcon>{page.icon}</ListItemIcon>
@@ -299,6 +300,7 @@ const NavigationBar = ({onExpireAuth}) => {
                                 />
                                 </ListItemButton>
                             </ListItem>
+                          </Link>
                         );
                     })
                 : auth.role === "mentor"

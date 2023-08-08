@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
     =     REACT LIBRARIES    =
     ==========================
 */
-import { InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
 const FormSelect = ({id, label, selectValue, onSelectValue, list}) => {
@@ -25,7 +25,7 @@ const handleChange = (event) => {
 }
     return (
         <>
-            <InputLabel id={label} sx={{color:"#1A1A2E", "&.Mui-focused":{color:"#C84B31"}}}>{label}</InputLabel>
+            <InputLabel id={label} sx={{color:"white", fontWeight:"bold", "&.Mui-focused":{color:"white"}}}>{label}</InputLabel>
             <Select
                 fullWidth
                 label={label}
@@ -34,7 +34,27 @@ const handleChange = (event) => {
                 name={id}
                 value={selectValue}
                 onChange={handleChange}
-                sx={{"&:after":{borderBottomColor:"#C84B31"}, "&:before":{borderColor:"#1A1A2E"}, "&:hover:not(.Mui-disabled):before":{borderColor:"#C84B31"}}}
+                sx={
+                    {
+                        "& fieldset":{
+                            borderColor: "#0F3460", 
+                            borderWidth: 2
+                        }, 
+                        "&:hover": {
+                            "&& fieldset": {
+                                border: "2px solid #C84B31"
+                            }
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "2px solid #C84B31"
+                        },
+                        "&, & .MuiSvgIcon-root":{
+                            color:"white", 
+                            fontWeight:"bold"
+                        }
+                    }
+                }
+                required
             >
                 {
                     list.map((selectItem) => {

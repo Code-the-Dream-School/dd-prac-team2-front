@@ -3,8 +3,11 @@ import { DataGrid } from '@mui/x-data-grid';
 import styles from "./Cohorts.module.css";
 import React from 'react';
 import AuthFormControl from '../../../components/FormControl/AuthFormControl';
-import { Email, SchoolRounded } from '@mui/icons-material';
+import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
 import FormTextField from '../../../components/TextField/FormTextField';
+import FormSelect from "../../../components/Select/FormSelect"
+import { DatePicker } from '@mui/x-date-pickers';
+import AppButton from '../../../components/Button/AppButton';
 
 const RenderActions = (props) => {
     return(
@@ -138,9 +141,174 @@ const Cohorts = () => {
                 >
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
-                                <SchoolRounded fontSize="large"></SchoolRounded>
-                                <FormTextField required type="text" label="Cohort" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={()=>{}} reset={null}></FormTextField>
+                            <SchoolRounded fontSize="large"></SchoolRounded>
+                            <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={()=>{}} reset={null}></FormTextField>
                         </AuthFormControl>
+                        <AuthFormControl width="75%">
+                            <LaptopRounded fontSize="large"/>
+                            <AuthFormControl width="100%" isNested={true}>
+                                <FormSelect id={"class"} label={"Class:"} selectValue={""} onSelectValue={()=>{}} list={["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"]}></FormSelect>
+                            </AuthFormControl>
+                        </AuthFormControl>
+                        <AuthFormControl width="75%">
+                            <CalendarMonthRounded fontSize="large"/>
+                            <DatePicker 
+                                sx={
+                                    {   
+                                        width:"100%", 
+                                        "label":{
+                                            fontWeight: "bold",
+                                            color:"white",
+                                            "&.Mui-focused":{
+                                                color:"white"
+                                            }
+                                        },
+                                        "& fieldset":{
+                                            borderColor: "#0F3460", 
+                                            borderWidth: 2
+                                        },
+                                        "& .Mui-fcosued fieldset.MuiOutlinedInput-notchedOutLine":{
+                                            borderColor: "#C84B31", 
+                                            borderWidth: 2
+                                        },
+                                        "&:hover": {
+                                            "&& fieldset": {
+                                                border: "2px solid #C84B31"
+                                            }
+                                        },
+                                        "&, & .MuiSvgIcon-root":{
+                                            color:"white", 
+                                            fontWeight:"bold"
+                                        },
+                                        '& .MuiOutlinedInput-root': {
+                                            fontWeight:"bold",
+                                            color: "white",
+                                            '&.Mui-focused fieldset': {
+                                              borderColor: '#C84B31',
+                                            },
+                                          },
+                                    }
+                                }
+                                slotProps={{
+                                    leftArrowIcon: {
+                                        sx:{
+                                            fontWeight:"bold",
+                                            color:"#C84B31"
+                                        }
+                                    },
+                                    rightArrowIcon: {
+                                        sx:{
+                                            fontWeight:"bold",
+                                            color:"#C84B31"
+                                        }
+                                    },
+                                    day: {
+                                      sx: {
+                                        "&.MuiPickersDay-root.MuiPickersDay-today": {
+                                            color: "white",
+                                            backgroundColor: "#C84B31",
+                                            border: 0
+                                          },
+                                        "&.MuiPickersDay-root.Mui-selected": {
+                                          backgroundColor: "#C84B31",
+                                        },
+                                        "&.MuiPickersDay-root:hover": {
+                                            color:"white",
+                                            backgroundColor: "#C84B31",
+                                          },
+                                      },
+                                    },
+                                    year: {
+                                        sx: {
+                                            color:"red"
+                                        }
+                                    },
+                                    textField: {
+                                        required: true,
+                                    },
+                                  }}
+                                label="Start date:" 
+                            />                            
+                            <DatePicker 
+                            sx={
+                                {   
+                                    width:"100%", 
+                                    "label":{
+                                        fontWeight: "bold",
+                                        color:"white",
+                                        "&.Mui-focused":{
+                                            color:"white"
+                                        }
+                                    },
+                                    "& fieldset":{
+                                        borderColor: "#0F3460", 
+                                        borderWidth: 2
+                                    },
+                                    "& .Mui-fcosued fieldset.MuiOutlinedInput-notchedOutLine":{
+                                        borderColor: "#C84B31", 
+                                        borderWidth: 2
+                                    },
+                                    "&:hover": {
+                                        "&& fieldset": {
+                                            border: "2px solid #C84B31"
+                                        }
+                                    },
+                                    "&, & .MuiSvgIcon-root":{
+                                        color:"white", 
+                                        fontWeight:"bold"
+                                    },
+                                    '& .MuiOutlinedInput-root': {
+                                        fontWeight:"bold",
+                                        color: "white",
+                                        '&.Mui-focused fieldset': {
+                                          borderColor: '#C84B31',
+                                        },
+                                      },
+                                }
+                            }
+                            slotProps={{
+                                leftArrowIcon: {
+                                    sx:{
+                                        fontWeight:"bold",
+                                        color:"#C84B31"
+                                    }
+                                },
+                                rightArrowIcon: {
+                                    sx:{
+                                        fontWeight:"bold",
+                                        color:"#C84B31"
+                                    }
+                                },
+                                day: {
+                                  sx: {
+                                    "&.MuiPickersDay-root.MuiPickersDay-today": {
+                                        color: "white",
+                                        backgroundColor: "#C84B31",
+                                        border: 0
+                                      },
+                                    "&.MuiPickersDay-root.Mui-selected": {
+                                      backgroundColor: "#C84B31",
+                                    },
+                                    "&.MuiPickersDay-root:hover": {
+                                        color:"white",
+                                        backgroundColor: "#C84B31",
+                                      },
+                                  },
+                                },
+                                year: {
+                                    sx: {
+                                        color:"red"
+                                    }
+                                },
+                                textField: {
+                                    required: true,
+                                },
+                              }}
+                            label="End date:"
+                            required={true} 
+                        />
+                        </AuthFormControl>
+                        <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
                 </Box>
                 <StyledDataGrid
