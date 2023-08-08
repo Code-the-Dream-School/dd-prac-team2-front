@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Divider, Paper, Typography } from '@mui/material';
+import { Box, Container, Paper, Typography } from '@mui/material';
 import {Email, Google, LockRounded } from '@mui/icons-material';
 import PropTypes from 'prop-types';
 import axios from "../../api/axios";
@@ -12,8 +12,8 @@ import axios from "../../api/axios";
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, {useState} from 'react';
-import {Link, useNavigate, useLocation} from "react-router-dom";
+import React, {useCallback, useState} from 'react';
+import {useNavigate, useLocation} from "react-router-dom";
 /*
     ==========================
     =       CUSTOM HOOKS     =
@@ -28,7 +28,6 @@ import useAuth from '../../hooks/useAuth';
 import styles from './Login.module.css';
 import FormTextField from '../../components/TextField/FormTextField';
 import AppButton from '../../components/Button/AppButton';
-import Register from '../Register/Register';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
 
 const Login = () => {
@@ -43,8 +42,16 @@ const Login = () => {
         =         STATES         =
         ==========================
     */
-    const [openDialog, setOpenDialog] = useState(false);
     const [reset, setReset] = useState(false);
+    const [formError, setFormError] = useState({
+        emailError: {
+            error: false,
+            errorMessage: "Please enter a valid email address."
+        }
+    });
+    const [isVisible, setIsVisible] = useState({
+        emailError: false,
+    });
     /*
         ==========================
         =          HOOKS         =
@@ -66,40 +73,47 @@ const Login = () => {
             email: (event.target.email.value.trim()).toLowerCase(),
             password: event.target.password.value.trim()
         };
-
+        const errors = Object.values(formError);
         try{
-            const response = await axios.post(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGIN}`,
-                loggedUser,
-                {
-                    withCredentials: true,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-            console.log(response);
-            console.log(response.data);
-            const userId = response.data.user.userId;
-            const userName = response.data.user.name;
-            const accessToken = response.data.token;
-            console.log("Welcome: ", userName, userId);
-            console.log("Access token: ", accessToken);
-            setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
-            setReset(true);
-            navigate(from, {replace: true});
+            if(!errors.some((error)=>error.error===true)){
+                const response = await axios.post(`auth/login`,
+                    loggedUser,
+                    {
+                        withCredentials: true,
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+                console.log(response);
+                console.log(response.data);
+                const userId = response.data.user.userId;
+                const userName = response.data.user.name;
+                const accessToken = response.data.token;
+                console.log("Welcome: ", userName, userId);
+                console.log("Access token: ", accessToken);
+                setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
+                setReset(true);
+                navigate(from, {replace: true});
+            }
         } catch(error){
             console.error(error.response.data);
         }
     }
 
-    //2. Dialog opening & closing
-    const handleOpenRegisterDialog = () => {
-        setOpenDialog(true);
-    }
-
-    const handleCloseRegisterDialog = () => {
-        setOpenDialog(false);
-    }
+    //2. Error handlers
+    const handleEmailError = useCallback((inputError) => {
+        setFormError(prevState => ({
+            ...prevState,
+            emailError: {
+                ...prevState.emailError,
+                error: inputError,
+            }
+        }));
+        if(inputError){
+            setIsVisible(prevState => ({...prevState, emailError: true}));
+        }
+    }, []);
 
     const handleGoogleAuthUrl = () => {
         const rootURL = "https://accounts.google.com/o/oauth2/v2/auth"
@@ -154,9 +168,21 @@ const Login = () => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
+                            {
+                                (isVisible.emailError && (
+                                    <Paper 
+                                        sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} 
+                                        className={formError.emailError.error ? "animate__animated animate__bounceIn":"animate__animated animate__bounceOut"}
+                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible((prevState) => ({...prevState, emailError: false})) : null }
+                                    >
+                                        <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
+                                        <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
+                                    </Paper>
+                                )) 
+                            }
                             <AuthFormControl>
                                 <Email fontSize="large"></Email>
-                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" reset={reset}></FormTextField>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AuthFormControl>
                                 <LockRounded fontSize="large"></LockRounded>
@@ -169,26 +195,8 @@ const Login = () => {
                             </AppButton>
                         </div>
                     </Box>
-                    <Divider 
-                        flexItem 
-                        sx={
-                            {
-                                "&::before, &::after": {
-                                    borderColor: "white",
-                                    borderWidth: '1px'
-                                }
-                            }
-                        }
-                        textAlign='center'
-                    >
-                        <Typography sx={{textAlign:"center", marginTop:"15px", marginBottom:"15px"}}>Don't have an account?</Typography>
-                    </Divider>    
-                    <div className={styles.formContainer}>
-                        <AppButton text={"Register"} type="button" width="100%" handlerFunction={()=>{handleOpenRegisterDialog()}}/>
-                    </div>
                 </Paper>  
             </Container>
-            <Register openDialog={openDialog} onCloseRegisterDialog={handleCloseRegisterDialog}/>
         </>
     )
 }

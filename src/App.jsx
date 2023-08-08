@@ -61,7 +61,7 @@ const App = () => {
   const handleExpireAuth = async() => {
     
     try {
-      const response = await axios(`${process.env.REACT_APP_AUTH}/${process.env.REACT_APP_AUTH_LOGOUT}`, {
+      const response = await axios(`auth/logout`, {
         withCredentials: true
       });
       console.log("LOGOUT", response);
@@ -86,7 +86,7 @@ const App = () => {
     <>
         <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar auth={auth.loggedIn} onExpireAuth={handleExpireAuth}/>
+          <NavigationBar onExpireAuth={handleExpireAuth}/>
         </ThemeProvider> 
         </header>
         <main>
@@ -100,7 +100,9 @@ const App = () => {
                   ? (<Navigate to="/"></Navigate>)
                   : (
                       <ThemeProvider theme={theme}>
+                        <br/>
                         <Login/>
+                        <br/>
                       </ThemeProvider>
                     )
                 }
