@@ -1,13 +1,35 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Box, Button, Container, Paper, Typography, styled } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import styles from "./Cohorts.module.css";
-import React from 'react';
-import AuthFormControl from '../../../components/FormControl/AuthFormControl';
 import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
+import { DataGrid } from '@mui/x-data-grid';
+import { DatePicker } from '@mui/x-date-pickers';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React from 'react';
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
+import styles from "./Cohorts.module.css";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AuthFormControl from '../../../components/FormControl/AuthFormControl';
 import FormTextField from '../../../components/TextField/FormTextField';
 import FormSelect from "../../../components/Select/FormSelect"
-import { DatePicker } from '@mui/x-date-pickers';
 import AppButton from '../../../components/Button/AppButton';
+import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
+import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
 
 const RenderActions = (props) => {
     return(
@@ -15,19 +37,24 @@ const RenderActions = (props) => {
         component="button"
         variant="contained"
         size="small"
+        onClick={()=>{alert(props.value.id)}}
         >
-            {props.value}
+            {props.value.id}
         </Button>
     )
 }
-
+/*
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const columns = [
     {field: "id", headerName: "ID", width: 130},
     {field: "cohort", headerName: "Cohort", width: 130},
     {field: "class", headerName: "Class", width: 130},
     {field: "startDate", headerName: "Start date", type: "date", width: 130},
     {field: "endDate", headerName: "End date", type: "date", width: 130},
-    {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, width: 130, valueGetter: (params)=><a href={`/${params.id}`}>{params.id}</a>, renderCell: RenderActions }
+    {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, width: 130, valueGetter: (params)=>({id:params.id}), renderCell: RenderActions }
 ]
 
 const rows = [
@@ -35,76 +62,6 @@ const rows = [
     {id: "2", cohort:"Deer", class: "React.js", startDate: new Date(), endDate: new Date()},
     {id: "3", cohort:"Dorado", class: "React.js", startDate: new Date(), endDate: new Date()},
 ];
-
-const StyledDataGrid = styled(DataGrid)(()=>({
-    borderTop: "5px solid #C84B31",
-    borderBottom: "5px solid #C84B31",
-    borderLeft: "0px",
-    borderRight: "0px",
-    color: "white",
-    letterSpacing: "normal",
-    width: "100%",
-    "& .MuiDataGrid-iconSeparator": {
-        display: "none"
-    },
-    "& .MuiDataGrid-sortIcon": {
-        color: "white",
-        opacity: "inherit !important"
-    },
-    "& .MuiDataGrid-menuIconButton" : {
-        opacity: 1,
-        color: "white"
-    },
-    "& .MuiTouchRipple-root":{
-        color: "#C84B31"
-    },
-    "& .MuiDataGrid-columnHeaders": {
-        borderBottom: "3px solid #C84B31",
-    },
-    "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-        color: "white",
-        borderRight: "0px solid #C84B31",
-    },
-    "& .MuiDataGrid-columnHeader:focus":{
-        outline: "0px"
-    },
-    "& .MuiDataGrid-row":{
-        backgroundColor: "white"
-    },
-    "& .MuiDataGrid-row.Mui-selected": {
-        backgroundColor: "#C84B31",
-        "& .MuiDataGrid-cell": {
-            borderBottom: "1px solid #1A1A2E",
-            color: "white"
-        }
-    },
-    "& .MuiDataGrid-row:hover, & .MuiDataGrid-row.Mui-selected:hover": {
-        backgroundColor: "#C84B31",
-        "& .MuiDataGrid-cell":{
-            borderBottom: "1px solid #1A1A2E",
-            color:"white"
-        }
-    },
-    "& .MuiDataGrid-cell":{
-        color: "black",
-        fontWeight: "bold",
-    },
-    "& .MuiDataGrid-cell.MuiDataGrid-withBorderColor":{
-        outline: "0px",
-    },
-    "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell" : {
-        borderBottom: "1px solid #C84B31"
-    },
-    "& .MuiDataGrid-footerContainer" : {
-        borderTop: "3px solid #C84B31",
-        "& .MuiTablePagination-root" : {
-            color: "white",
-            "& .MuiSelect-icon, & .MuiTablePagination-actions > .MuiButtonBase-root": {
-                color: "white"
-            }
-        }
-    },
-}));
 
 const Cohorts = () => {
     return (
@@ -152,200 +109,13 @@ const Cohorts = () => {
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <CalendarMonthRounded fontSize="large"/>
-                            <DatePicker 
-                                sx={
-                                    {   
-                                        width:"100%", 
-                                        "label":{
-                                            fontWeight: "bold",
-                                            color:"white",
-                                            "&.Mui-focused":{
-                                                color:"white"
-                                            }
-                                        },
-                                        "& fieldset":{
-                                            borderColor: "#0F3460", 
-                                            borderWidth: 2
-                                        },
-                                        "& .Mui-fcosued fieldset.MuiOutlinedInput-notchedOutLine":{
-                                            borderColor: "#C84B31", 
-                                            borderWidth: 2
-                                        },
-                                        "&:hover": {
-                                            "&& fieldset": {
-                                                border: "2px solid #C84B31"
-                                            }
-                                        },
-                                        "&, & .MuiSvgIcon-root":{
-                                            color:"white", 
-                                            fontWeight:"bold"
-                                        },
-                                        '& .MuiOutlinedInput-root': {
-                                            fontWeight:"bold",
-                                            color: "white",
-                                            '&.Mui-focused fieldset': {
-                                              borderColor: '#C84B31',
-                                            },
-                                          },
-                                    }
-                                }
-                                slotProps={{
-                                    leftArrowIcon: {
-                                        sx:{
-                                            fontWeight:"bold",
-                                            color:"#C84B31"
-                                        }
-                                    },
-                                    rightArrowIcon: {
-                                        sx:{
-                                            fontWeight:"bold",
-                                            color:"#C84B31"
-                                        }
-                                    },
-                                    day: {
-                                      sx: {
-                                        "&.MuiPickersDay-root.MuiPickersDay-today": {
-                                            color: "white",
-                                            backgroundColor: "#C84B31",
-                                            border: 0
-                                          },
-                                        "&.MuiPickersDay-root.Mui-selected": {
-                                          backgroundColor: "#C84B31",
-                                        },
-                                        "&.MuiPickersDay-root:hover": {
-                                            color:"white",
-                                            backgroundColor: "#C84B31",
-                                          },
-                                      },
-                                    },
-                                    year: {
-                                        sx: {
-                                            color:"red"
-                                        }
-                                    },
-                                    textField: {
-                                        required: true,
-                                    },
-                                  }}
-                                label="Start date:" 
-                            />                            
-                            <DatePicker 
-                            sx={
-                                {   
-                                    width:"100%", 
-                                    "label":{
-                                        fontWeight: "bold",
-                                        color:"white",
-                                        "&.Mui-focused":{
-                                            color:"white"
-                                        }
-                                    },
-                                    "& fieldset":{
-                                        borderColor: "#0F3460", 
-                                        borderWidth: 2
-                                    },
-                                    "& .Mui-fcosued fieldset.MuiOutlinedInput-notchedOutLine":{
-                                        borderColor: "#C84B31", 
-                                        borderWidth: 2
-                                    },
-                                    "&:hover": {
-                                        "&& fieldset": {
-                                            border: "2px solid #C84B31"
-                                        }
-                                    },
-                                    "&, & .MuiSvgIcon-root":{
-                                        color:"white", 
-                                        fontWeight:"bold"
-                                    },
-                                    '& .MuiOutlinedInput-root': {
-                                        fontWeight:"bold",
-                                        color: "white",
-                                        '&.Mui-focused fieldset': {
-                                          borderColor: '#C84B31',
-                                        },
-                                      },
-                                }
-                            }
-                            slotProps={{
-                                leftArrowIcon: {
-                                    sx:{
-                                        fontWeight:"bold",
-                                        color:"#C84B31"
-                                    }
-                                },
-                                rightArrowIcon: {
-                                    sx:{
-                                        fontWeight:"bold",
-                                        color:"#C84B31"
-                                    }
-                                },
-                                day: {
-                                  sx: {
-                                    "&.MuiPickersDay-root.MuiPickersDay-today": {
-                                        color: "white",
-                                        backgroundColor: "#C84B31",
-                                        border: 0
-                                      },
-                                    "&.MuiPickersDay-root.Mui-selected": {
-                                      backgroundColor: "#C84B31",
-                                    },
-                                    "&.MuiPickersDay-root:hover": {
-                                        color:"white",
-                                        backgroundColor: "#C84B31",
-                                      },
-                                  },
-                                },
-                                year: {
-                                    sx: {
-                                        color:"red"
-                                    }
-                                },
-                                textField: {
-                                    required: true,
-                                },
-                              }}
-                            label="End date:"
-                            required={true} 
-                        />
+                            <AppDatePicker label={"Start date:"}></AppDatePicker>
+                            <AppDatePicker label={"End date:"}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
                 </Box>
-                <StyledDataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                        pagination: {
-                            paginationModel: {page: 0, pageSize: 5}
-                        }
-                    }}
-                    pageSizeOptions={[5]}
-                    slotProps={{
-                        columnMenu: {
-                            sx: {
-                                backgroundColor: "white",
-                                "& .MuiMenuItem-root":{
-                                    "& .MuiListItemText-root":{
-                                        "& .MuiTypography-root":{
-                                            fontWeight: "bold"
-                                        }
-                                    },
-                                    "& .MuiListItemIcon-root": {
-                                        color: "#C84B31"
-                                    }
-                                },
-                                "& .MuiMenuItem-root:hover": {
-                                    backgroundColor: "#C84B31",
-                                    color: "white",
-                                    "& .MuiListItemIcon-root":{
-                                        color: "white",
-                                    }
-                                }
-                            }
-                        },
-                        
-                    }}
-                />
+                <AppDataGrid columns={columns} rows={rows}/>
             </Paper>
         </Container>
     )

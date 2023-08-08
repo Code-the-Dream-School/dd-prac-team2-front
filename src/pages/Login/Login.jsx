@@ -26,6 +26,11 @@ import useAuth from '../../hooks/useAuth';
     ==========================
 */
 import styles from './Login.module.css';
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
 import FormTextField from '../../components/TextField/FormTextField';
 import AppButton from '../../components/Button/AppButton';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
