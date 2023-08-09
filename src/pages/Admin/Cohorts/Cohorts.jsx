@@ -33,14 +33,33 @@ import dayjs from 'dayjs';
 
 const RenderActions = (props) => {
     return(
-        <Button
-        component="button"
-        variant="contained"
-        size="small"
-        onClick={()=>{alert(props.value.id)}}
-        >
-            {props.value.id}
-        </Button>
+        <>
+            <Button
+                component="button"
+                variant="contained"
+                size="small"
+                sx={{mx:"2px"}}
+            >
+                {"EDIT"}
+            </Button>
+            <Button
+                component="button"
+                variant="contained"
+                size="small"
+                sx={{mx:"2px"}}
+            >
+                {"DELETE"}
+            </Button>
+            <Button
+                component="button"
+                variant="contained"
+                size="small"
+                sx={{mx:"2px"}}
+            >
+                {"Option"}
+            </Button>            
+        </>
+        
     )
 }
 /*
@@ -52,11 +71,11 @@ const classList = ["Intro to programming", "React.js", "Node.js/Express", "Ruby 
 
 const columns = [
     {field: "id", headerName: "ID", width: 130},
-    {field: "cohort", headerName: "Cohort", width: 130},
-    {field: "class", headerName: "Class", width: 130},
-    {field: "startDate", headerName: "Start date", type: "date", width: 130},
-    {field: "endDate", headerName: "End date", type: "date", width: 130},
-    {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, width: 130, valueGetter: (params)=>({id:params.id}), renderCell: RenderActions }
+    {field: "cohort", headerName: "Cohort", width: 175},
+    {field: "class", headerName: "Class", width: 175},
+    {field: "startDate", headerName: "Start date", type: "date", width: 100},
+    {field: "endDate", headerName: "End date", type: "date", width: 100},
+    {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 250, valueGetter: (params)=>(params), renderCell: RenderActions }
 ]
 
 const rows = [
@@ -93,6 +112,7 @@ const Cohorts = () => {
             errorMessage: "Please select an end date for this cohort"
         }
     });
+    const [cohorts, setCohorts] = useState([]);
     /*
         ==========================
         =         HOOKS          =
@@ -107,9 +127,18 @@ const Cohorts = () => {
     const fetchCohorts = async() => {
         const response = await axiosPrivate.get("/cohort", {
             withCredentials: true,
-            
         });
-        console.log(response);
+        const formattedCohorts = (response.data.cohorts).map((cohort)=>{
+            return ({
+                id: cohort._id,
+                cohort: cohort.name,
+                class: cohort.type,
+                startDate: new Date(cohort.start),
+                endDate: new Date(cohort.end)
+            });
+        });
+        console.log(formattedCohorts);
+        setCohorts(formattedCohorts);
     }
     /*
         ==========================
@@ -253,7 +282,7 @@ const Cohorts = () => {
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
                 </Box>
-                <AppDataGrid columns={columns} rows={rows}/>
+                <AppDataGrid columns={columns} rows={cohorts}/>
             </Paper>
         </Container>
     )

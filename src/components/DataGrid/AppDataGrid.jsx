@@ -119,6 +119,9 @@ const AppDataGrid = ({columns, rows}) => {
                 },
                 
             }}
+            columnVisibilityModel={{
+                id: false,
+            }}
         />
     );
 }
