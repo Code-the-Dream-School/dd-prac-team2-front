@@ -1,9 +1,15 @@
 import { DatePicker } from '@mui/x-date-pickers';
 import PropTypes from "prop-types";
 
-import React from 'react';
+import React, { useState } from 'react';
 
-const AppDatePicker = ({label, dateValue, onDateValueChange}) => {
+const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate}) => {
+    /*
+        ==========================
+        =         STATES         =
+        ==========================
+    */
+   const [error, setError] = useState(" ");
     /*
         ==========================
         =         HANDLERS       =
@@ -26,15 +32,18 @@ const AppDatePicker = ({label, dateValue, onDateValueChange}) => {
                     },
                     "& fieldset":{
                         borderColor: "#0F3460", 
-                        borderWidth: 2
+                        borderWidth: 2,
+                        transition: "ease-in-out 0.2s"
                     },
                     "& .Mui-fcosued fieldset.MuiOutlinedInput-notchedOutLine":{
                         borderColor: "#C84B31", 
-                        borderWidth: 2
+                        borderWidth: 2,
+                        transition: "ease-in-out 0.2s"
                     },
                     "&:hover": {
                         "&& fieldset": {
-                            border: "2px solid #C84B31"
+                            border: "2px solid #C84B31",
+                            transition: "ease-in-out 0.2s"
                         }
                     },
                     "&, & .MuiSvgIcon-root":{
@@ -86,12 +95,17 @@ const AppDatePicker = ({label, dateValue, onDateValueChange}) => {
                 },
                 textField: {
                     required: true,
+                    helperText: error==="minDate" ? "Please enter a valid date" : error
                 },
                 }}
+            id={id}
+            name={name}
             label={label} 
             inputFormat="dd-MM-yyyy"
             value={dateValue}
             onChange={handleValueChange}
+            minDate={minDate}
+            onError={(newError) => newError ? setError(newError) : setError(" ")}
         />                            
     )
 }
@@ -99,7 +113,10 @@ const AppDatePicker = ({label, dateValue, onDateValueChange}) => {
 export default AppDatePicker;
 
 AppDatePicker.propTypes = {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     dateValue: PropTypes.object.isRequired,
-    onDateValueChange: PropTypes.func.isRequired
+    onDateValueChange: PropTypes.func.isRequired,
+    minDate: PropTypes.object
 };

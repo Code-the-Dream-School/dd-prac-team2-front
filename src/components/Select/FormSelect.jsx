@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
-const FormSelect = ({id, label, selectValue, onSelectValue, list}) => {
+const FormSelect = ({id, name, label, selectValue, onSelectValue, list}) => {
 
 /*
     ==========================
@@ -31,14 +31,15 @@ const handleChange = (event) => {
                 label={label}
                 labelId={label}
                 id={id}
-                name={id}
+                name={name}
                 value={selectValue}
                 onChange={handleChange}
                 sx={
                     {
                         "& fieldset":{
                             borderColor: "#0F3460", 
-                            borderWidth: 2
+                            borderWidth: 2,
+                            transition: "0.2s ease-in-out"
                         }, 
                         "&:hover": {
                             "&& fieldset": {
@@ -83,6 +84,7 @@ export default FormSelect;
 
 FormSelect.propTypes = {
     id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     selectValue: PropTypes.string.isRequired,
     onSelectValue: PropTypes.func.isRequired,

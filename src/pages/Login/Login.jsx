@@ -99,6 +99,9 @@ const Login = () => {
                 setReset(true);
                 navigate(from, {replace: true});
             }
+            else{
+                console.log("There is an error that is preventing the form submission", errors);
+            }
         } catch(error){
             console.error(error.response.data);
         }

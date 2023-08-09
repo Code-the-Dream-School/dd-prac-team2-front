@@ -5,12 +5,13 @@
 */
 import { Box, Button, Container, Paper, Typography, styled } from '@mui/material';
 import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
+import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 /*
     ==========================
     =        STYLES          =
@@ -74,24 +75,131 @@ const Cohorts = () => {
     const [className, setClassName] = useState("");
     const [startDate, setStartDate] = useState(dayjs());
     const [endDate, setEndDate] = useState(dayjs());
-    console.log(startDate, endDate);
-
-
+    const [formError, setFormError] = useState({
+        cohortError: {
+            error: false,
+            errorMessage: "Please enter a valid name"
+        },
+        classNameError: {
+            error: true, //Initial value is blank, this is why I set the error to true.
+            errorMessage: "Please select a class for this cohort"
+        },
+        startDateError: {
+            error: false,
+            errorMessage: "Please select a start date for this cohort"
+        },
+        endDateError: {
+            error: false,
+            errorMessage: "Please select an end date for this cohort"
+        }
+    });
+    /*
+        ==========================
+        =         HOOKS          =
+        ==========================
+    */
+    const axiosPrivate = useAxiosPrivate();
+    /*
+        ==========================
+        =     ASYNC FUNCTIONS    =
+        ==========================
+    */
+    const fetchCohorts = async() => {
+        const response = await axiosPrivate.get("/cohort", {
+            withCredentials: true,
+            
+        });
+        console.log(response);
+    }
+    /*
+        ==========================
+        =        EFFECTS         =
+        ==========================
+    */
+    useEffect(()=>{
+        fetchCohorts();
+    }, []);
     /*
         ==========================
         =         HANDLERS       =
         ==========================
     */
+   //1. Cohort errorHandler:
+   const handleCohortNameError = (inputError) => {
+    setFormError((prevState)=>(
+        {
+            ...prevState,
+            cohortError: {
+                ...prevState.cohortError,
+                error: inputError
+            }
+        }
+    ));
+   }
+   //2. Class name handler
     const handleClassNameChange = (selectedClassName) => {
         setClassName(selectedClassName);
+        setFormError((prevState)=>(
+            {
+                ...prevState,
+                classNameError: {
+                    ...prevState.classNameError,
+                    error: false
+                }
+            }
+        ));
     }
-
+    //3. Start date handler
     const handleStartDateChange = (newStartDate) => {
         setStartDate(newStartDate);
+        setFormError((prevState)=>(
+            {
+                ...prevState,
+                endDateError: {
+                    ...prevState.endDateError,
+                    error: endDate < newStartDate ? true:false
+                }
+            }
+        ));
     }
-
+    //4. End date handler
     const handleEndDateChange = (newEndDate) => {
         setEndDate(newEndDate);
+        setFormError((prevState)=>(
+            {
+                ...prevState,
+                startDateError: {
+                    ...prevState.startDateError,
+                    error: newEndDate < startDate ? true:false
+                },
+                endDateError: {
+                    ...prevState.endDateError,
+                    error: newEndDate < startDate ? true:false
+                }
+            }
+        ));
+    }
+    //5. Form onSubmit event handler
+    const handleCohortSubmit = (event) => {
+        event.preventDefault();
+        const newCohort = {
+            cohort: event.target.cohort.value,
+            class: className,
+            startDate: startDate.format(),
+            endDate: endDate.format()
+        }
+        const errors = Object.values(formError);
+        try{
+            if(!errors.some((error)=>error.error===true)){
+
+            }
+            else{
+                console.log("There is an error that is preventing the form submission", errors);
+            }
+        }
+        catch(error){
+            console.error(error.response.data);
+        }
     }
 
     return (
@@ -124,23 +232,23 @@ const Cohorts = () => {
                             width: "100%"
                         }}
                         autoComplete='off'
-                        onSubmit={()=>{}}
+                        onSubmit={handleCohortSubmit}
                 >
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
                             <SchoolRounded fontSize="large"></SchoolRounded>
-                            <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={()=>{}} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
+                            <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <LaptopRounded fontSize="large"/>
                             <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList}></FormSelect>
+                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <CalendarMonthRounded fontSize="large"/>
-                            <AppDatePicker label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
-                            <AppDatePicker label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange}></AppDatePicker>
+                            <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
+                            <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
