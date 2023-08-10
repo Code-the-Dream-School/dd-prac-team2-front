@@ -67,7 +67,7 @@ const RenderActions = (props) => {
     =     AUX VARIABLES      =
     ==========================
 */
-const classList = ["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"];
+const classList = ["Intro", "ReactJS", "Node.js/Express", "Ruby"];
 
 const columns = [
     {field: "id", headerName: "ID", width: 130},
@@ -90,7 +90,7 @@ const Cohorts = () => {
         =         STATES         =
         ==========================
     */
-    const [reset, setReset] = useState(false);
+    const [reset, setReset] = useState();
     const [className, setClassName] = useState("");
     const [startDate, setStartDate] = useState(dayjs());
     const [endDate, setEndDate] = useState(dayjs());
@@ -113,6 +113,7 @@ const Cohorts = () => {
         }
     });
     const [cohorts, setCohorts] = useState([]);
+    console.log(cohorts);
     /*
         ==========================
         =         HOOKS          =
@@ -126,7 +127,6 @@ const Cohorts = () => {
     */
     const fetchCohorts = async() => {
         const response = await axiosPrivate.get("/cohort", {
-            withCredentials: true,
         });
         const formattedCohorts = (response.data.cohorts).map((cohort)=>{
             return ({
@@ -140,11 +140,34 @@ const Cohorts = () => {
         console.log(formattedCohorts);
         setCohorts(formattedCohorts);
     }
+
+    const postCohorts = async(newCohort) => {
+        console.log(newCohort);
+        try{
+            const response = await axiosPrivate.post("/cohort",
+                newCohort,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+            return response;
+        }
+        catch(error){
+            console.error(error);
+        }
+        
+    }
     /*
         ==========================
         =        EFFECTS         =
         ==========================
     */
+    useEffect(()=>{
+        setReset(false);
+    })
+
     useEffect(()=>{
         fetchCohorts();
     }, []);
@@ -209,18 +232,29 @@ const Cohorts = () => {
         ));
     }
     //5. Form onSubmit event handler
-    const handleCohortSubmit = (event) => {
+    const handleCohortSubmit = async(event) => {
         event.preventDefault();
         const newCohort = {
-            cohort: event.target.cohort.value,
-            class: className,
-            startDate: startDate.format(),
-            endDate: endDate.format()
+            name: event.target.cohort.value.trim(),
+            start: startDate.format(),
+            end: endDate.format(),
+            type: className
         }
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
-
+                const response = await postCohorts(newCohort);
+                console.log(response);
+                if(response.status===201){
+                    console.log(cohorts);
+                    setCohorts((prevCohorts) => [...prevCohorts, {
+                        id: response.data.cohort._id,
+                        cohort: response.data.cohort.name,
+                        class: response.data.cohort.type,
+                        startDate: new Date(response.data.cohort.start),
+                        endDate: new Date(response.data.cohort.end)
+                    }]);
+                }
             }
             else{
                 console.log("There is an error that is preventing the form submission", errors);
@@ -228,6 +262,9 @@ const Cohorts = () => {
         }
         catch(error){
             console.error(error.response.data);
+        }
+        finally{
+            setReset(true);
         }
     }
 

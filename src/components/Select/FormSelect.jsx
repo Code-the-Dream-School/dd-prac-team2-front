@@ -64,7 +64,7 @@ const handleChange = (event) => {
                                 key={selectItem} 
                                 value={selectItem} 
                                 sx={{
-                                    "&:hover, &:focus, &:focus:hover":{
+                                    "&:hover, &:focus, &:focus:hover, &.Mui-selected:hover":{
                                         bgcolor:"#C84B31", 
                                         color:"white"
                                     },
