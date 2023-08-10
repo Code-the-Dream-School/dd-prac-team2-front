@@ -95,7 +95,7 @@ const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate})
                 },
                 textField: {
                     required: true,
-                    helperText: error==="minDate" ? "Please enter a valid date" : error
+                    helperText: error==="minDate" ? "Invalid date" : error
                 },
                 }}
             id={id}

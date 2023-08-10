@@ -30,6 +30,7 @@ import AppButton from '../../../components/Button/AppButton';
 import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
 import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
 import dayjs from 'dayjs';
+import CohortsActions from './Actions/CohortsActions';
 
 const RenderActions = (props) => {
     return(
@@ -69,21 +70,6 @@ const RenderActions = (props) => {
 */
 const classList = ["Intro", "ReactJS", "Node.js/Express", "Ruby"];
 
-const columns = [
-    {field: "id", headerName: "ID", width: 130},
-    {field: "cohort", headerName: "Cohort", width: 175},
-    {field: "class", headerName: "Class", width: 175},
-    {field: "startDate", headerName: "Start date", type: "date", width: 100},
-    {field: "endDate", headerName: "End date", type: "date", width: 100},
-    {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 250, valueGetter: (params)=>(params), renderCell: RenderActions }
-]
-
-const rows = [
-    {id: "1", cohort:"Dove", class: "React.js", startDate: new Date(), endDate: new Date()},
-    {id: "2", cohort:"Deer", class: "React.js", startDate: new Date(), endDate: new Date()},
-    {id: "3", cohort:"Dorado", class: "React.js", startDate: new Date(), endDate: new Date()},
-];
-
 const Cohorts = () => {
     /*
         ==========================
@@ -113,7 +99,15 @@ const Cohorts = () => {
         }
     });
     const [cohorts, setCohorts] = useState([]);
-    console.log(cohorts);
+
+    const columns = [
+        {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
+        {field: "cohort", headerName: "Cohort", maxWidth: 250, flex: 1},
+        {field: "class", headerName: "Class", maxWidth: 250, flex: 1},
+        {field: "startDate", headerName: "Start date", type: "date", maxWidth: 100, flex: 1},
+        {field: "endDate", headerName: "End date", type: "date", width: 100},
+        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 350, valueGetter: (params)=>(params), renderCell: (params)=>(<CohortsActions params={params} onHandleCohorts={setCohorts}></CohortsActions>) }
+    ]
     /*
         ==========================
         =         HOOKS          =
@@ -265,11 +259,14 @@ const Cohorts = () => {
         }
         finally{
             setReset(true);
+            setClassName("");
+            setStartDate(dayjs());
+            setEndDate(dayjs());
         }
     }
 
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
             <Paper 
                     elevation={3} 
                     sx={
@@ -312,7 +309,10 @@ const Cohorts = () => {
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <CalendarMonthRounded fontSize="large"/>
+                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <CalendarMonthRounded fontSize="large"/>
+                                <br></br>
+                            </div>
                             <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
                             <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate}></AppDatePicker>
                         </AuthFormControl>
