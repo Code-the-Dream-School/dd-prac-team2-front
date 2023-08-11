@@ -7,19 +7,12 @@ import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typograp
 import {CalendarMonthRounded, Close, LaptopRounded, SchoolRounded } from '@mui/icons-material';
 import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
 import React, { forwardRef, useState, useEffect } from 'react';
-/*
-    ==========================
-    =          STYLES        =
-    ==========================
-*/
-import styles from "../Cohorts.module.css";
 /*
     ==========================
     =       COMPONENTS       =
@@ -32,9 +25,16 @@ import FormSelect from '../../../../components/Select/FormSelect';
 import AppDatePicker from '../../../../components/DatePicker/AppDatePicker';
 /*
     ==========================
+    =          STYLES        =
+    ==========================
+*/
+import styles from "../Cohorts.module.css";
+/*
+    ==========================
     =          HOOKS         =
     ==========================
 */
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -45,8 +45,15 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const classList = ["Intro", "ReactJS", "NodeJS", "Ruby"];
 
+
 const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) => {
-    console.log(cohortInfo);
+    /*
+        ==========================
+        =         HOOKS          =
+        ==========================
+    */
+    const axiosPrivate = useAxiosPrivate();
+
     /*
         ==========================
         =         STATES         =
@@ -75,21 +82,17 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
         }
     });
     const [reset, setReset] = useState(false);
-    /*
-        ==========================
-        =         HOOKS          =
-        ==========================
-    */
-    const axiosPrivate = useAxiosPrivate();
-        
+    
     /*
         ==========================
         =        EFFECTS         =
         ==========================
     */
+   //1. Used to set reset textfield value to false as it will only be true when user submits a form.
     useEffect(()=>{
         setReset(false);
     });
+    
     /*
         ==========================
         =    ASYNC FUNCTIONS     =
@@ -172,19 +175,17 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
             }
         ));
     }
-
     //5. onSubmit event
     const handleEditCohortSubmit = async(event) => {
         event.preventDefault();
         const cohortToBeUpdated = cohortInfo.row.id;
         const editedCohort = {
             name: event.target.cohort.value.trim(),
-            start: startDate.format(),
-            end: endDate.format(),
+            start: startDate.format(), //Date needs to be sent with .format()
+            end: endDate.format(), //Date needs to be sent with .format()
             type: className
         }
         const errors = Object.values(formError);
-        console.log("UPDATE ERRORS", errors);
         try{
             if(!errors.some((error)=>error.error===true)){
                 const response = await editCohort(cohortToBeUpdated, editedCohort);
@@ -196,8 +197,8 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
                                         ...prevCohort,
                                         cohort: editedCohort.name,
                                         class: editedCohort.type,
-                                        startDate: new Date(editedCohort.start),
-                                        endDate: new Date(editedCohort.end)
+                                        startDate: new Date(editedCohort.start), //Date needs to be received as new Date()
+                                        endDate: new Date(editedCohort.end) //Date needs to be received as new Date()
                                     });
                                 }
                                 else{
@@ -220,7 +221,6 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
         catch(error){
             console.error(error.response.data);
         }
-
     }
 
     return (
@@ -279,5 +279,6 @@ export default EditCohort;
 EditCohort.propTypes = {
     openDialog: PropTypes.bool.isRequired,
     cohortInfo: PropTypes.object.isRequired,
-    onCloseDialog: PropTypes.func.isRequired
+    onCloseDialog: PropTypes.func.isRequired,
+    onHandleCohorts: PropTypes.func.isRequired
 };
