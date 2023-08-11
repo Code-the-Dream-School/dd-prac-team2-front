@@ -68,7 +68,7 @@ const RenderActions = (props) => {
     =     AUX VARIABLES      =
     ==========================
 */
-const classList = ["Intro", "ReactJS", "Node.js/Express", "Ruby"];
+const classList = ["Intro", "ReactJS", "NodeJS", "Ruby"];
 
 const Cohorts = () => {
     /*
@@ -99,7 +99,7 @@ const Cohorts = () => {
         }
     });
     const [cohorts, setCohorts] = useState([]);
-
+    console.log(cohorts);
     const columns = [
         {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
         {field: "cohort", headerName: "Cohort", maxWidth: 250, flex: 1},
@@ -305,7 +305,7 @@ const Cohorts = () => {
                         <AuthFormControl width="75%">
                             <LaptopRounded fontSize="large"/>
                             <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList}></FormSelect>
+                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant={"light"}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
@@ -313,8 +313,8 @@ const Cohorts = () => {
                                 <CalendarMonthRounded fontSize="large"/>
                                 <br></br>
                             </div>
-                            <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
-                            <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate}></AppDatePicker>
+                            <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange} variant={"light"}></AppDatePicker>
+                            <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate} variant={"light"}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>

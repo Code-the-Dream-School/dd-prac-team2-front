@@ -12,13 +12,13 @@ import PropTypes from 'prop-types';
 */
 import React, { memo, useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, errorMessage, reset}) => {
+const FormTextField = ({required, value, type, label, name, isFocused, width, variant, regex, onHandleError, errorMessage, reset}) => {
     /*
         ==========================
         =         STATES         =
         ==========================
     */  
-    const [text, setText] = useState("");
+    const [text, setText] = useState(value || "");
     const [error, setError] = useState(false);
     /*
         ==========================

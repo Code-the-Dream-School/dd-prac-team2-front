@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
-const FormSelect = ({id, name, label, selectValue, onSelectValue, list}) => {
+const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant}) => {
 
 /*
     ==========================
@@ -25,7 +25,7 @@ const handleChange = (event) => {
 }
     return (
         <>
-            <InputLabel id={label} sx={{color:"white", fontWeight:"bold", "&.Mui-focused":{color:"white"}}}>{label}</InputLabel>
+            <InputLabel id={label} sx={{color: variant === "light" ? "white":"black", fontWeight:"bold", "&.Mui-focused":{color: variant === "light" ? "white" : "black"}}}>{label}</InputLabel>
             <Select
                 fullWidth
                 label={label}
@@ -50,7 +50,7 @@ const handleChange = (event) => {
                             border: "2px solid #C84B31"
                         },
                         "&, & .MuiSvgIcon-root":{
-                            color:"white", 
+                            color: variant === "light" ? "white" : "black", 
                             fontWeight:"bold"
                         }
                     }
@@ -88,5 +88,6 @@ FormSelect.propTypes = {
     label: PropTypes.string.isRequired,
     selectValue: PropTypes.string.isRequired,
     onSelectValue: PropTypes.func.isRequired,
-    list: PropTypes.array.isRequired
+    list: PropTypes.array.isRequired,
+    variant: PropTypes.string.isRequired,
 };

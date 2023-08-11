@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import React, { useState } from 'react';
 
-const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate}) => {
+const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate, variant}) => {
     /*
         ==========================
         =         STATES         =
@@ -25,9 +25,9 @@ const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate})
                     width:"100%", 
                     "label":{
                         fontWeight: "bold",
-                        color:"white",
+                        color: variant === "light" ? "white" : "black",
                         "&.Mui-focused":{
-                            color:"white"
+                            color: variant === "light" ? "white" : "black"
                         }
                     },
                     "& fieldset":{
@@ -47,12 +47,12 @@ const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate})
                         }
                     },
                     "&, & .MuiSvgIcon-root":{
-                        color:"white", 
+                        color: variant === "light" ? "white" : "black", 
                         fontWeight:"bold"
                     },
                     '& .MuiOutlinedInput-root': {
                         fontWeight:"bold",
-                        color: "white",
+                        color: variant === "light" ? "white" : "black",
                         '&.Mui-focused fieldset': {
                             borderColor: '#C84B31',
                         },
@@ -118,5 +118,6 @@ AppDatePicker.propTypes = {
     label: PropTypes.string.isRequired,
     dateValue: PropTypes.object.isRequired,
     onDateValueChange: PropTypes.func.isRequired,
-    minDate: PropTypes.object
+    minDate: PropTypes.object,
+    variant: PropTypes.string.isRequired
 };

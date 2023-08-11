@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppButton from '../../../../components/Button/AppButton';
 import { Container } from '@mui/material';
 import { ChecklistRounded, DeleteRounded, EditRounded } from '@mui/icons-material';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import EditCohort from './EditCohort';
 
 const CohortsActions = ({params, onHandleCohorts}) => {
     /*
@@ -13,11 +14,16 @@ const CohortsActions = ({params, onHandleCohorts}) => {
    const axiosPrivate = useAxiosPrivate();
     /*
         ==========================
+        =         STATES         =
+        ==========================
+    */
+   const [openEditDialog, setOpenEditDialog] = useState(false);
+    /*
+        ==========================
         =         HANDLERS       =
         ==========================
     */
     const handleDeleteCohort = async() => {
-        console.log("I WILL DELETE:",params.row.id);
         try{
             const response = await axiosPrivate.delete(`/cohort/${params.row.id}`,
                 {
@@ -37,18 +43,33 @@ const CohortsActions = ({params, onHandleCohorts}) => {
         }
     }
 
+    const handleOpenEditCohort = () => {
+        setOpenEditDialog(true);
+    };
+
+    const handleCloseEditCohort = () => {
+        setOpenEditDialog(false);
+    };
+
     return (
-        <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
-            <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={()=>{}}>
-                <EditRounded></EditRounded>
-            </AppButton>
-            <AppButton text={"Lessons"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
-                <ChecklistRounded></ChecklistRounded>
-            </AppButton>
-            <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>handleDeleteCohort()}>
-                <DeleteRounded></DeleteRounded>
-            </AppButton>
-        </Container>
+        <>
+            <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
+                <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={()=>{handleOpenEditCohort()}}>
+                    <EditRounded></EditRounded>
+                </AppButton>
+                <AppButton text={"Lessons"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
+                    <ChecklistRounded></ChecklistRounded>
+                </AppButton>
+                <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>handleDeleteCohort()}>
+                    <DeleteRounded></DeleteRounded>
+                </AppButton>
+            </Container>
+            {
+                openEditDialog ? 
+                (<EditCohort openDialog={openEditDialog} cohortInfo={params} onCloseDialog={handleCloseEditCohort} onHandleCohorts={onHandleCohorts}/>)
+                : null
+            }
+        </>
     )
 }
 
