@@ -43,7 +43,7 @@ const Transition = forwardRef(function Transition(props, ref) {
     =     AUX VARIABLES      =
     ==========================
 */
-const classList = ["Intro", "ReactJS", "NodeJS", "Ruby"];
+const classList = ["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"];
 
 
 const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) => {
