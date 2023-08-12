@@ -73,7 +73,6 @@ const App = () => {
         loggedIn: false,
         accessToken: ""
       });
-      window.location.assign("/login");
     } catch (error) {
       console.error(error);
     }
