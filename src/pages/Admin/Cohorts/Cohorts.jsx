@@ -68,7 +68,7 @@ const RenderActions = (props) => {
     =     AUX VARIABLES      =
     ==========================
 */
-const classList = ["Intro", "ReactJS", "NodeJS", "Ruby"];
+const classList = ["Intro to programming", "React.js", "Node.js/Express", "Ruby on Rails"];
 
 const Cohorts = () => {
     /*

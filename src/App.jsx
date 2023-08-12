@@ -60,19 +60,20 @@ const App = () => {
   */
 
   const handleExpireAuth = async() => {
-    
     try {
       const response = await axios(`auth/logout`, {
         withCredentials: true
       });
       console.log("LOGOUT", response);
       setAuth({
+        useId: "",
         userName: "",
-        loggedUser: {},
+        userEmail: "",
         role: [],
         loggedIn: false,
         accessToken: ""
       });
+      window.location.assign("/login");
     } catch (error) {
       console.error(error);
     }
