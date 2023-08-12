@@ -178,7 +178,7 @@ const NavigationBar = ({onExpireAuth}) => {
                     }}
                   >
                     {
-                        auth.role === "admin"
+                        auth.role.includes("admin")
                         ? adminPages.map((page) => {
                             return (
                               <Link key={page.title} to={page.link}>
@@ -287,7 +287,7 @@ const NavigationBar = ({onExpireAuth}) => {
               }}
             >
               {
-                auth.role === "admin"
+                auth.role.includes("admin")
                 ?   adminPages.map((page) => {
                         return (
                           <Link key={page.title} to={page.link}>

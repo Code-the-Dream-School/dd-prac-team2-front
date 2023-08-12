@@ -69,7 +69,7 @@ const App = () => {
       setAuth({
         userName: "",
         loggedUser: {},
-        role: "",
+        role: [],
         loggedIn: false,
         accessToken: ""
       });
