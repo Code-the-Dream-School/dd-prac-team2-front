@@ -26,6 +26,11 @@ import useAuth from '../../hooks/useAuth';
     ==========================
 */
 import styles from './Login.module.css';
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
 import FormTextField from '../../components/TextField/FormTextField';
 import AppButton from '../../components/Button/AppButton';
 import AuthFormControl from '../../components/FormControl/AuthFormControl';
@@ -49,9 +54,6 @@ const Login = () => {
             errorMessage: "Please enter a valid email address."
         }
     });
-    const [isVisible, setIsVisible] = useState({
-        emailError: false,
-    });
     /*
         ==========================
         =          HOOKS         =
@@ -59,7 +61,7 @@ const Login = () => {
     */
    const navigate = useNavigate();
    const location = useLocation();
-   const from = location.state?.from?.pathname || "/";
+   const from = "/";
 
     /*
         ==========================
@@ -90,11 +92,15 @@ const Login = () => {
                 const userId = response.data.user.userId;
                 const userName = response.data.user.name;
                 const accessToken = response.data.token;
+                const role = response.data.user.role;
                 console.log("Welcome: ", userName, userId);
                 console.log("Access token: ", accessToken);
-                setAuth({userId, userName, userEmail:loggedUser.email, role:"admin", loggedIn:true, accessToken});
+                setAuth({userId, userName, userEmail:loggedUser.email, role, loggedIn:true, accessToken});
                 setReset(true);
                 navigate(from, {replace: true});
+            }
+            else{
+                console.log("There is an error that is preventing the form submission", errors);
             }
         } catch(error){
             console.error(error.response.data);
@@ -110,11 +116,9 @@ const Login = () => {
                 error: inputError,
             }
         }));
-        if(inputError){
-            setIsVisible(prevState => ({...prevState, emailError: true}));
-        }
     }, []);
 
+    //3. Google log in
     const handleGoogleAuthUrl = () => {
         const rootURL = "https://accounts.google.com/o/oauth2/v2/auth"
         const options = {
@@ -168,23 +172,11 @@ const Login = () => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            {
-                                (isVisible.emailError && (
-                                    <Paper 
-                                        sx={{bgcolor:"darkred", color:"white", padding:"5px", my:1}} 
-                                        className={formError.emailError.error ? "animate__animated animate__bounceIn":"animate__animated animate__bounceOut"}
-                                        onAnimationEnd={!formError.emailError.error ? ()=>setIsVisible((prevState) => ({...prevState, emailError: false})) : null }
-                                    >
-                                        <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"0px"}}>Error:</Typography>
-                                        <Typography sx={{textAlign:"justify", marginTop:"0px", marginBottom:"5px"}}>{formError.emailError.errorMessage}</Typography>
-                                    </Paper>
-                                )) 
-                            }
-                            <AuthFormControl>
+                            <AuthFormControl width="75%">
                                 <Email fontSize="large"></Email>
-                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} reset={reset}></FormTextField>
+                                <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} errorMessage={"Please enter a valid email address"} reset={reset}></FormTextField>
                             </AuthFormControl>
-                            <AuthFormControl>
+                            <AuthFormControl width="75%">
                                 <LockRounded fontSize="large"></LockRounded>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" reset={reset}></FormTextField>
                             </AuthFormControl>

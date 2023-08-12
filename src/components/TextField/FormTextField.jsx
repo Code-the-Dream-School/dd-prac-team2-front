@@ -12,13 +12,13 @@ import PropTypes from 'prop-types';
 */
 import React, { memo, useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, reset}) => {
+const FormTextField = ({required, value, type, label, name, isFocused, width, variant, regex, onHandleError, errorMessage, reset}) => {
     /*
         ==========================
         =         STATES         =
         ==========================
     */  
-    const [text, setText] = useState("");
+    const [text, setText] = useState(value || "");
     const [error, setError] = useState(false);
     /*
         ==========================
@@ -53,6 +53,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
     return (
         <TextField
             error={error}
+            helperText={error ? errorMessage : null}
             required={required}
             type={type}
             id={name}
@@ -62,7 +63,10 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
             onChange={handleTextChange}
             sx={{
                 width: width,
-                "& label": { color: variant==="light" ? "white":"#1A1A2E"},
+                "& label": { 
+                    fontWeight: "bold",
+                    color: variant==="light" ? "white":"#1A1A2E",
+                },
                 "& label.Mui-focused": {
                     color: variant==="light" ? "white":"#1A1A2E"
                 },
@@ -76,6 +80,7 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
+                    fontWeight: "bold",
                     color: variant==="light" ? "white" : "#1A1A2E"
                 },
                 "& .MuiOutlinedInput-root" : {
@@ -102,5 +107,6 @@ FormTextField.propTypes = {
     variant: PropTypes.string.isRequired,
     regex: PropTypes.any,
     onHandleError: PropTypes.func,
+    errorMessage: PropTypes.string,
     reset: PropTypes.bool.isRequired
 };

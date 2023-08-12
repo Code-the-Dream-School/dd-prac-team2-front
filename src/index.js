@@ -8,6 +8,10 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+/* DATE TIME PICKERS */
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -41,7 +45,9 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
         <AuthProvider>
-            <App />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <App />
+            </LocalizationProvider>
         </AuthProvider>
     </BrowserRouter>,
 );
