@@ -31,6 +31,7 @@ import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
 import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
 import dayjs from 'dayjs';
 import CohortsActions from './Actions/CohortsActions';
+import { Outlet } from 'react-router-dom';
 
 const RenderActions = (props) => {
     return(
@@ -99,7 +100,6 @@ const Cohorts = () => {
         }
     });
     const [cohorts, setCohorts] = useState([]);
-    console.log(cohorts);
     const columns = [
         {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
         {field: "cohort", headerName: "Cohort", maxWidth: 250, flex: 1},
@@ -153,7 +153,36 @@ const Cohorts = () => {
         }
         
     }
-    /*
+
+    const createCohortWeeks = async({cohort}) => {
+        console.log(cohort);
+        const newCohortId = cohort._id;
+        const newCohortStart = cohort.start;
+        const newCohortWeeks = cohort.type === "Intro to programming" ? ("16") : ("17");
+        const requestBody = {
+            start: newCohortStart,
+            numWeek: newCohortWeeks
+        };
+        console.log(requestBody);  
+        try{
+            console.log("I entered request response");
+            const response = await axiosPrivate.post(`/cohort/create-weeks/${newCohortId}`, 
+                requestBody,
+                {
+                    withCredentials:true,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            console.log("Weeks created", response);
+            return response;
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+    /* 
         ==========================
         =        EFFECTS         =
         ==========================
@@ -248,6 +277,8 @@ const Cohorts = () => {
                         startDate: new Date(response.data.cohort.start),
                         endDate: new Date(response.data.cohort.end)
                     }]);
+                    const secondResponse = await createCohortWeeks(response.data);
+                    console.log(secondResponse);
                 }
             }
             else{

@@ -27,6 +27,7 @@ import Unauthorized from './pages/Unauthorized/Unauthorized';
 import PersistLogin from './components/PersistLogin/PersistLogin';
 import useAuth from './hooks/useAuth';
 import Cohorts from './pages/Admin/Cohorts/Cohorts';
+import Weeks from './pages/Admin/Weeks/Weeks';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -120,7 +121,10 @@ const App = () => {
             <Route element={<PersistLogin></PersistLogin>}>
               <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
                 <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
-                <Route path="/cohorts" exact element={<Cohorts></Cohorts>}></Route>
+                <Route path="/cohorts" exact>
+                  <Route path="" exact element={<Cohorts></Cohorts>}></Route>
+                  <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
+                </Route>
               </Route>
             </Route>
           </Routes>
