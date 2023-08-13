@@ -3,9 +3,10 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Button, Container, Paper, Typography, styled } from '@mui/material';
+import { Box, Container, Paper, Typography, styled } from '@mui/material';
 import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import dayjs from 'dayjs';
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -29,41 +30,7 @@ import FormSelect from "../../../components/Select/FormSelect"
 import AppButton from '../../../components/Button/AppButton';
 import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
 import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
-import dayjs from 'dayjs';
 import CohortsActions from './Actions/CohortsActions';
-import { Outlet } from 'react-router-dom';
-
-const RenderActions = (props) => {
-    return(
-        <>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"EDIT"}
-            </Button>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"DELETE"}
-            </Button>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"Option"}
-            </Button>            
-        </>
-        
-    )
-}
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -77,7 +44,7 @@ const Cohorts = () => {
         =         STATES         =
         ==========================
     */
-    const [reset, setReset] = useState();
+    const [reset, setReset] = useState(false);
     const [className, setClassName] = useState("");
     const [startDate, setStartDate] = useState(dayjs());
     const [endDate, setEndDate] = useState(dayjs());
@@ -119,32 +86,11 @@ const Cohorts = () => {
         =     ASYNC FUNCTIONS    =
         ==========================
     */
-    const fetchCohorts = async() => {
-        const response = await axiosPrivate.get("/cohort", {
-        });
-        const formattedCohorts = (response.data.cohorts).map((cohort)=>{
-            return ({
-                id: cohort._id,
-                cohort: cohort.name,
-                class: cohort.type,
-                startDate: new Date(cohort.start),
-                endDate: new Date(cohort.end)
-            });
-        });
-        console.log(formattedCohorts);
-        setCohorts(formattedCohorts);
-    }
-
     const postCohorts = async(newCohort) => {
         console.log(newCohort);
         try{
             const response = await axiosPrivate.post("/cohort",
                 newCohort,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
             );
             return response;
         }
@@ -168,12 +114,6 @@ const Cohorts = () => {
             console.log("I entered request response");
             const response = await axiosPrivate.post(`/cohort/create-weeks/${newCohortId}`, 
                 requestBody,
-                {
-                    withCredentials:true,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                }
             );
             console.log("Weeks created", response);
             return response;
@@ -192,7 +132,33 @@ const Cohorts = () => {
     })
 
     useEffect(()=>{
+        let isMounted = true;
+        const controller = new AbortController();
+
+        const fetchCohorts = async() => {
+            const response = await axiosPrivate.get("/cohort", {
+                signal: controller.signal
+            });
+            console.log(response);
+            const formattedCohorts = (response.data.cohorts).map((cohort)=>{
+                return ({
+                    id: cohort._id,
+                    cohort: cohort.name,
+                    class: cohort.type,
+                    startDate: new Date(cohort.start),
+                    endDate: new Date(cohort.end)
+                });
+            });
+            console.log(formattedCohorts);
+            isMounted && setCohorts(formattedCohorts);
+        }
+
         fetchCohorts();
+        
+        return () => {
+            isMounted=false;
+            controller.abort();
+        }
     }, []);
     /*
         ==========================
