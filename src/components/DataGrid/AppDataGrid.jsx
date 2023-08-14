@@ -83,7 +83,7 @@ const StyledDataGrid = styled(DataGrid)(()=>({
     },
 }));
 
-const AppDataGrid = ({columns, rows, pageSize}) => {
+const AppDataGrid = ({columns, rows, pageSize, fieldToBeSorted, sortType}) => {
     return (
         <StyledDataGrid
             rows={rows}
@@ -91,6 +91,9 @@ const AppDataGrid = ({columns, rows, pageSize}) => {
             initialState={{
                 pagination: {
                     paginationModel: {page: 0, pageSize: pageSize ? pageSize:5}
+                },
+                sorting: {
+                    sortModel: [{field: fieldToBeSorted , sort: sortType}]
                 }
             }}
             pageSizeOptions={[pageSize ? pageSize:5]}
@@ -132,4 +135,6 @@ AppDataGrid.propTypes = {
     columns: PropTypes.array.isRequired,
     rows: PropTypes.array.isRequired,
     pageSize: PropTypes.number,
+    fieldToBeSorted: PropTypes.string.isRequired,
+    sortType: PropTypes.string.isRequired,
 };

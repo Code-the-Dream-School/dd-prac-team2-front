@@ -19,8 +19,8 @@ body {
     width: 100%;
     min-width: 100%;
     /* Colors */
-    background: rgb(26,26,46);
-    background: linear-gradient(365deg, rgba(26,26,46,1) 0%, rgba(22,33,62,1) 35%, rgba(15,52,96,1) 100%);
+    background: linear-gradient(365deg, rgba(26,26,46,1) 0%, rgba(22,33,62,1) 35%, rgba(15,52,96,1) 100%) fixed;
+    background-size: cover;
 }
 
 header{

@@ -10,3 +10,16 @@
     /* Sizing */
     width: 100%;
 }
+
+.buttonContainer{
+    /* Display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    /* Spacing */
+    margin-top: 10px;
+    /* Sizing */
+    width: 25%;
+}

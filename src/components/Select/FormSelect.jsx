@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
     =     REACT LIBRARIES    =
     ==========================
 */
-import { InputLabel, MenuItem, Select } from '@mui/material';
+import { FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
 const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant}) => {
@@ -26,6 +26,7 @@ const handleChange = (event) => {
     return (
         <>
             <InputLabel id={label} sx={{color: variant === "light" ? "white":"black", fontWeight:"bold", "&.Mui-focused":{color: variant === "light" ? "white" : "black"}}}>{label}</InputLabel>
+            <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
             <Select
                 fullWidth
                 label={label}
@@ -76,6 +77,8 @@ const handleChange = (event) => {
                     })
                 }
             </Select>
+            <FormHelperText> </FormHelperText>
+            </div>
         </>
     );
 }

@@ -136,21 +136,26 @@ const Cohorts = () => {
         const controller = new AbortController();
 
         const fetchCohorts = async() => {
-            const response = await axiosPrivate.get("/cohort", {
-                signal: controller.signal
-            });
-            console.log(response);
-            const formattedCohorts = (response.data.cohorts).map((cohort)=>{
-                return ({
-                    id: cohort._id,
-                    cohort: cohort.name,
-                    class: cohort.type,
-                    startDate: new Date(cohort.start),
-                    endDate: new Date(cohort.end)
+            try{
+                const response = await axiosPrivate.get("/cohort", {
+                    signal: controller.signal
                 });
-            });
-            console.log(formattedCohorts);
-            isMounted && setCohorts(formattedCohorts);
+                console.log(response);
+                const formattedCohorts = (response.data.cohorts).map((cohort)=>{
+                    return ({
+                        id: cohort._id,
+                        cohort: cohort.name,
+                        class: cohort.type,
+                        startDate: new Date(cohort.start),
+                        endDate: new Date(cohort.end)
+                    });
+                });
+                console.log(formattedCohorts);
+                isMounted && setCohorts(formattedCohorts);
+            }
+            catch(error){
+            console.error(error);
+            }
         }
 
         fetchCohorts();
@@ -296,27 +301,33 @@ const Cohorts = () => {
                 >
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
-                            <SchoolRounded fontSize="large"></SchoolRounded>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <SchoolRounded fontSize="large"></SchoolRounded>
+                                <br></br>
+                            </Box>
                             <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <LaptopRounded fontSize="large"/>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <LaptopRounded fontSize="large"/>
+                                <br></br>
+                            </Box>
                             <AuthFormControl width="100%" isNested={true}>
                                 <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant={"light"}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <CalendarMonthRounded fontSize="large"/>
                                 <br></br>
-                            </div>
+                            </Box>
                             <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange} variant={"light"}></AppDatePicker>
                             <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate} variant={"light"}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
                 </Box>
-                <AppDataGrid columns={columns} rows={cohorts}/>
+                <AppDataGrid columns={columns} rows={cohorts} fieldToBeSorted={"class"} sortType={"asc"}/>
             </Paper>
         </Container>
     )
