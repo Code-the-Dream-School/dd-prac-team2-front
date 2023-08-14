@@ -12,7 +12,7 @@ export const AuthProvider = ({children})=>{
         userId: "",
         userName: "",
         userEmail: "",
-        role: "",
+        role: [],
         loggedIn: false,
         accessToken: ""
     });
