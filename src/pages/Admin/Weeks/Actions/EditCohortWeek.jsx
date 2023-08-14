@@ -1,12 +1,37 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
+import { Close, DateRangeRounded, MenuBook } from '@mui/icons-material';
+import dayjs from 'dayjs';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React, {useState, forwardRef} from 'react';
-import AppButton from '../../../../components/Button/AppButton';
-import { Close, DateRangeRounded, FourGPlusMobiledata, MenuBook } from '@mui/icons-material';
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "../Weeks.module.css";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from '../../../../components/Button/AppButton';
 import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
 import FormTextField from '../../../../components/TextField/FormTextField';
-import dayjs from 'dayjs';
 import AppDatePicker from '../../../../components/DatePicker/AppDatePicker';
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 
 const Transition = forwardRef(function Transition(props, ref) {
