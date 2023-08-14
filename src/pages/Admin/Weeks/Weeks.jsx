@@ -4,7 +4,10 @@
     ==========================
 */
 import { useNavigate, useParams } from 'react-router-dom';
+import { Box, Container, Paper, Typography } from '@mui/material';
+import {DateRangeRounded, MenuBook } from '@mui/icons-material';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import dayjs from 'dayjs';
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -17,20 +20,18 @@ import React, { useState, useEffect } from 'react';
     ==========================
 */
 import styles from "./Weeks.module.css";
-import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
-import { Box, Container, Paper, Typography } from '@mui/material';
-import AppButton from '../../../components/Button/AppButton';
-import AuthFormControl from '../../../components/FormControl/AuthFormControl';
-import { CalendarMonthRounded, DateRangeRounded, MenuBook } from '@mui/icons-material';
-import FormTextField from '../../../components/TextField/FormTextField';
-import dayjs from 'dayjs';
-import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
+
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
-
+import AppButton from '../../../components/Button/AppButton';
+import AuthFormControl from '../../../components/FormControl/AuthFormControl';
+import FormTextField from '../../../components/TextField/FormTextField';
+import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
+import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
+import WeeksActions from './Actions/WeeksActions';
 
 const Weeks = () => {
     /*
@@ -42,7 +43,6 @@ const Weeks = () => {
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
 
-
     /*
         ==========================
         =         STATES         =
@@ -53,9 +53,12 @@ const Weeks = () => {
         cohortStartDate: "",
         cohortEndDate: "",
     });
+    // Main state for Cohorts table data:
     const [cohortWeeks, setCohortWeeks] = useState([]);
+    // Controlled states for inputs:
     const [weekStartDate, setWeekStartDate] = useState(dayjs());
     const [reset, setReset] = useState(false);
+    // Error handling states for form inputs:
     const [formError, setFormError] = useState({
         weekNameError: {
             error: false,
@@ -77,6 +80,7 @@ const Weeks = () => {
         {field: "weekName", headerName: "Week", maxWidth: 400, flex: 1},
         {field: "weekStartDate", headerName: "Start date", type: "date", maxWidth: 150, flex: 1},
         {field: "weekEndDate", headerName: "End date", type: "date", maxWidth: 150, flex: 1},
+        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 250, valueGetter: (params)=>(params), renderCell: (params)=>(<WeeksActions params={params} cohortData={cohortData} onHandleCohortWeeks={setCohortWeeks}></WeeksActions>) }
     ];
     /*
         ==========================
@@ -107,7 +111,6 @@ const Weeks = () => {
             const response = await axiosPrivate.post("/week",
                 newWeek,
             );
-            console.log(response);
             return response;
         }
         catch(error){
@@ -150,7 +153,7 @@ const Weeks = () => {
                 ...prevState,
                 weekStartDateError: {
                     ...prevState.weekStartDateError,
-                    error: weekStartDate < newStartDate ? true:false
+                    error: weekStartDate > newStartDate ? true:false
                 }
             }
         ));
@@ -164,16 +167,34 @@ const Weeks = () => {
             start: weekStartDate.format(),
             cohortId: cohortId
         }
-        console.log(formattedWeek);
-        const response = await postCohortWeek(formattedWeek);
-        setCohortWeeks((prevCohortWeeks) => [...prevCohortWeeks, {
-            id: response.data.week._id,
-            weekName: response.data.week.name,
-            weekStartDate: new Date(response.data.week.start),
-            weekEndDate: new Date(response.data.week.end)
-        }]);
+        const errors = Object.values(formError);
+        try{
+            if(!errors.some((error)=>error.error===true))
+            {
+                const response = await postCohortWeek(formattedWeek);
+                if(response.status===201){
+                    setCohortWeeks((prevCohortWeeks) => [...prevCohortWeeks, {
+                        id: response.data.week._id,
+                        weekName: response.data.week.name,
+                        weekStartDate: new Date(response.data.week.start),
+                        weekEndDate: new Date(response.data.week.end)
+                    }]);
+                }
+            }
+            else{
+                console.error("Form validation is not letting form submission");
+            }
+        }
+        catch(error){
+            console.error(error);
+        }
+        finally{
+            setReset(true);
+            setWeekStartDate(dayjs(cohortData.cohortStartDate));
+        }
     }
 
+    //4. Function to navigate back
     const goBack = () => {
         navigate(-1);
     };

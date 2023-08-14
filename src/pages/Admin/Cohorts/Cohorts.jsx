@@ -253,7 +253,7 @@ const Cohorts = () => {
                 }
             }
             else{
-                console.log("There is an error that is preventing the form submission", errors);
+                console.error("Form validation is not letting form submission");
             }
         }
         catch(error){
