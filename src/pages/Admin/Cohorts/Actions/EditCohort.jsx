@@ -102,11 +102,6 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
         try{
             const response = await axiosPrivate.patch(`/cohort/${cohortId}`,
                 editedCohort,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
             );
             return response;
         }
@@ -261,8 +256,8 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
                                 <CalendarMonthRounded fontSize="large"/>
                                 <br></br>
                             </div>
-                            <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange}></AppDatePicker>
-                            <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate}></AppDatePicker>
+                            <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange} variant={"dark"}></AppDatePicker>
+                            <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate} variant={"dark"}></AppDatePicker>
                         </AuthFormControl>
                     </div>
                 </DialogContent>

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import React, { useState } from 'react';
 
-const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate, variant}) => {
+const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate, maxDate, variant}) => {
     /*
         ==========================
         =         STATES         =
@@ -105,6 +105,7 @@ const AppDatePicker = ({id, name, label, dateValue, onDateValueChange, minDate, 
             value={dateValue}
             onChange={handleValueChange}
             minDate={minDate}
+            maxDate={maxDate}
             onError={(newError) => newError ? setError(newError) : setError(" ")}
         />                            
     )

@@ -19,6 +19,7 @@ import React, { useState } from 'react';
     ==========================
 */
 import EditCohort from './EditCohort';
+import { Link } from 'react-router-dom';
 
 const CohortsActions = ({params, onHandleCohorts}) => {
     /*
@@ -69,9 +70,11 @@ const CohortsActions = ({params, onHandleCohorts}) => {
     return (
         <>
             <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
+                <Link to={`${params.row.id}`}>
                 <AppButton text={"Lessons"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
                     <ChecklistRounded></ChecklistRounded>
                 </AppButton>
+                </Link>
                 <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={()=>{handleOpenEditCohort()}}>
                     <EditRounded></EditRounded>
                 </AppButton>

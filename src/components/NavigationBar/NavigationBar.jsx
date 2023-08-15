@@ -190,9 +190,9 @@ const NavigationBar = ({onExpireAuth}) => {
                               </Link>
                             );
                         })
-                        : auth.role === "mentor"
+                        : auth.role.includes("mentor")
                         ? null
-                        : auth.role === "student"
+                        : auth.role.includes("student")
                         ? null
                         : null
                       }

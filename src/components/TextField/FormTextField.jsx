@@ -48,6 +48,16 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
                 onHandleError(false);
             }
         }
+        else{
+            if(event.target.value.trim()===""){
+                setError(true);
+                onHandleError(true);
+            }
+            else{
+                setError(false);
+                onHandleError(false);
+            }
+        }
     }
     
     return (

@@ -3,9 +3,10 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Button, Container, Paper, Typography, styled } from '@mui/material';
+import { Box, Container, Paper, Typography, styled } from '@mui/material';
 import { CalendarMonthRounded, LaptopRounded, SchoolRounded } from '@mui/icons-material';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
+import dayjs from 'dayjs';
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -29,40 +30,7 @@ import FormSelect from "../../../components/Select/FormSelect"
 import AppButton from '../../../components/Button/AppButton';
 import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
 import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
-import dayjs from 'dayjs';
 import CohortsActions from './Actions/CohortsActions';
-
-const RenderActions = (props) => {
-    return(
-        <>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"EDIT"}
-            </Button>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"DELETE"}
-            </Button>
-            <Button
-                component="button"
-                variant="contained"
-                size="small"
-                sx={{mx:"2px"}}
-            >
-                {"Option"}
-            </Button>            
-        </>
-        
-    )
-}
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -76,7 +44,7 @@ const Cohorts = () => {
         =         STATES         =
         ==========================
     */
-    const [reset, setReset] = useState();
+    const [reset, setReset] = useState(false);
     const [className, setClassName] = useState("");
     const [startDate, setStartDate] = useState(dayjs());
     const [endDate, setEndDate] = useState(dayjs());
@@ -99,7 +67,6 @@ const Cohorts = () => {
         }
     });
     const [cohorts, setCohorts] = useState([]);
-    console.log(cohorts);
     const columns = [
         {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
         {field: "cohort", headerName: "Cohort", maxWidth: 250, flex: 1},
@@ -119,32 +86,11 @@ const Cohorts = () => {
         =     ASYNC FUNCTIONS    =
         ==========================
     */
-    const fetchCohorts = async() => {
-        const response = await axiosPrivate.get("/cohort", {
-        });
-        const formattedCohorts = (response.data.cohorts).map((cohort)=>{
-            return ({
-                id: cohort._id,
-                cohort: cohort.name,
-                class: cohort.type,
-                startDate: new Date(cohort.start),
-                endDate: new Date(cohort.end)
-            });
-        });
-        console.log(formattedCohorts);
-        setCohorts(formattedCohorts);
-    }
-
     const postCohorts = async(newCohort) => {
         console.log(newCohort);
         try{
             const response = await axiosPrivate.post("/cohort",
                 newCohort,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
             );
             return response;
         }
@@ -153,7 +99,30 @@ const Cohorts = () => {
         }
         
     }
-    /*
+
+    const createCohortWeeks = async({cohort}) => {
+        console.log(cohort);
+        const newCohortId = cohort._id;
+        const newCohortStart = cohort.start;
+        const newCohortWeeks = cohort.type === "Intro to programming" ? ("16") : ("17");
+        const requestBody = {
+            start: newCohortStart,
+            numWeek: newCohortWeeks
+        };
+        console.log(requestBody);  
+        try{
+            console.log("I entered request response");
+            const response = await axiosPrivate.post(`/cohort/create-weeks/${newCohortId}`, 
+                requestBody,
+            );
+            console.log("Weeks created", response);
+            return response;
+        }
+        catch(error){
+            console.error(error);
+        }
+    }
+    /* 
         ==========================
         =        EFFECTS         =
         ==========================
@@ -163,7 +132,38 @@ const Cohorts = () => {
     })
 
     useEffect(()=>{
+        let isMounted = true;
+        const controller = new AbortController();
+
+        const fetchCohorts = async() => {
+            try{
+                const response = await axiosPrivate.get("/cohort", {
+                    signal: controller.signal
+                });
+                console.log(response);
+                const formattedCohorts = (response.data.cohorts).map((cohort)=>{
+                    return ({
+                        id: cohort._id,
+                        cohort: cohort.name,
+                        class: cohort.type,
+                        startDate: new Date(cohort.start),
+                        endDate: new Date(cohort.end)
+                    });
+                });
+                console.log(formattedCohorts);
+                isMounted && setCohorts(formattedCohorts);
+            }
+            catch(error){
+            console.error(error);
+            }
+        }
+
         fetchCohorts();
+        
+        return () => {
+            isMounted=false;
+            controller.abort();
+        }
     }, []);
     /*
         ==========================
@@ -248,10 +248,12 @@ const Cohorts = () => {
                         startDate: new Date(response.data.cohort.start),
                         endDate: new Date(response.data.cohort.end)
                     }]);
+                    const secondResponse = await createCohortWeeks(response.data);
+                    console.log(secondResponse);
                 }
             }
             else{
-                console.log("There is an error that is preventing the form submission", errors);
+                console.error("Form validation is not letting form submission");
             }
         }
         catch(error){
@@ -299,27 +301,33 @@ const Cohorts = () => {
                 >
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
-                            <SchoolRounded fontSize="large"></SchoolRounded>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <SchoolRounded fontSize="large"></SchoolRounded>
+                                <br></br>
+                            </Box>
                             <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <LaptopRounded fontSize="large"/>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <LaptopRounded fontSize="large"/>
+                                <br></br>
+                            </Box>
                             <AuthFormControl width="100%" isNested={true}>
                                 <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant={"light"}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <CalendarMonthRounded fontSize="large"/>
                                 <br></br>
-                            </div>
+                            </Box>
                             <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange} variant={"light"}></AppDatePicker>
                             <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate} variant={"light"}></AppDatePicker>
                         </AuthFormControl>
                         <AppButton text={"Add new cohort"} type="submit" width="25%" handlerFunction={()=>{}}/>
                     </div>
                 </Box>
-                <AppDataGrid columns={columns} rows={cohorts}/>
+                <AppDataGrid columns={columns} rows={cohorts} fieldToBeSorted={"class"} sortType={"asc"}/>
             </Paper>
         </Container>
     )

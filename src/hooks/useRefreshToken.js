@@ -41,8 +41,7 @@ const useRefreshToken = () => {
                 accessToken: response.data.token
             };
         });
-        //return response.data.accessToken;
-        return response;
+        return response.data.token;
     }
     return refresh;
 }

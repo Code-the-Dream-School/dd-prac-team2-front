@@ -3,8 +3,8 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useContext, useState } from 'react';
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes} from 'react-router-dom';
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
@@ -27,6 +27,9 @@ import Unauthorized from './pages/Unauthorized/Unauthorized';
 import PersistLogin from './components/PersistLogin/PersistLogin';
 import useAuth from './hooks/useAuth';
 import Cohorts from './pages/Admin/Cohorts/Cohorts';
+import Weeks from './pages/Admin/Weeks/Weeks';
+import MentorHome from './pages/Home/MentorHome';
+import StudentHome from './pages/Home/StudentHome';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -118,9 +121,21 @@ const App = () => {
             </Route>
             {/* Admin, Mentor, User shared route based on role. */}
             <Route element={<PersistLogin></PersistLogin>}>
-              <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
-                <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
-                <Route path="/cohorts" exact element={<Cohorts></Cohorts>}></Route>
+              <Route element={<RequireAuth allowedRole={["admin", "mentor", "student"]}></RequireAuth>}>
+                <Route path="/" exact 
+                  element={
+                    auth.role.includes("admin") ? (<AdminHome></AdminHome>)
+                      : auth.role.includes("mentor") ? (<MentorHome></MentorHome>)
+                      : auth.role.includes("student") ? (<StudentHome></StudentHome>)
+                      : (null)
+                  }
+                />
+              </Route>
+              <Route element={<RequireAuth allowedRole={["admin"]}></RequireAuth>}>
+                <Route path="/cohorts" exact>
+                  <Route path="" exact element={<Cohorts></Cohorts>}></Route>
+                  <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
+                </Route>
               </Route>
             </Route>
           </Routes>
