@@ -30,6 +30,7 @@ import Cohorts from './pages/Admin/Cohorts/Cohorts';
 import Weeks from './pages/Admin/Weeks/Weeks';
 import MentorHome from './pages/Home/MentorHome';
 import StudentHome from './pages/Home/StudentHome';
+import RegisterOnCohort from './pages/Admin/Users/RegisterOnCohort/RegisterOnCohort';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -135,6 +136,7 @@ const App = () => {
                 <Route path="/cohorts" exact>
                   <Route path="" exact element={<Cohorts></Cohorts>}></Route>
                   <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
+                  <Route path="register/:cohortId" exact element={<RegisterOnCohort></RegisterOnCohort>}></Route>
                 </Route>
               </Route>
             </Route>

@@ -69,11 +69,11 @@ const Cohorts = () => {
     const [cohorts, setCohorts] = useState([]);
     const columns = [
         {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
-        {field: "cohort", headerName: "Cohort", maxWidth: 250, flex: 1},
-        {field: "class", headerName: "Class", maxWidth: 250, flex: 1},
-        {field: "startDate", headerName: "Start date", type: "date", maxWidth: 100, flex: 1},
-        {field: "endDate", headerName: "End date", type: "date", width: 100},
-        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 350, valueGetter: (params)=>(params), renderCell: (params)=>(<CohortsActions params={params} onHandleCohorts={setCohorts}></CohortsActions>) }
+        {field: "cohort", headerName: "Cohort", minWidth: 200, maxWidth: 200, flex: 1},
+        {field: "class", headerName: "Class", minWidth: 200, maxWidth: 200, flex: 1},
+        {field: "startDate", headerName: "Start date", type: "date", minWidth: 150, maxWidth: 150, flex: 1},
+        {field: "endDate", headerName: "End date", type: "date", minWidth: 150, maxWidth: 150},
+        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 400, maxWidth: 400, valueGetter: (params)=>(params), renderCell: (params)=>(<CohortsActions params={params} onHandleCohorts={setCohorts}></CohortsActions>) }
     ]
     /*
         ==========================
