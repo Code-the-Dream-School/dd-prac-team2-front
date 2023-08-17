@@ -312,8 +312,8 @@ const Cohorts = () => {
                                 <LaptopRounded fontSize="large"/>
                                 <br></br>
                             </Box>
-                            <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant={"light"}></FormSelect>
+                            <AuthFormControl width="100%" isNested={true} error={formError.classNameError.error}>
+                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant={"light"} multiple={false} error={formError.classNameError}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">

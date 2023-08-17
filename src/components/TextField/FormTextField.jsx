@@ -63,7 +63,8 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
     return (
         <TextField
             error={error}
-            helperText={error ? errorMessage : null}
+            autoComplete='off'
+            helperText={error ? errorMessage : " "}
             required={required}
             type={type}
             id={name}
@@ -101,6 +102,9 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
                 }
             }}
             autoFocus={isFocused}
+            inputProps={{
+                autoComplete: 'off',
+            }}
         />
     );
 }

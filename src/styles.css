@@ -59,6 +59,13 @@ a {
     text-decoration: none;
 }
 
+input, select {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    -webkit-background-clip: text !important;
+    background-clip:  text !important;
+}
+
 #root{
     /* Position */
     position: relative;

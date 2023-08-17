@@ -4,7 +4,6 @@ import React from 'react';
 const UserRoleRender = ({params}) => {
 
     const roles = params.row.userRole;
-    console.log(roles);
     return (
         <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
             <Stack direction={"row"} spacing={1}>
@@ -12,13 +11,14 @@ const UserRoleRender = ({params}) => {
                     roles.map((role)=> 
                         (
                             <Chip 
-                                key={role} 
+                                key={`${role}-${params.row.userId}`} 
                                 label={role} 
                                 sx={
                                     {
-                                        backgroundColor: role==="Admin" ? "#B8621B" : role==="Mentor" ? "#609966" : "#0F3460",
+                                        backgroundColor: role==="admin" ? "#B8621B" : role==="mentor" ? "#609966" : "#0F3460",
                                         color: "white",
-                                        fontWeight: "bold"
+                                        fontWeight: "bold",
+                                        textTransform: "capitalize"
                                     }
                                 }
                             />

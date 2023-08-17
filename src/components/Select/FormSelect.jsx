@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import { FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
-const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant}) => {
+const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant, multiple, error}) => {
 
 /*
     ==========================
@@ -28,6 +28,7 @@ const handleChange = (event) => {
             <InputLabel id={label} sx={{color: variant === "light" ? "white":"black", fontWeight:"bold", "&.Mui-focused":{color: variant === "light" ? "white" : "black"}}}>{label}</InputLabel>
             <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
             <Select
+                multiple={multiple ? true:false}
                 fullWidth
                 label={label}
                 labelId={label}
@@ -65,9 +66,10 @@ const handleChange = (event) => {
                                 key={selectItem} 
                                 value={selectItem} 
                                 sx={{
-                                    "&:hover, &:focus, &:focus:hover, &.Mui-selected:hover":{
+                                    "&:hover, &:focus, &:focus:hover, &.Mui-selected.Mui-focusVisible, &.Mui-selected, &.Mui-selected:hover":{
                                         bgcolor:"#C84B31", 
-                                        color:"white"
+                                        color:"white",
+                                        borderBottom: "1px solid #1A1A2E"
                                     },
                                 }}
                             >
@@ -77,7 +79,7 @@ const handleChange = (event) => {
                     })
                 }
             </Select>
-            <FormHelperText> </FormHelperText>
+            <FormHelperText>{error.error ? error.errorMessage : ""}</FormHelperText>
             </div>
         </>
     );
@@ -89,8 +91,10 @@ FormSelect.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    selectValue: PropTypes.string.isRequired,
+    selectValue: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     onSelectValue: PropTypes.func.isRequired,
     list: PropTypes.array.isRequired,
     variant: PropTypes.string.isRequired,
+    multiple: PropTypes.bool,
+    error: PropTypes.object.isRequired,
 };
