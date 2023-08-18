@@ -73,6 +73,7 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
             value={text}
             onChange={handleTextChange}
             sx={{
+                WebkitTextFillColor: variant==="light" ? "white":"#1A1A2E",
                 width: width,
                 "& label": { 
                     fontWeight: "bold",
@@ -91,6 +92,8 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
                     fontWeight: "bold",
                     color: variant==="light" ? "white" : "#1A1A2E"
                 },

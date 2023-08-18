@@ -13,9 +13,8 @@ import { AccountBoxRounded, AdminPanelSettingsRounded, BadgeRounded, Email } fro
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
+
 /*
     ==========================
     =        STYLES          =
@@ -76,7 +75,7 @@ const RegisterOnCohort = () => {
             errorMessage: "Please select a role for this user"
         },
     });
-    console.log(formError);
+    console.log(cohortUsers);
     const [reset, setReset] = useState(false);
 
     /*
@@ -90,7 +89,7 @@ const RegisterOnCohort = () => {
         {field: "userEmail", headerName: "E-mail:", minWidth:200, maxWidth: 300, flex: 1},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
-        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterOnCohortActions params={params}></RegisterOnCohortActions>)},
+        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterOnCohortActions params={params} cohortData={cohortData} onHandleCohortUsers={setCohortUsers}></RegisterOnCohortActions>)},
     ];
     /*
         ==========================
@@ -175,24 +174,28 @@ const RegisterOnCohort = () => {
             ],
             cohort: cohortData.cohortId
         }
-        console.log(formattedUserRegistration);
+        const errors = Object.values(formError);
         try{
-            const response = await axiosPrivate.post("auth/register", formattedUserRegistration);
-            console.log("SUBMITTED", response);
-            if(response.data.errors.length===0)
-            {
-                setCohortUsers((prevState) => [...prevState, {
-                    id: response.data.users[0]._id,
-                    userName: response.data.users[0].name,
-                    userEmail: response.data.users[0].email,
-                    userRole: response.data.users[0].role,
-                    userActivatedStatus: response.data.users[0].isActivated
-                }]);
-                setReset(true);
-                setUserRoles([]);
+            if(!errors.some((error)=>error.error===true)){
+                const response = await axiosPrivate.post("auth/register", formattedUserRegistration);
+                if(response.data.users.length>0)
+                {
+                    setCohortUsers((prevState) => [...prevState, {
+                        id: response.data.users[0]._id,
+                        userName: response.data.users[0].name,
+                        userEmail: response.data.users[0].email,
+                        userRole: response.data.users[0].role,
+                        userActivatedStatus: response.data.users[0].isActivated
+                    }]);
+                    setReset(true);
+                    setUserRoles([]);
+                }
+                else if (response.data.errors.length>0){
+                    console.error(response.data.errors);
+                }
             }
             else{
-                console.error(response.data.errors);
+                console.error("There is an error preventing the form submission: check that your entires are correctly validated");
             }
 
         }
