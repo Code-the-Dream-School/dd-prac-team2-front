@@ -73,7 +73,7 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
             value={text}
             onChange={handleTextChange}
             sx={{
-                WebkitTextFillColor: variant==="light" ? "white":"#1A1A2E",
+                WebkitTextFillColor: variant==="light" ? (error ? "red":"white"):"#1A1A2E",
                 width: width,
                 "& label": { 
                     fontWeight: "bold",

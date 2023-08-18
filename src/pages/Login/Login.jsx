@@ -172,12 +172,18 @@ const Login = () => {
                     >
                         <div className={styles.formContainer}>
                             <Typography sx={{textAlign:"center", marginTop:"0px", marginBottom:"5px"}}>Sign in to MentorUp</Typography>
-                            <AuthFormControl width="75%">
-                                <Email fontSize="large"></Email>
+                            <AuthFormControl width="100%">
+                                <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                    <Email fontSize="large"></Email>
+                                    <br></br>
+                                </Box>
                                 <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} errorMessage={"Please enter a valid email address"} reset={reset}></FormTextField>
                             </AuthFormControl>
-                            <AuthFormControl width="75%">
-                                <LockRounded fontSize="large"></LockRounded>
+                            <AuthFormControl width="100%">
+                                <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                    <LockRounded fontSize="large"></LockRounded>
+                                    <br></br>
+                                </Box>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" onHandleError={()=>{}} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>

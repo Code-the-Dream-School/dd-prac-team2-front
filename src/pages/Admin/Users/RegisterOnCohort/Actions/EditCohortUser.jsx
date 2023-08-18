@@ -220,7 +220,7 @@ const EditCohortUser = ({openDialog, cohortData, cohortUserInfo, onCloseDialog, 
                     </div>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
-                    <AppButton text={"Edit cohort"} type="submit" width="100%" handlerFunction={()=>{}}/>
+                    <AppButton text={"Edit user"} type="submit" width="100%" handlerFunction={()=>{}}/>
                 </DialogActions>    
             </Box>
         </Dialog>
