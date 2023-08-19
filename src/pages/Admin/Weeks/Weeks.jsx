@@ -77,10 +77,10 @@ const Weeks = () => {
     */
     const columns = [
         {field: "id", headerName: "ID", maxWidth: 130, flex: 1},
-        {field: "weekName", headerName: "Week", maxWidth: 400, flex: 1},
-        {field: "weekStartDate", headerName: "Start date", type: "date", maxWidth: 150, flex: 1},
-        {field: "weekEndDate", headerName: "End date", type: "date", maxWidth: 150, flex: 1},
-        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 250, valueGetter: (params)=>(params), renderCell: (params)=>(<WeeksActions params={params} cohortData={cohortData} onHandleCohortWeeks={setCohortWeeks}></WeeksActions>) }
+        {field: "weekName", headerName: "Week", minWidth:270, maxWidth: 400, flex: 1},
+        {field: "weekStartDate", headerName: "Start date", type: "date", minWidth:150, maxWidth: 150, flex: 1},
+        {field: "weekEndDate", headerName: "End date", type: "date", minWidth:150, maxWidth: 150, flex: 1},
+        {field: "actions", headerName: "Actions", sortable:false, disableColumnMenu:true, flex: 1, minWidth: 250, maxWidth: 250, valueGetter: (params)=>(params), renderCell: (params)=>(<WeeksActions params={params} cohortData={cohortData} onHandleCohortWeeks={setCohortWeeks}></WeeksActions>) }
     ];
     /*
         ==========================
@@ -88,22 +88,33 @@ const Weeks = () => {
         ==========================
     */
     const fetchCohortWeeks = async ()=>{
-        const response = await axiosPrivate.get(`/cohort/${cohortId}`);
-        const formattedWeeks = (response.data.cohort[0].weeks).map((week)=>{
-            return({
-                id: week._id,
-                weekName: week.name,
-                weekStartDate: new Date(week.start),
-                weekEndDate: new Date(week.end)
-            });
-        });
-        setCohortData({
-            cohortName: response.data.cohort[0].name,
-            cohortStartDate: response.data.cohort[0].start,
-            cohortEndDate: response.data.cohort[0].end
-        });
-        setWeekStartDate(dayjs(response.data.cohort[0].start));
-        setCohortWeeks(formattedWeeks);;
+        try{
+            const response = await axiosPrivate.get(`/cohort/${cohortId}`);
+            if(response.status===200){
+                const formattedWeeks = (response.data.cohort[0].weeks).map((week)=>{
+                    return({
+                        id: week._id,
+                        weekName: week.name,
+                        weekStartDate: new Date(week.start),
+                        weekEndDate: new Date(week.end)
+                    });
+                });
+                setCohortData({
+                    cohortName: response.data.cohort[0].name,
+                    cohortStartDate: response.data.cohort[0].start,
+                    cohortEndDate: response.data.cohort[0].end
+                });
+                setWeekStartDate(dayjs(response.data.cohort[0].start));
+                setCohortWeeks(formattedWeeks);
+            }
+            else{
+                console.error("There was an error fetching the cohortWeeks");
+            }
+        
+        }
+        catch(error){
+            console.error(error);
+        }
     };
 
     const postCohortWeek = async (newWeek) => {

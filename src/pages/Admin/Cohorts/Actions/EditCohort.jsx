@@ -248,7 +248,7 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
                         <AuthFormControl width="75%">
                             <LaptopRounded fontSize="large"/>
                             <AuthFormControl width="100%" isNested={true}>
-                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant="dark"></FormSelect>
+                                <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant="dark" error={formError.classNameError}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">

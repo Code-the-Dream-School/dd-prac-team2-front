@@ -59,6 +59,7 @@ a {
     text-decoration: none;
 }
 
+
 #root{
     /* Position */
     position: relative;
@@ -71,4 +72,29 @@ a {
     min-width: 100%;
     height: 100vh;
     min-height: 100vh;
+}
+
+/* MUI Autocomplete global style*/
+/* 1. Default style for list items*/
+.MuiAutocomplete-popper .MuiPaper-root ul li{
+    font-weight: bold;
+    color: black;
+}
+/* 2. Style when list item is selected */
+.MuiAutocomplete-popper .MuiPaper-root ul li[aria-selected="true"]{
+    background-color: #C84B31;
+    color: white;
+    border-bottom: 1px solid #1A1A2E;
+}
+/* 3. Style when list item is selected and focused */
+.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused[aria-selected="true"]{
+    background-color: #C84B31;
+    color: white
+}
+/* 4. Style when list item is hovered and focused */
+.MuiAutocomplete-popper .MuiPaper-root ul li:hover,
+.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused:hover
+{
+    background-color: #C84B31;
+    color: white
 }

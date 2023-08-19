@@ -30,6 +30,8 @@ import Cohorts from './pages/Admin/Cohorts/Cohorts';
 import Weeks from './pages/Admin/Weeks/Weeks';
 import MentorHome from './pages/Home/MentorHome';
 import StudentHome from './pages/Home/StudentHome';
+import RegisterOnCohort from './pages/Admin/Users/RegisterOnCohort/RegisterOnCohort';
+import RegisterUsers from './pages/Admin/Users/Register/RegisterUsers';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -79,7 +81,6 @@ const App = () => {
     } catch (error) {
       console.error(error);
     }
-    
   }
   /*
     ==========================
@@ -135,6 +136,10 @@ const App = () => {
                 <Route path="/cohorts" exact>
                   <Route path="" exact element={<Cohorts></Cohorts>}></Route>
                   <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
+                  <Route path="register/:cohortId" exact element={<RegisterOnCohort></RegisterOnCohort>}></Route>
+                </Route>
+                <Route path="/users" exact>
+                  <Route path="" exact element={<RegisterUsers></RegisterUsers>}></Route>
                 </Route>
               </Route>
             </Route>

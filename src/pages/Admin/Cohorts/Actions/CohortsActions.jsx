@@ -5,7 +5,7 @@
 */
 import AppButton from '../../../../components/Button/AppButton';
 import { Container } from '@mui/material';
-import { ChecklistRounded, DeleteRounded, EditRounded } from '@mui/icons-material';
+import { ChecklistRounded, DeleteRounded, EditRounded, PeopleAltRounded } from '@mui/icons-material';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 /*
     ==========================
@@ -71,9 +71,14 @@ const CohortsActions = ({params, onHandleCohorts}) => {
         <>
             <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
                 <Link to={`${params.row.id}`}>
-                <AppButton text={"Lessons"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
-                    <ChecklistRounded></ChecklistRounded>
-                </AppButton>
+                    <AppButton text={"Lessons"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
+                        <ChecklistRounded></ChecklistRounded>
+                    </AppButton>
+                </Link>
+                <Link to={`register/${params.row.id}`}>
+                    <AppButton text={"Users"} type="button" width="auto" color="#609966" handlerFunction={()=>{}}>
+                        <PeopleAltRounded></PeopleAltRounded>
+                    </AppButton>
                 </Link>
                 <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={()=>{handleOpenEditCohort()}}>
                     <EditRounded></EditRounded>

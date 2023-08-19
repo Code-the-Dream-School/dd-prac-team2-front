@@ -63,7 +63,8 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
     return (
         <TextField
             error={error}
-            helperText={error ? errorMessage : null}
+            autoComplete='off'
+            helperText={error ? errorMessage : " "}
             required={required}
             type={type}
             id={name}
@@ -72,6 +73,7 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
             value={text}
             onChange={handleTextChange}
             sx={{
+                WebkitTextFillColor: variant==="light" ? (error ? "red":"white"):"#1A1A2E",
                 width: width,
                 "& label": { 
                     fontWeight: "bold",
@@ -90,6 +92,8 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
                     fontWeight: "bold",
                     color: variant==="light" ? "white" : "#1A1A2E"
                 },
@@ -101,6 +105,9 @@ const FormTextField = ({required, value, type, label, name, isFocused, width, va
                 }
             }}
             autoFocus={isFocused}
+            inputProps={{
+                autoComplete: 'off',
+            }}
         />
     );
 }
