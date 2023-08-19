@@ -1,7 +1,22 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Container } from '@mui/material';
-import React,{ useState } from 'react';
-import AppButton from '../../../../../components/Button/AppButton';
 import { DeleteRounded, EditRounded } from '@mui/icons-material';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React,{ useState } from 'react';
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from '../../../../../components/Button/AppButton';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import EditCohortUser from './EditCohortUser';
 
