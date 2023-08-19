@@ -10,10 +10,10 @@ import PropTypes from "prop-types";
     =     REACT LIBRARIES    =
     ==========================
 */
-import { InputLabel, MenuItem, OutlinedInput, Select } from '@mui/material';
+import { FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
-const FormSelect = ({id, label, selectValue, onSelectValue, list}) => {
+const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant, multiple, error}) => {
 
 /*
     ==========================
@@ -25,16 +25,39 @@ const handleChange = (event) => {
 }
     return (
         <>
-            <InputLabel id={label} sx={{color:"#1A1A2E", "&.Mui-focused":{color:"#C84B31"}}}>{label}</InputLabel>
+            <InputLabel id={label} sx={{color: variant === "light" ? "white":"black", fontWeight:"bold", "&.Mui-focused":{color: variant === "light" ? "white" : "black"}}}>{label}</InputLabel>
+            <div style={{display:"flex", flexDirection:"column", width:"100%"}}>
             <Select
+                multiple={multiple ? true:false}
                 fullWidth
                 label={label}
                 labelId={label}
                 id={id}
-                name={id}
+                name={name}
                 value={selectValue}
                 onChange={handleChange}
-                sx={{"&:after":{borderBottomColor:"#C84B31"}, "&:before":{borderColor:"#1A1A2E"}, "&:hover:not(.Mui-disabled):before":{borderColor:"#C84B31"}}}
+                sx={
+                    {
+                        "& fieldset":{
+                            borderColor: "#0F3460", 
+                            borderWidth: 2,
+                            transition: "0.2s ease-in-out"
+                        }, 
+                        "&:hover": {
+                            "&& fieldset": {
+                                border: "2px solid #C84B31"
+                            }
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                            border: "2px solid #C84B31"
+                        },
+                        "&, & .MuiSvgIcon-root":{
+                            color: variant === "light" ? "white" : "black", 
+                            fontWeight:"bold"
+                        }
+                    }
+                }
+                required
             >
                 {
                     list.map((selectItem) => {
@@ -43,9 +66,10 @@ const handleChange = (event) => {
                                 key={selectItem} 
                                 value={selectItem} 
                                 sx={{
-                                    "&:hover, &:focus, &:focus:hover":{
+                                    "&:hover, &:focus, &:focus:hover, &.Mui-selected.Mui-focusVisible, &.Mui-selected, &.Mui-selected:hover":{
                                         bgcolor:"#C84B31", 
-                                        color:"white"
+                                        color:"white",
+                                        borderBottom: "1px solid #1A1A2E"
                                     },
                                 }}
                             >
@@ -55,6 +79,8 @@ const handleChange = (event) => {
                     })
                 }
             </Select>
+            <FormHelperText>{error.error ? error.errorMessage : ""}</FormHelperText>
+            </div>
         </>
     );
 }
@@ -63,8 +89,12 @@ export default FormSelect;
 
 FormSelect.propTypes = {
     id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
-    selectValue: PropTypes.string.isRequired,
+    selectValue: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
     onSelectValue: PropTypes.func.isRequired,
-    list: PropTypes.array.isRequired
+    list: PropTypes.array.isRequired,
+    variant: PropTypes.string.isRequired,
+    multiple: PropTypes.bool,
+    error: PropTypes.object.isRequired,
 };

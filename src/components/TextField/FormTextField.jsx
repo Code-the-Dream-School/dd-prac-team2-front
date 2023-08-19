@@ -12,13 +12,13 @@ import PropTypes from 'prop-types';
 */
 import React, { memo, useEffect, useState } from 'react';
 
-const FormTextField = ({required, type, label, name, isFocused, width, variant, regex, onHandleError, reset}) => {
+const FormTextField = ({required, value, type, label, name, isFocused, width, variant, regex, onHandleError, errorMessage, reset}) => {
     /*
         ==========================
         =         STATES         =
         ==========================
     */  
-    const [text, setText] = useState("");
+    const [text, setText] = useState(value || "");
     const [error, setError] = useState(false);
     /*
         ==========================
@@ -48,11 +48,23 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                 onHandleError(false);
             }
         }
+        else{
+            if(event.target.value.trim()===""){
+                setError(true);
+                onHandleError(true);
+            }
+            else{
+                setError(false);
+                onHandleError(false);
+            }
+        }
     }
     
     return (
         <TextField
             error={error}
+            autoComplete='off'
+            helperText={error ? errorMessage : " "}
             required={required}
             type={type}
             id={name}
@@ -61,8 +73,12 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
             value={text}
             onChange={handleTextChange}
             sx={{
+                WebkitTextFillColor: variant==="light" ? (error ? "red":"white"):"#1A1A2E",
                 width: width,
-                "& label": { color: variant==="light" ? "white":"#1A1A2E"},
+                "& label": { 
+                    fontWeight: "bold",
+                    color: variant==="light" ? "white":"#1A1A2E",
+                },
                 "& label.Mui-focused": {
                     color: variant==="light" ? "white":"#1A1A2E"
                 },
@@ -76,6 +92,9 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                     transition: "ease-in-out 0.2s",
                 },
                 "& .MuiOutlinedInput-root input": {
+                    WebkitBackgroundClip: "text",
+                    backgroundClip: "text",
+                    fontWeight: "bold",
                     color: variant==="light" ? "white" : "#1A1A2E"
                 },
                 "& .MuiOutlinedInput-root" : {
@@ -86,6 +105,9 @@ const FormTextField = ({required, type, label, name, isFocused, width, variant, 
                 }
             }}
             autoFocus={isFocused}
+            inputProps={{
+                autoComplete: 'off',
+            }}
         />
     );
 }
@@ -102,5 +124,6 @@ FormTextField.propTypes = {
     variant: PropTypes.string.isRequired,
     regex: PropTypes.any,
     onHandleError: PropTypes.func,
+    errorMessage: PropTypes.string,
     reset: PropTypes.bool.isRequired
 };

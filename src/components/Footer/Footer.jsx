@@ -24,11 +24,6 @@ const contributors = [
         picture:"https://avatars.githubusercontent.com/u/42615340?v=4",
         url: "https://github.com/secch97"
     },
-    {    
-        name: "Abebe Tesso",
-        picture:undefined,
-        url: "https://github.com/AbebeTesso"
-    },
     {
         name: "Selam Yihew",
         picture: "https://avatars.githubusercontent.com/u/99606714?v=4",

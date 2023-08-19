@@ -3,8 +3,8 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useContext, useState } from 'react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import React from 'react';
+import { Navigate, Route, Routes} from 'react-router-dom';
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
@@ -26,6 +26,12 @@ import RequireAuth from './components/RequireAuth/RequireAuth';
 import Unauthorized from './pages/Unauthorized/Unauthorized';
 import PersistLogin from './components/PersistLogin/PersistLogin';
 import useAuth from './hooks/useAuth';
+import Cohorts from './pages/Admin/Cohorts/Cohorts';
+import Weeks from './pages/Admin/Weeks/Weeks';
+import MentorHome from './pages/Home/MentorHome';
+import StudentHome from './pages/Home/StudentHome';
+import RegisterOnCohort from './pages/Admin/Users/RegisterOnCohort/RegisterOnCohort';
+import RegisterUsers from './pages/Admin/Users/Register/RegisterUsers';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -59,23 +65,22 @@ const App = () => {
   */
 
   const handleExpireAuth = async() => {
-    
     try {
       const response = await axios(`auth/logout`, {
         withCredentials: true
       });
       console.log("LOGOUT", response);
       setAuth({
+        useId: "",
         userName: "",
-        loggedUser: {},
-        role: "",
+        userEmail: "",
+        role: [],
         loggedIn: false,
         accessToken: ""
       });
     } catch (error) {
       console.error(error);
     }
-    
   }
   /*
     ==========================
@@ -90,6 +95,7 @@ const App = () => {
         </ThemeProvider> 
         </header>
         <main>
+          <br/>
           <Routes>
             {/* Public routes */}
             <Route element={<PersistLogin></PersistLogin>}>
@@ -100,9 +106,7 @@ const App = () => {
                   ? (<Navigate to="/"></Navigate>)
                   : (
                       <ThemeProvider theme={theme}>
-                        <br/>
                         <Login/>
-                        <br/>
                       </ThemeProvider>
                     )
                 }
@@ -118,11 +122,29 @@ const App = () => {
             </Route>
             {/* Admin, Mentor, User shared route based on role. */}
             <Route element={<PersistLogin></PersistLogin>}>
-              <Route element={<RequireAuth allowedRole={"admin"}></RequireAuth>}>
-                <Route path="/" exact element={<AdminHome></AdminHome>}></Route>
+              <Route element={<RequireAuth allowedRole={["admin", "mentor", "student"]}></RequireAuth>}>
+                <Route path="/" exact 
+                  element={
+                    auth.role.includes("admin") ? (<AdminHome></AdminHome>)
+                      : auth.role.includes("mentor") ? (<MentorHome></MentorHome>)
+                      : auth.role.includes("student") ? (<StudentHome></StudentHome>)
+                      : (null)
+                  }
+                />
+              </Route>
+              <Route element={<RequireAuth allowedRole={["admin"]}></RequireAuth>}>
+                <Route path="/cohorts" exact>
+                  <Route path="" exact element={<Cohorts></Cohorts>}></Route>
+                  <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
+                  <Route path="register/:cohortId" exact element={<RegisterOnCohort></RegisterOnCohort>}></Route>
+                </Route>
+                <Route path="/users" exact>
+                  <Route path="" exact element={<RegisterUsers></RegisterUsers>}></Route>
+                </Route>
               </Route>
             </Route>
           </Routes>
+          <br/>
         </main>
         <footer>
         <ThemeProvider theme={theme}>

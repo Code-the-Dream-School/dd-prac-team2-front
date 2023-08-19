@@ -12,18 +12,13 @@ import PropTypes from 'prop-types';
 */
 import React from 'react';
 
-const AppButton = ({children, text, type, width, handlerFunction}) => {
-    const StyledButton = styled(Button)(() => ({
-        backgroundColor: "#C84B31",
-        width: width,
-        transform: "scale(1.0)",
-        transition: "all 0.2s ease-in-out",
-        "&:hover": {
-            backgroundColor: "#C84B31",
-            transform: "scale(1.05)",
-            transition: "all 0.2s ease-in-out"
-        },
-    }));
+const StyledButton = styled(Button)(() => ({
+    transform: "scale(1.0)",
+    transition: "all 0.2s ease-in-out",
+}));
+
+const AppButton = ({children, text, type, width, color, textColor, handlerFunction}) => {
+
 
     const handleOnClick = () => {
         handlerFunction();
@@ -33,7 +28,21 @@ const AppButton = ({children, text, type, width, handlerFunction}) => {
         <StyledButton 
             key={text}
             type={type} 
-            sx={{my:0, mx:0, color: "white", display:"flex", alignItems:"center", gap:"5px"}}
+            sx={{
+                my:0, 
+                mx:0, 
+                color: textColor ? textColor : "white", 
+                backgroundColor: color ? color:"#C84B31",
+                width: width,
+                display:"flex", 
+                alignItems:"center", 
+                gap:"5px",
+                "&:hover": {
+                    backgroundColor: color ? color:"#C84B31",
+                    transform: "scale(1.05)",
+                    transition: "all 0.2s ease-in-out"
+                }
+            }}
             onClick={handleOnClick}
             disableFocusRipple
         >
@@ -50,5 +59,6 @@ AppButton.propTypes = {
     text: PropTypes.string.isRequired, 
     type: PropTypes.string.isRequired, 
     width: PropTypes.string.isRequired, 
+    color: PropTypes.string,
     handlerFunction: PropTypes.func.isRequired
 };
