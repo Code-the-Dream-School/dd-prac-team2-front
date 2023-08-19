@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Paper, Typography } from '@mui/material';
+import {Box, Container, Paper, TextField, Typography } from '@mui/material';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 
 
@@ -32,6 +32,9 @@ import UserStatusRender from '../RegisterOnCohort/TableRenders/UserStatusRender'
 import AppDataGrid from '../../../../components/DataGrid/AppDataGrid';
 import RegisterUserActions from './Actions/RegisterUserActions';
 import UserCohortRender from './TableRenders/UserCohortRender';
+import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
+import { School } from '@mui/icons-material';
+import FormAutocomplete from '../../../../components/Autocomplete/Autocomplete';
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -53,6 +56,16 @@ const RegisterUsers = () => {
         ==========================
     */   
     const [users, setUsers] = useState([]);
+    const [cohorts, setCohorts] = useState([]);
+    const [cohortsValueSelected, setCohortsValueSelected] = useState([])
+    console.log(cohortsValueSelected);
+    const [cohortsInputValueSelected, setCohortsInputValueSelected] = useState("");
+    const [formError, setFormError] = useState({
+        userCohortError: {
+            error:false,
+            errorMessage: "Please add a cohort for this user"
+        },
+    });
     console.log(users);
     /*
         ==========================
@@ -119,6 +132,32 @@ const RegisterUsers = () => {
         }
     };
 
+    const fetchCohorts = async () => {
+        try{
+            const response = await axiosPrivate.get("/cohort");
+            const formattedCohorts = (response.data.cohorts).map((cohort)=>{
+                return ({
+                    id: cohort._id,
+                    cohort: cohort.name,
+                });
+            });
+            setCohorts(formattedCohorts);
+            setCohortsValueSelected((prevState)=>[...prevState, formattedCohorts[0]]);
+        }
+        catch(error){
+        console.error(error);
+        }
+    };
+
+    /*
+        ==========================
+        =   HANDLER FUNCTIONS    =
+        ==========================
+    */
+    const handleValueSelectedChange = (newValue) => {
+        setCohortsValueSelected(newValue);
+    }
+
     /* 
         ==========================
         =        EFFECTS         =
@@ -126,7 +165,21 @@ const RegisterUsers = () => {
     */
     useEffect(()=>{
         fetchUsers();
+        fetchCohorts();
     }, []);
+
+    useEffect(()=>{
+        setFormError((prevState)=>
+        (
+            {
+                ...prevState,
+                userCohortError:{
+                    ...prevState.userCohortError,
+                    error: cohortsValueSelected.length === 0 ? true:false
+                }
+            }
+        ));
+    }, [cohortsValueSelected])
 
     return (
         <Container maxWidth="xl">
@@ -160,7 +213,15 @@ const RegisterUsers = () => {
                         autoComplete='off'
                         onSubmit={()=>{}}
                 >
-
+                    <AuthFormControl width="75%">
+                        <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                            <School fontSize="large"/>
+                            <br></br>
+                        </Box>
+                        <AuthFormControl width="100%" isNested={true}>
+                            <FormAutocomplete value={cohortsValueSelected} onHandleSelectedValueChange={handleValueSelectedChange} inputValue={cohortsInputValueSelected} onHandleInputValueChange={setCohortsInputValueSelected} options={cohorts} error={formError.userCohortError}></FormAutocomplete>
+                        </AuthFormControl>
+                    </AuthFormControl>
                 </Box>
                 <AppDataGrid columns={columns} rows={users} pageSize={10} fieldToBeSorted={"userName"} sortType={"asc"}/>
             </Paper>
