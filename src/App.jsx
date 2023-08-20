@@ -33,6 +33,8 @@ import StudentHome from "./pages/Home/StudentHome";
 import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCohort";
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import Cohort from "./pages/Mentor/Cohort";
+import StudentCohort from "./pages/Student/StudentCohort";
+import StudentSession from "./pages/Student/StudentSession";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -170,6 +172,19 @@ const App = () => {
               <Route
                 path="cohort/:cohortId"
                 element={<Cohort></Cohort>}
+              ></Route>
+            </Route>
+            <Route
+              element={<RequireAuth allowedRole={["student"]}></RequireAuth>}
+            >
+              <Route
+                path="student/cohort/:cohortId"
+                element={<StudentCohort></StudentCohort>}
+              ></Route>
+              <Route
+                path="student/session/:sessionId"
+                exact
+                element={<StudentSession></StudentSession>}
               ></Route>
             </Route>
           </Route>
