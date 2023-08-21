@@ -24,20 +24,19 @@ const StudentCohort = () => {
   const cohortId = state._id;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getCurrentWeek = async () => {
-      setLoading(true);
-      const res = await axiosPrivate.post("/week/current", {
-        cohortId,
-        userTimeZone: "America/New_York",
-      });
 
-      setCurrentWeek(res.data.currentWeek);
-      setLoading(false);
-    };
+  const getCurrentWeek = async () => {
+    setLoading(true);
+    const res = await axiosPrivate.post("/week/current", {
+      cohortId,
+      userTimeZone: "America/New_York",
+    });
 
-    getCurrentWeek();
-  }, []);
+    setCurrentWeek(res.data.currentWeek);
+    setLoading(false);
+  };
+
+
 
   const handleStatus = async (sessionID) => {
     console.log(sessionID);
@@ -48,17 +47,22 @@ const StudentCohort = () => {
         userStatus: "Confirm",
       }
     );
-    console.log(data);
-
     setLoading(false);
     // setCurrentWeek((prevWeeks) => [...prevWeeks, {
 
     // }]);
   };
 
+
+
   const handleClick = (sessionId) => {
     navigate(`/student/session/${sessionId}`);
   };
+
+  useEffect(() => {
+    getCurrentWeek();
+    
+  }, []);
 
   return (
     <Container>

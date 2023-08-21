@@ -14,6 +14,8 @@ import AuthFormControl from "../../components/FormControl/AuthFormControl";
 import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 import styles from "./Student.module.css";
+import useAuth from "../../hooks/useAuth";
+import Review from "./Actions/Review";
 
 const StudentSession = () => {
   const [currentSession, setCurrentSession] = useState();
@@ -22,24 +24,71 @@ const StudentSession = () => {
   const navigate = useNavigate();
   const { sessionId } = useParams();
   const [reset, setReset] = useState(false);
+  const [userStatus, setUserStatus] = useState();
+  const { auth, setAuth } = useAuth();
+  const [comment, setComment] = useState();
+  const [formError, setFormError] = useState({
+    commentError: {
+      error: false,
+      errorMessage: "Please enter a valid comment",
+    },
+  });
 
-  useEffect(() => {
-    const getCurrentSession = async () => {
-      setLoading(true);
-      const { data } = await axiosPrivate.get(`/session/${sessionId}`);
+  const getCurrentSession = async () => {
+    setLoading(true);
+    const { data } = await axiosPrivate.get(`/session/${sessionId}`);
+    setCurrentSession(data.session);
+    setLoading(false);
+  };
 
-      setCurrentSession(data.session);
-      setLoading(false);
-    };
-
-    getCurrentSession();
-  }, [sessionId]);
   console.log(currentSession);
+
+  const loggedInUserStatus = async () => {
+    setLoading(true);
+    const { data } = await axiosPrivate.get(
+      `/session/${sessionId}/student/status`
+    );
+    console.log(data);
+    setUserStatus(data.userStatus);
+
+    setLoading(false);
+  };
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+
+    const { data } = await axiosPrivate.post("/session/comment", {
+      name: auth.userName,
+      content: e.target.comment.value.trim(),
+      sessionId: sessionId,
+    });
+    console.log(data);
+    setComment("");
   };
 
+  const getComment = async () => {
+    setLoading(true);
+    const { data } = await axiosPrivate.get("/session/comment");
+    console.log(data);
+    // setComment((prev)=>[...prev, data]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getCurrentSession();
+    loggedInUserStatus();
+    getComment();
+  }, [sessionId]);
+
+  const handleCommentError = (inputError) => {
+    setFormError((prevState) => ({
+      ...prevState,
+      commentError: {
+        ...prevState.commentError,
+        error: inputError,
+      },
+    }));
+  };
   return (
     <Container>
       <Box
@@ -87,7 +136,7 @@ const StudentSession = () => {
             fontSize: 25,
           }}
         >
-          My Current Status: Confirm
+          My Current Status: {userStatus}
         </Typography>
       </Box>
       <Typography
@@ -114,6 +163,7 @@ const StudentSession = () => {
       >
         End: {currentSession?.end}
       </Typography>
+      <Review sessionId={sessionId} />
       <List>
         {currentSession?.participant?.length > 0 ? (
           currentSession?.participant.map((p) => (
@@ -127,7 +177,7 @@ const StudentSession = () => {
             >
               <Box>
                 <CardContent>
-                  <Typography variant="h5">{`Student: ${p.user.userInfo.name}`}</Typography>
+                  <Typography variant="h5">{`${p.user.userInfo.name}`}</Typography>
                 </CardContent>
               </Box>
               <Box>
@@ -150,6 +200,9 @@ const StudentSession = () => {
           </Typography>
         )}
       </List>
+      <br />
+      <br />
+
       <Typography
         component={"h1"}
         sx={{
@@ -164,6 +217,7 @@ const StudentSession = () => {
       >
         Discussion
       </Typography>
+
       <Box
         component={"form"}
         sx={{
@@ -196,6 +250,8 @@ const StudentSession = () => {
               width="100%"
               variant="light"
               reset={reset}
+              value={comment}
+              onHandleError={handleCommentError}
             ></FormTextField>
           </AuthFormControl>
           <AppButton
@@ -206,6 +262,42 @@ const StudentSession = () => {
           />
         </div>
       </Box>
+      <List>
+        {currentSession?.discussion?.length > 0 ? (
+          currentSession?.discussion.map((d) => (
+            <Card
+              key={d._id}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <Box>
+                <CardContent>
+                  <Typography variant="h5">{`${d.content}`}</Typography>
+                </CardContent>
+              </Box>
+              <Box>
+                <CardContent>
+                  <Typography>{`${d.name.name}`}</Typography>
+                </CardContent>
+              </Box>
+            </Card>
+          ))
+        ) : (
+          <Typography
+            sx={{
+              backgroundColor: "#f2f2f2",
+              padding: 2,
+              borderRadius: 2,
+              textAlign: "center",
+            }}
+          >
+            No discussions in this session
+          </Typography>
+        )}
+      </List>
     </Container>
   );
 };
