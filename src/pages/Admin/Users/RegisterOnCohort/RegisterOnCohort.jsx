@@ -115,6 +115,7 @@ const RegisterOnCohort = () => {
                     cohortId: cohortId,
                     cohortName: response.data.cohort[0].name
                 }
+                console.log(formattedUsers);
                 setCohortUsers(formattedUsers);
                 setCohortData(formattedCohortData);
             }

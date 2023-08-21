@@ -14,7 +14,7 @@ import { FormHelperText, InputLabel, MenuItem, Select } from '@mui/material';
 import React from 'react';
 
 const FormSelect = ({id, name, label, selectValue, onSelectValue, list, variant, multiple, error}) => {
-
+console.log(selectValue);
 /*
     ==========================
     =       HANDLERS         =

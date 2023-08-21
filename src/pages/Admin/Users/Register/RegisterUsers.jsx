@@ -33,8 +33,11 @@ import AppDataGrid from '../../../../components/DataGrid/AppDataGrid';
 import RegisterUserActions from './Actions/RegisterUserActions';
 import UserCohortRender from './TableRenders/UserCohortRender';
 import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
-import { School } from '@mui/icons-material';
+import { AdminPanelSettingsRounded, BadgeRounded, Email, School } from '@mui/icons-material';
 import FormAutocomplete from '../../../../components/Autocomplete/Autocomplete';
+import FormTextField from '../../../../components/TextField/FormTextField';
+import FormSelect from '../../../../components/Select/FormSelect';
+import AppButton from '../../../../components/Button/AppButton';
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -57,16 +60,28 @@ const RegisterUsers = () => {
     */   
     const [users, setUsers] = useState([]);
     const [cohorts, setCohorts] = useState([]);
-    const [cohortsValueSelected, setCohortsValueSelected] = useState([])
-    console.log(cohortsValueSelected);
+    const [userRoles, setUserRoles] = useState([]);
+    const [cohortsValueSelected, setCohortsValueSelected] = useState({id:"", cohort:""})
     const [cohortsInputValueSelected, setCohortsInputValueSelected] = useState("");
     const [formError, setFormError] = useState({
+        userNameError: {
+            error:false,
+            errorMessage: "Please enter a valid name"
+        },
+        userEmailError: {
+            error:false,
+            errorMessage: "Please enter a valid e-mail address"
+        },
         userCohortError: {
             error:false,
             errorMessage: "Please add a cohort for this user"
         },
+        userRolesError: {
+            error: true,
+            errorMessage: "Please select a role for this user"
+        },
     });
-    console.log(users);
+    const [reset, setReset] = useState(false);
     /*
         ==========================
         =      AUX VARIABLES     =
@@ -76,10 +91,10 @@ const RegisterUsers = () => {
         {field: "id", headerName: "ID", minWidth:100, maxWidth: 130, flex: 1},
         {field: "userName", headerName: "Full name:", minWidth:250, maxWidth: 250, flex: 1},
         {field: "userEmail", headerName: "E-mail:", minWidth:200, maxWidth: 300, flex: 1},
-        {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
+        {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 750, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
-        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} onHandleUsers={setUsers}></RegisterUserActions>)},
+        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
 
     ];
 
@@ -95,7 +110,7 @@ const RegisterUsers = () => {
                     _id: "100",
                     name: "Ever Argelio Reyes Reyes",
                     email: "everreyes07@gmail.com",
-                    cohorts: ["Dove"],
+                    cohorts: [{id: "64dac04fcb9ce97f7f0db4de", cohort: "Dove"}, {id: "64dabe8dcb9ce97f7f0db49d", cohort: "Deer"}],
                     role: ["student"],
                     isActivated: false
                     
@@ -104,7 +119,7 @@ const RegisterUsers = () => {
                     _id: "101",
                     name: "Marisela Castillo Chamagua",
                     email: "marisela@gmail.com",
-                    cohorts: ["Deer"],
+                    cohorts: [{id: "64dabe8dcb9ce97f7f0db49d", cohort: "Deer"}],
                     role: ["mentor", "student"],
                     isActivated: true
                     
@@ -142,7 +157,7 @@ const RegisterUsers = () => {
                 });
             });
             setCohorts(formattedCohorts);
-            setCohortsValueSelected((prevState)=>[...prevState, formattedCohorts[0]]);
+            setCohortsValueSelected(formattedCohorts[0]);
         }
         catch(error){
         console.error(error);
@@ -154,9 +169,86 @@ const RegisterUsers = () => {
         =   HANDLER FUNCTIONS    =
         ==========================
     */
+    // User name:
+    const handleUserNameError = (inputError) => {
+        setFormError((prevState) => ({
+                ...prevState,
+                userNameError: {
+                    ...prevState.userNameError,
+                    error: inputError
+                }
+            })
+        );
+    }
+
+    //User email
+    const handleUserEmailError = (inputError) => {
+        setFormError((prevState) => ({
+                ...prevState,
+                userEmailError: {
+                    ...prevState.userEmailError,
+                    error: inputError
+                }
+            })
+        );
+    };
+
+    //User cohorts
     const handleValueSelectedChange = (newValue) => {
         setCohortsValueSelected(newValue);
     }
+
+     // onSelect Role:
+     const handleOnSelectRole = (selectedRoleName) => {
+        setUserRoles(selectedRoleName);
+    }
+
+    const handleRegisterOnCohortSubmit = async (event) => {
+        event.preventDefault();
+        const formattedUserRegistration = {
+            users: [
+                {
+                    name: event.target.userName.value.trim(),
+                    email: event.target.userEmail.value.trim(),
+                    role: userRoles.map((role)=>role.toLowerCase())
+                }
+            ],
+            cohort: cohortsValueSelected.id,
+        }
+        console.log(formattedUserRegistration)
+
+        const errors = Object.values(formError);
+        try{
+            if(!errors.some((error)=>error.error===true)){
+                const response = await axiosPrivate.post("auth/register", formattedUserRegistration);
+                console.log(response);
+                if(response.data.users.length>0)
+                {
+                    setUsers((prevState) => [...prevState, {
+                        id: response.data.users[0]._id,
+                        userName: response.data.users[0].name,
+                        userEmail: response.data.users[0].email,
+                        userCohort: [cohortsValueSelected],
+                        userRole: response.data.users[0].role,
+                        userActivatedStatus: response.data.users[0].isActivated
+                    }]);
+                    setReset(true);
+                    setCohortsValueSelected(cohorts[0]);
+                    setUserRoles([]);
+                }
+                else if (response.data.errors.length>0){
+                    console.error(response.data.errors);
+                }
+            }
+            else{
+                console.error("There is an error preventing the form submission: check that your entires are correctly validated");
+            }
+
+        }
+        catch(error){
+            console.error(error);
+        }
+    };
 
     /* 
         ==========================
@@ -181,6 +273,19 @@ const RegisterUsers = () => {
         ));
     }, [cohortsValueSelected])
 
+    useEffect(()=>{
+        setFormError((prevState) => ({
+                ...prevState,
+                userRolesError: {
+                    ...prevState.userRolesError,
+                    error: userRoles.length === 0 ? true:false
+                }
+            }) 
+        );
+    }, [userRoles]);
+
+    console.log(cohortsValueSelected);
+    console.log(cohorts);
     return (
         <Container maxWidth="xl">
             <Paper 
@@ -211,17 +316,41 @@ const RegisterUsers = () => {
                             width: "100%"
                         }}
                         autoComplete='off'
-                        onSubmit={()=>{}}
+                        onSubmit={handleRegisterOnCohortSubmit}
                 >
-                    <AuthFormControl width="75%">
-                        <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                            <School fontSize="large"/>
-                            <br></br>
-                        </Box>
-                        <AuthFormControl width="100%" isNested={true}>
-                            <FormAutocomplete value={cohortsValueSelected} onHandleSelectedValueChange={handleValueSelectedChange} inputValue={cohortsInputValueSelected} onHandleInputValueChange={setCohortsInputValueSelected} options={cohorts} error={formError.userCohortError}></FormAutocomplete>
+                    <div className={styles.formContainer}>
+                        <AuthFormControl width="75%">
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <BadgeRounded fontSize="large"></BadgeRounded>
+                                <br></br>
+                            </Box>
+                            <FormTextField required type="text" label="Full name:" name="userName" isFocused={true} width="100%" variant="light" regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/} onHandleError={handleUserNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <Email fontSize="large"></Email>
+                                <br></br>
+                            </Box>
+                            <FormTextField required type="text" label="E-mail:" name="userEmail" isFocused={false} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleUserEmailError} errorMessage={"Please enter a valid e-mail address"} reset={reset}></FormTextField>
                         </AuthFormControl>
-                    </AuthFormControl>
+                        <AuthFormControl width="75%">
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <School fontSize="large"/>
+                                <br></br>
+                            </Box>
+                            <AuthFormControl width="100%" isNested={true}>
+                                <FormAutocomplete multiple={false} value={cohortsValueSelected} onHandleSelectedValueChange={handleValueSelectedChange} inputValue={cohortsInputValueSelected} onHandleInputValueChange={setCohortsInputValueSelected} options={cohorts} error={formError.userCohortError} variant={"light"}></FormAutocomplete>
+                            </AuthFormControl>
+                        </AuthFormControl>
+                        <AuthFormControl width="75%">
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <AdminPanelSettingsRounded fontSize="large"/>
+                                <br></br>
+                            </Box>
+                            <AuthFormControl width="100%" isNested={true} error={formError.userRolesError.error}>
+                                <FormSelect id={"userRoles"} name={"userRoles"} label={"Roles:"} selectValue={userRoles} onSelectValue={handleOnSelectRole} list={rolesList} variant={"light"} multiple={true} error={formError.userRolesError}></FormSelect>
+                            </AuthFormControl>
+                        </AuthFormControl>
+                        <AppButton text={"Add new user"} type="submit" width="25%" handlerFunction={()=>{}}/>
+                    </div>
                 </Box>
                 <AppDataGrid columns={columns} rows={users} pageSize={10} fieldToBeSorted={"userName"} sortType={"asc"}/>
             </Paper>
