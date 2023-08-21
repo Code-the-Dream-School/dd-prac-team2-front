@@ -34,6 +34,11 @@ const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
     */
     const [openEditDialog, setOpenEditDialog] = useState(false);
 
+    /*
+        ==========================
+        =    HANDLER FUNCTIONS   =
+        ==========================
+    */
     const handleDeleteCohortUser = () => {
         const cohortUserId = params.row.id;
         onHandleCohortUsers((prevCohortUsers)=>{

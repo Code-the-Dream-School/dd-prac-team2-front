@@ -4,8 +4,8 @@
     ==========================
 */
 import {Box, Container, Paper, TextField, Typography } from '@mui/material';
+import { AdminPanelSettingsRounded, BadgeRounded, Email, School } from '@mui/icons-material';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-
 
 /*
     ==========================
@@ -21,7 +21,6 @@ import React, {useState, useEffect} from 'react';
 */
 import styles from "./RegisterUsers.module.css";
 
-
 /*
     ==========================
     =        COMPONENTS      =
@@ -33,7 +32,6 @@ import AppDataGrid from '../../../../components/DataGrid/AppDataGrid';
 import RegisterUserActions from './Actions/RegisterUserActions';
 import UserCohortRender from './TableRenders/UserCohortRender';
 import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
-import { AdminPanelSettingsRounded, BadgeRounded, Email, School } from '@mui/icons-material';
 import FormAutocomplete from '../../../../components/Autocomplete/Autocomplete';
 import FormTextField from '../../../../components/TextField/FormTextField';
 import FormSelect from '../../../../components/Select/FormSelect';
@@ -58,8 +56,10 @@ const RegisterUsers = () => {
         =         STATES         =
         ==========================
     */   
+    // Fetched data states:
     const [users, setUsers] = useState([]);
     const [cohorts, setCohorts] = useState([]);
+    // From states
     const [userRoles, setUserRoles] = useState([]);
     const [cohortsValueSelected, setCohortsValueSelected] = useState({id:"", cohort:""})
     const [cohortsInputValueSelected, setCohortsInputValueSelected] = useState("");
@@ -91,7 +91,7 @@ const RegisterUsers = () => {
         {field: "id", headerName: "ID", minWidth:100, maxWidth: 130, flex: 1},
         {field: "userName", headerName: "Full name:", minWidth:250, maxWidth: 250, flex: 1},
         {field: "userEmail", headerName: "E-mail:", minWidth:200, maxWidth: 300, flex: 1},
-        {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 750, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
+        {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 750, flex: 2, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
         {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
@@ -203,6 +203,7 @@ const RegisterUsers = () => {
         setUserRoles(selectedRoleName);
     }
 
+    // Form submit:
     const handleRegisterOnCohortSubmit = async (event) => {
         event.preventDefault();
         const formattedUserRegistration = {
@@ -215,8 +216,6 @@ const RegisterUsers = () => {
             ],
             cohort: cohortsValueSelected.id,
         }
-        console.log(formattedUserRegistration)
-
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
@@ -284,8 +283,6 @@ const RegisterUsers = () => {
         );
     }, [userRoles]);
 
-    console.log(cohortsValueSelected);
-    console.log(cohorts);
     return (
         <Container maxWidth="xl">
             <Paper 

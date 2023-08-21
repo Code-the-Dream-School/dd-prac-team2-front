@@ -5,7 +5,6 @@ const FormAutocomplete = ({multiple, value, onHandleSelectedValueChange, inputVa
     console.log(value, options);
     return (
         <Autocomplete
-            disablePortal
             disableCloseOnSelect={multiple}
             multiple={multiple}
             limitTags={multiple ? 2 : 0}
@@ -20,6 +19,7 @@ const FormAutocomplete = ({multiple, value, onHandleSelectedValueChange, inputVa
             onInputChange={(event, newValue)=>{
                 onHandleInputValueChange(newValue);
             }}
+            ListboxProps={{ style: { maxHeight: 200, overflow: 'auto' } }}
             sx={
                 {
                     width: "100%", 

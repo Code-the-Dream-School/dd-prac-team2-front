@@ -1,4 +1,14 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Chip, Container } from '@mui/material';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React from 'react';
 
 const UserStatusRender = ({params}) => {

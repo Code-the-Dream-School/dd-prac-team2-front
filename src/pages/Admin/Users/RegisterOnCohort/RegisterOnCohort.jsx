@@ -57,6 +57,7 @@ const RegisterOnCohort = () => {
         =         STATES         =
         ==========================
     */
+    //Fetched data states:
     const [cohortUsers, setCohortUsers] = useState([]);
     const [cohortData, setCohortData] = useState({});
     //Form states
@@ -75,9 +76,8 @@ const RegisterOnCohort = () => {
             errorMessage: "Please select a role for this user"
         },
     });
-    console.log(cohortUsers);
     const [reset, setReset] = useState(false);
-
+    
     /*
         ==========================
         =      AUX VARIABLES     =
@@ -162,7 +162,8 @@ const RegisterOnCohort = () => {
             })
         );
     };
-
+    
+    //Form submit:
     const handleRegisterOnCohortSubmit = async (event) => {
         event.preventDefault();
         const formattedUserRegistration = {

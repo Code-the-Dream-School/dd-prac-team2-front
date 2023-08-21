@@ -1,13 +1,32 @@
-import { AdminPanelSettingsRounded, Close, School } from '@mui/icons-material';
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
-import React, { forwardRef, useEffect, useState } from 'react'
-import AppButton from '../../../../../components/Button/AppButton';
 import { Box } from '@mui/system';
+import { AdminPanelSettingsRounded, Close, School } from '@mui/icons-material';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { forwardRef, useEffect, useState } from 'react'
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
+import styles from "../RegisterUsers.module.css";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from '../../../../../components/Button/AppButton';
 import AuthFormControl from '../../../../../components/FormControl/AuthFormControl';
 import FormAutocomplete from '../../../../../components/Autocomplete/Autocomplete';
-import styles from "../RegisterUsers.module.css";
 import FormSelect from '../../../../../components/Select/FormSelect';
-
 /*
     ==========================
     =          HOOKS         =
@@ -17,12 +36,23 @@ const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+/*
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const rolesList = ["Admin", "Mentor", "Student"];
 
-
 const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandleUsers}) => {
+    /*
+        ==========================
+        =         STATES         =
+        ==========================
+    */   
+    //Fetched data states:
     const [cohorts, setCohorts] = useState(fetchedCohorts);
     const [userRoles, setUserRoles] = useState(userInfo.row.userRole.map((role)=>(role[0].toUpperCase()+role.slice(1))));
+    //Form states:
     const [cohortsValueSelected, setCohortsValueSelected] = useState(userInfo.row.userCohort);
     const [cohortsInputValueSelected, setCohortsInputValueSelected] = useState("");
     const [formError, setFormError] = useState({
@@ -36,6 +66,11 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
         },
     });
 
+    /*
+        ==========================
+        =   HANDLER FUNCTIONS    =
+        ==========================
+    */
     //User cohorts
     const handleValueSelectedChange = (newValue) => {
         setCohortsValueSelected(newValue);
@@ -52,7 +87,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
         const formattedUpdatedUser = {
             id: userToBeUpdated,
             userCohort: cohortsValueSelected,
-            userRole: userRoles
+            userRole: userRoles.map((role)=>role.toLowerCase())
         };
         const errors = Object.values(formError);
         try{
@@ -84,7 +119,11 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
         }
         
     }
-
+    /* 
+        ==========================
+        =        EFFECTS         =
+        ==========================
+    */
     useEffect(()=>{
         setFormError((prevState)=>
         (
@@ -130,7 +169,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
                 autoComplete="off"
                 onSubmit={handleEditUserSubmit}
             >
-                <DialogContent sx={{width:"100%", paddingX:0, paddingY:1}} dividers>
+                <DialogContent sx={{width:"100%", height: "auto",  paddingX:0, paddingY:1}} dividers>
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>

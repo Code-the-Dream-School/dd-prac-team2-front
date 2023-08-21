@@ -27,6 +27,11 @@ const RegisterUserActions = ({params, fetchedCohorts, onHandleUsers}) => {
     */
     const [openEditDialog, setOpenEditDialog] = useState(false);
 
+    /*
+        ==========================
+        =   HANDLER FUNCTIONS    =
+        ==========================
+    */
     const handleOpenEditUserDialog = () => {
         setOpenEditDialog(true);
     }
@@ -34,22 +39,23 @@ const RegisterUserActions = ({params, fetchedCohorts, onHandleUsers}) => {
     const handleCloseEditUserDialog = () => {
         setOpenEditDialog(false);
     }
+
     return (
-    <>
-        <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
-            <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={handleOpenEditUserDialog}>
-                <EditRounded></EditRounded>
-            </AppButton>
-            <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>{}}>
-                <DeleteRounded></DeleteRounded>
-            </AppButton>                
-        </Container>
-        {
-            openEditDialog ?
-            (<EditUser openDialog={openEditDialog} userInfo={params} fetchedCohorts={fetchedCohorts} onCloseDialog={handleCloseEditUserDialog} onHandleUsers={onHandleUsers}></EditUser>) :
-            (null)
-        }
-    </>
+        <>
+            <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
+                <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={handleOpenEditUserDialog}>
+                    <EditRounded></EditRounded>
+                </AppButton>
+                <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>{}}>
+                    <DeleteRounded></DeleteRounded>
+                </AppButton>                
+            </Container>
+            {
+                openEditDialog ?
+                (<EditUser openDialog={openEditDialog} userInfo={params} fetchedCohorts={fetchedCohorts} onCloseDialog={handleCloseEditUserDialog} onHandleUsers={onHandleUsers}></EditUser>) :
+                (null)
+            }
+        </>
     )
 }
 
