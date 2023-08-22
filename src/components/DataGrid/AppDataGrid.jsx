@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { styled } from '@mui/material';
+import { Container, Stack, styled } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import PropTypes from "prop-types";
 /*
@@ -12,6 +12,8 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React from 'react';
+import { BusAlert } from '@mui/icons-material';
+import GridOverlay from '../GridOverlay/GridOverlay';
 
 const StyledDataGrid = styled(DataGrid)(()=>({
     borderTop: "5px solid #C84B31",
@@ -83,6 +85,10 @@ const StyledDataGrid = styled(DataGrid)(()=>({
     },
 }));
 
+const MyCustomNoRowsOverlay = () => (
+    <GridOverlay/>
+  );
+
 const AppDataGrid = ({columns, rows, pageSize, fieldToBeSorted, sortType}) => {
     return (
         <StyledDataGrid
@@ -120,11 +126,15 @@ const AppDataGrid = ({columns, rows, pageSize, fieldToBeSorted, sortType}) => {
                         }
                     }
                 },
-                
+            }}
+            slots={{
+                noRowsOverlay: MyCustomNoRowsOverlay,
+                noResultsOverlay: MyCustomNoRowsOverlay,
             }}
             columnVisibilityModel={{
                 id: false,
             }}
+            autoHeight={true}
         />
     );
 }
