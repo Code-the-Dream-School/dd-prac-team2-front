@@ -87,7 +87,6 @@ const Login = () => {
                         },
                     }
                 );
-                console.log(response);
                 console.log(response.data);
                 const userId = response.data.user.userId;
                 const userName = response.data.user.name;

@@ -32,6 +32,7 @@ import MentorHome from './pages/Home/MentorHome';
 import StudentHome from './pages/Home/StudentHome';
 import RegisterOnCohort from './pages/Admin/Users/RegisterOnCohort/RegisterOnCohort';
 import RegisterUsers from './pages/Admin/Users/Register/RegisterUsers';
+import AccountConfirmation from './pages/AccountConfirmation/AccountConfirmation';
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -109,6 +110,17 @@ const App = () => {
                         <Login/>
                       </ThemeProvider>
                     )
+                }
+              />
+              <Route
+                path="/confirmation"
+                element={
+                  auth.loggedIn ? (<Navigate to="/"></Navigate>)
+                  : (
+                    <ThemeProvider theme={theme}>
+                      <AccountConfirmation/>
+                    </ThemeProvider>
+                  )
                 }
               />
               <Route
