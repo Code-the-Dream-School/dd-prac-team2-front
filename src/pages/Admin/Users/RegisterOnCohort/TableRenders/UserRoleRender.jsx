@@ -4,6 +4,8 @@
     ==========================
 */
 import { Chip, Container, Stack } from '@mui/material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -41,3 +43,7 @@ const UserRoleRender = ({params}) => {
 };
 
 export default UserRoleRender;
+
+UserRoleRender.propTypes = {
+    params: PropTypes.object.isRequired,
+};

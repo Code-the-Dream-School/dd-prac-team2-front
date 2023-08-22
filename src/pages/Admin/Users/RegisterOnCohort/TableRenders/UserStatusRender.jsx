@@ -4,6 +4,8 @@
     ==========================
 */
 import { Chip, Container } from '@mui/material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -30,3 +32,7 @@ const UserStatusRender = ({params}) => {
 };
 
 export default UserStatusRender;
+
+UserStatusRender.propTypes = {
+    params: PropTypes.object.isRequired,
+};

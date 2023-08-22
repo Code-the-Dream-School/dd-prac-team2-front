@@ -1,12 +1,32 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Box, Container, Paper, Typography } from '@mui/material';
-import React, {useState} from 'react'
+import { LockRounded } from '@mui/icons-material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import axios from "../../api/axios";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, {useState} from 'react'
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "./AccountConfirmation.module.css";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
 import AuthFormControl from "../../components/FormControl/AuthFormControl";
 import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
-import { LockRounded } from '@mui/icons-material';
-import axios from "../../api/axios";
 
 const AccountConfirmation = () => {
     /*

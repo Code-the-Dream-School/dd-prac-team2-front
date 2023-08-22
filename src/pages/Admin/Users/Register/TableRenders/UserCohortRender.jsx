@@ -4,6 +4,8 @@
     ==========================
 */
 import { Chip, Container, Stack } from '@mui/material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -36,7 +38,11 @@ const UserCohortRender = ({params}) => {
                 }
             </Stack>
     </Container>
-    )
+    );
 }
 
-export default UserCohortRender
+export default UserCohortRender;
+
+UserCohortRender.propTypes = {
+    params: PropTypes.object.isRequired,
+};

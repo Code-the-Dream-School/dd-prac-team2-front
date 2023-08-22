@@ -6,6 +6,7 @@
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
 import { AdminPanelSettingsRounded, BadgeRounded, Close, Email } from '@mui/icons-material';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
+import PropTypes from "prop-types";
 
 /*
     ==========================
@@ -43,7 +44,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const EditCohortUser = ({openDialog, cohortData, cohortUserInfo, onCloseDialog, onHandleCohortUsers}) => {
+const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCohortUsers}) => {
     /*
         ==========================
         =          HOOKS         =
@@ -228,3 +229,10 @@ const EditCohortUser = ({openDialog, cohortData, cohortUserInfo, onCloseDialog, 
 };
 
 export default EditCohortUser;
+
+EditCohortUser.propTypes = {
+    openDialog: PropTypes.bool.isRequired,
+    cohortUserInfo: PropTypes.object.isRequired,
+    onCloseDialog: PropTypes.func.isRequired,
+    onHandleCohortUsers: PropTypes.func.isRequired,
+};

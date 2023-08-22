@@ -89,7 +89,7 @@ const RegisterOnCohort = () => {
         {field: "userEmail", headerName: "E-mail:", minWidth:200, maxWidth: 300, flex: 1},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
-        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterOnCohortActions params={params} cohortData={cohortData} onHandleCohortUsers={setCohortUsers}></RegisterOnCohortActions>)},
+        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterOnCohortActions params={params} onHandleCohortUsers={setCohortUsers}></RegisterOnCohortActions>)},
     ];
     /*
         ==========================

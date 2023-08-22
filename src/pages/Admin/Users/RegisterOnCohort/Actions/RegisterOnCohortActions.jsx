@@ -5,6 +5,7 @@
 */
 import { Container } from '@mui/material';
 import { DeleteRounded, EditRounded } from '@mui/icons-material';
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -20,7 +21,7 @@ import AppButton from '../../../../../components/Button/AppButton';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import EditCohortUser from './EditCohortUser';
 
-const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
+const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
     /*
         ==========================
         =          HOOKS         =
@@ -66,7 +67,7 @@ const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
             </Container>
             {
                 openEditDialog ?
-                (<EditCohortUser openDialog={openEditDialog} cohortData={cohortData} cohortUserInfo={params} onCloseDialog={handleCloseEditCohortUserDialog} onHandleCohortUsers={onHandleCohortUsers}></EditCohortUser>) :
+                (<EditCohortUser openDialog={openEditDialog} cohortUserInfo={params} onCloseDialog={handleCloseEditCohortUserDialog} onHandleCohortUsers={onHandleCohortUsers}></EditCohortUser>) :
                 (null)
             }
         </>
@@ -74,3 +75,8 @@ const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
 };
 
 export default RegisterOnCohortActions;
+
+RegisterOnCohortActions.propTypes = {
+    params: PropTypes.object.isRequired,
+    onHandleCohortUsers: PropTypes.func.isRequired,
+};

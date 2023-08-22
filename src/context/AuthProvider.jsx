@@ -14,6 +14,7 @@ export const AuthProvider = ({children})=>{
         userEmail: "",
         role: [],
         loggedIn: false,
+        avatarUrl: "",
         isActive: undefined,
         accessToken: ""
     });

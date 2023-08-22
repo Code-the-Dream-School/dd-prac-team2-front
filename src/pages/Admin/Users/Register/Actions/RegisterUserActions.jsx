@@ -3,21 +3,23 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Container } from '@mui/material'
-import { DeleteRounded, EditRounded } from '@mui/icons-material'
+import { Container } from '@mui/material';
+import { DeleteRounded, EditRounded } from '@mui/icons-material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
-import AppButton from '../../../../../components/Button/AppButton'
-import EditUser from './EditUser'
+import AppButton from '../../../../../components/Button/AppButton';
+import EditUser from './EditUser';
 
 const RegisterUserActions = ({params, fetchedCohorts, onHandleUsers}) => {
     /*
@@ -57,6 +59,12 @@ const RegisterUserActions = ({params, fetchedCohorts, onHandleUsers}) => {
             }
         </>
     )
-}
+};
 
-export default RegisterUserActions
+export default RegisterUserActions;
+
+RegisterUserActions.propTypes = {
+    params: PropTypes.object.isRequired,
+    fetchedCohorts: PropTypes.array.isRequired,
+    onHandleUsers: PropTypes.func.isRequired,
+};

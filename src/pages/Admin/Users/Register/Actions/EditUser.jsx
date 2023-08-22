@@ -6,12 +6,14 @@
 import { Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { AdminPanelSettingsRounded, Close, School } from '@mui/icons-material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { forwardRef, useEffect, useState } from 'react'
+import React, { forwardRef, useEffect, useState } from 'react';
 /*
     ==========================
     =        STYLES          =
@@ -197,6 +199,14 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             </Box>
         </Dialog>
     )
-}
+};
 
-export default EditUser
+export default EditUser;
+
+EditUser.propTypes = {
+    openDialog: PropTypes.bool.isRequired,
+    userInfo: PropTypes.object.isRequired,
+    fetchedCohorts: PropTypes.array.isRequired,
+    onCloseDialog: PropTypes.func.isRequired,
+    onHandleUsers: PropTypes.func.isRequired,
+};
