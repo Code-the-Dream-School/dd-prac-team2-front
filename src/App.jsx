@@ -33,6 +33,7 @@ import StudentHome from "./pages/Home/StudentHome";
 import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCohort";
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import Cohort from "./pages/Mentor/Cohort";
+import MentorSessions from "./pages/Mentor/MentorSessions";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -170,6 +171,10 @@ const App = () => {
               <Route
                 path="cohort/:cohortId"
                 element={<Cohort></Cohort>}
+              ></Route>
+              <Route
+                path="mentor/sessions"
+                element={<MentorSessions />}
               ></Route>
             </Route>
           </Route>
