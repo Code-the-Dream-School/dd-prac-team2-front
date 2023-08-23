@@ -177,6 +177,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <School fontSize="large"/>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <AuthFormControl width="100%" isNested={true}>
                                 <FormAutocomplete multiple={true} value={cohortsValueSelected} onHandleSelectedValueChange={handleValueSelectedChange} inputValue={cohortsInputValueSelected} onHandleInputValueChange={setCohortsInputValueSelected} options={cohorts} error={formError.userCohortError} variant={"dark"}></FormAutocomplete>

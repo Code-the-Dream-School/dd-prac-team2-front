@@ -242,20 +242,27 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
                 <DialogContent sx={{width:"100%", paddingX:0, paddingY:1}} dividers>
                     <div className={styles.formContainer}>
                         <AuthFormControl width="75%">
-                            <SchoolRounded fontSize="large"></SchoolRounded>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <SchoolRounded fontSize="large"></SchoolRounded>
+                                <br></br>
+                                <br></br>
+                            </Box>
                             <FormTextField required value={cohortName} type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="dark" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <LaptopRounded fontSize="large"/>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <LaptopRounded fontSize="large"/>
+                                <br></br>
+                            </Box>
                             <AuthFormControl width="100%" isNested={true}>
                                 <FormSelect id={"class"} name={"class"} label={"Class:"} selectValue={className} onSelectValue={handleClassNameChange} list={classList} variant="dark" error={formError.classNameError}></FormSelect>
                             </AuthFormControl>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
-                            <div style={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <CalendarMonthRounded fontSize="large"/>
                                 <br></br>
-                            </div>
+                            </Box>
                             <AppDatePicker id={"startDate"} name={"startDate"} label={"Start date:"} dateValue={startDate} onDateValueChange={handleStartDateChange} variant={"dark"}></AppDatePicker>
                             <AppDatePicker id={"endDate"} name={"endDate"} label={"End date:"} dateValue={endDate} onDateValueChange={handleEndDateChange} minDate={startDate} variant={"dark"}></AppDatePicker>
                         </AuthFormControl>

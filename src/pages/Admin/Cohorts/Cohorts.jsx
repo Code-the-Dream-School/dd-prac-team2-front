@@ -304,6 +304,7 @@ const Cohorts = () => {
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <SchoolRounded fontSize="large"></SchoolRounded>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>

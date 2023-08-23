@@ -175,12 +175,14 @@ const Login = () => {
                                 <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                     <Email fontSize="large"></Email>
                                     <br></br>
+                                    <br></br>
                                 </Box>
                                 <FormTextField required type="text" label="E-mail" name="email" isFocused={true} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleEmailError} errorMessage={"Please enter a valid email address"} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AuthFormControl width="100%">
                                 <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                     <LockRounded fontSize="large"></LockRounded>
+                                    <br></br>
                                     <br></br>
                                 </Box>
                                 <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" onHandleError={()=>{}} reset={reset}></FormTextField>

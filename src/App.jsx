@@ -72,7 +72,7 @@ const App = () => {
       });
       console.log("LOGOUT", response);
       setAuth({
-        useId: "",
+        userId: "",
         userName: "",
         userEmail: "",
         role: [],

@@ -272,12 +272,14 @@ const RegisterOnCohort = () => {
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <BadgeRounded fontSize="large"></BadgeRounded>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <FormTextField required type="text" label="Full name:" name="userName" isFocused={true} width="100%" variant="light" regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/} onHandleError={handleUserNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <Email fontSize="large"></Email>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField required type="text" label="E-mail:" name="userEmail" isFocused={false} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleUserEmailError} errorMessage={"Please enter a valid e-mail address"} reset={reset}></FormTextField>

@@ -121,7 +121,7 @@ const AccountConfirmation = () => {
                         }
                     }
                 >
-                    <img className={styles.loginPicture} alt="Picture for log in form" src="./images/password-photo.png" />
+                    <img className={styles.confirmationPicture} alt="Picture for log in form" src="./images/password-photo.png" />
                     <Box
                         component={"form"}
                         sx={{

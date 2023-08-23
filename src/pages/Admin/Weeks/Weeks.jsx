@@ -247,6 +247,7 @@ const Weeks = () => {
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <MenuBook fontSize="large"></MenuBook>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <FormTextField required type="text" label="Week name:" name="weekName" isFocused={true} width="100%" variant="light" onHandleError={handleWeekNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
