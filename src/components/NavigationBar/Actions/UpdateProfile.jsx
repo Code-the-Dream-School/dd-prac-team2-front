@@ -1,7 +1,7 @@
 import { Avatar, Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
 import React, {useState, useEffect, forwardRef} from 'react';
 import AppButton from '../../Button/AppButton';
-import { BadgeRounded, Close, EditRounded, Email } from '@mui/icons-material';
+import { BadgeRounded, Close, DeleteRounded, EditRounded, Email } from '@mui/icons-material';
 import styles from "./UpdateProfile.module.css";
 import AuthFormControl from '../../FormControl/AuthFormControl';
 import useAuth from './../../../hooks/useAuth';
@@ -209,7 +209,9 @@ const UpdateProfile = ({open, handleOpenDialog}) => {
                     </div>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
-                    <AppButton text={"Close"} type="button" width="100%" handlerFunction={()=>handleOpenDialog(false)}/>
+                    <AppButton text={"Delete account"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>{}}>
+                        <DeleteRounded></DeleteRounded>
+                    </AppButton>                
                 </DialogActions>    
             </Box>
         </Dialog>
