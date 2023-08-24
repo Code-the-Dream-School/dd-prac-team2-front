@@ -47,10 +47,7 @@ const RegisterUserActions = ({params, fetchedCohorts, onHandleUsers}) => {
             <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
                 <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={handleOpenEditUserDialog}>
                     <EditRounded></EditRounded>
-                </AppButton>
-                <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>{}}>
-                    <DeleteRounded></DeleteRounded>
-                </AppButton>                
+                </AppButton>             
             </Container>
             {
                 openEditDialog ?

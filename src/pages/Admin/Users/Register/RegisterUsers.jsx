@@ -105,7 +105,7 @@ const RegisterUsers = () => {
         {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 750, flex: 2, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
-        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
+        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 0.5, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
 
     ];
 
@@ -143,7 +143,7 @@ const RegisterUsers = () => {
                         id: user.id,
                         userName: user.name,
                         userEmail: user.email,
-                        userCohort: user.cohorts,
+                        userCohort: user.cohorts.map((cohort)=>({id: cohort._id, cohort: cohort.name})),
                         userRole: user.roles,
                         userActivatedStatus: user.isActivated,
                     });

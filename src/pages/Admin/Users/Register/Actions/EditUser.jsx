@@ -79,6 +79,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             errorMessage: "Please select a role for this user"
         },
     });
+    console.log(cohorts, userInfo.row.userCohort);
 
     /*
         ==========================
@@ -95,7 +96,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
     }
 
     //Edit dialog onSubmit:
-    const handleEditUserSubmit = (event) => {
+    const handleEditUserSubmit = async (event) => {
         event.preventDefault();
         const userToBeUpdated = userInfo.row.id;
         const formattedUpdatedUser = {
@@ -103,9 +104,15 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             userCohort: cohortsValueSelected,
             userRole: userRoles.map((role)=>role.toLowerCase())
         };
+        const body = {
+            role: formattedUpdatedUser.userRole,
+            cohorts: formattedUpdatedUser.userCohort.map((cohort)=>cohort.id)
+        }
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
+                const response = await axiosPrivate.patch(`users/${userToBeUpdated}`, body);
+                console.log(response);
                 onHandleUsers((prevUsers) => 
                     prevUsers.map((user)=>{
                     if (user.id===userToBeUpdated){
