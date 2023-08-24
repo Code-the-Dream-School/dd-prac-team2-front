@@ -13,6 +13,13 @@ import dayjs from 'dayjs';
     ==========================
 */
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../hooks/useAuth';
 /*
     ==========================
     =        STYLES          =
@@ -81,6 +88,9 @@ const Cohorts = () => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =     ASYNC FUNCTIONS    =
@@ -95,7 +105,24 @@ const Cohorts = () => {
             return response;
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
         
     }
@@ -154,7 +181,24 @@ const Cohorts = () => {
                 isMounted && setCohorts(formattedCohorts);
             }
             catch(error){
-            console.error(error);
+                console.error(error);
+                if(error.response.status === 403){
+                    //User is required to validate auth again
+                    navigate("/login", {state:{from: location}, replace: true});
+                    setAuth({
+                        userId: "",
+                        userName: "",
+                        userEmail: "",
+                        role: [],
+                        loggedIn: false,
+                        avatarUrl: "",
+                        isActive: undefined,
+                        accessToken: ""
+                    });
+                }
+                else{
+                    console.error(error);
+                }
             }
         }
 
@@ -257,7 +301,7 @@ const Cohorts = () => {
             }
         }
         catch(error){
-            console.error(error.response.data);
+            console.error(error);
         }
         finally{
             setReset(true);
@@ -303,6 +347,7 @@ const Cohorts = () => {
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <SchoolRounded fontSize="large"></SchoolRounded>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField required type="text" label="Cohort:" name="cohort" isFocused={true} width="100%" variant="light" regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/} onHandleError={handleCohortNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>

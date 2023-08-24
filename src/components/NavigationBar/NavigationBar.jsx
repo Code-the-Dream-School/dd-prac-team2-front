@@ -27,6 +27,8 @@ import useAuth from '../../hooks/useAuth';
 */
 import styles from "./NavigationBar.module.css";
 import NavigationBarButton from '../NavigationBar/NavigationBarButton';
+import UpdatePassword from './Actions/UpdatePassword';
+import UpdateProfile from './Actions/UpdateProfile';
 
 const drawerWidth = "auto";
 
@@ -87,6 +89,10 @@ const NavigationBar = ({onExpireAuth}) => {
     const [anchorNav, setAnchorNav] = useState(false);
     //2. State used for user settings position:
     const [anchorElUser, setAnchorElUser] = useState(null);
+    //3. State used to open profile dialog:
+    const [openProfileDialog, setOpenProfileDialog] = useState(false);
+    const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+
     
     /*
         ==========================
@@ -116,6 +122,12 @@ const NavigationBar = ({onExpireAuth}) => {
             setAnchorNav(false);
             setAnchorElUser(null);
             onExpireAuth();
+        }
+        else if (setting === "Update profile"){
+          setOpenProfileDialog(true);
+        }
+        else if (setting === "Update password"){
+          setOpenPasswordDialog(true);
         }
         else{
             setAnchorElUser(null);
@@ -312,6 +324,16 @@ const NavigationBar = ({onExpireAuth}) => {
             </List>
           </Box>
         </SwipeableDrawer>
+        {
+          openProfileDialog ?
+          (<UpdateProfile open={openProfileDialog} handleOpenDialog={setOpenProfileDialog}></UpdateProfile>)
+          : null
+        }
+        {
+          openPasswordDialog ?
+          (<UpdatePassword open={openPasswordDialog} handleOpenDialog={setOpenPasswordDialog}></UpdatePassword>)
+          : null
+        }
       </>
     );
 }

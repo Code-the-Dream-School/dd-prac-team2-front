@@ -4,6 +4,8 @@
     ==========================
 */
 import { Chip, Container, Stack } from '@mui/material';
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -20,8 +22,8 @@ const UserCohortRender = ({params}) => {
                     userCohorts.map((userCohort)=> 
                         (
                             <Chip 
-                                key={`${userCohort}-${params.row.userId}`} 
-                                label={userCohort} 
+                                key={`${userCohort.cohort}-${params.row.userId}`} 
+                                label={userCohort.cohort} 
                                 sx={
                                     {
                                         backgroundColor: "#0F3460",
@@ -36,7 +38,11 @@ const UserCohortRender = ({params}) => {
                 }
             </Stack>
     </Container>
-    )
+    );
 }
 
-export default UserCohortRender
+export default UserCohortRender;
+
+UserCohortRender.propTypes = {
+    params: PropTypes.object.isRequired,
+};
