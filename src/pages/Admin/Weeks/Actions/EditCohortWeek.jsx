@@ -14,12 +14,16 @@ import {
 } from "@mui/material";
 import { Close, DateRangeRounded, MenuBook } from "@mui/icons-material";
 import dayjs from "dayjs";
+import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
 import React, { useState, forwardRef } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+
 /*
     ==========================
     =        STYLES          =
@@ -40,7 +44,7 @@ import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
     =          HOOKS         =
     ==========================
 */
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAuth from '../../../../hooks/useAuth';
 
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -55,6 +59,9 @@ const EditCohortWeek = ({
     onHandleCohortWeeks,
 }) => {
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -148,10 +155,28 @@ const EditCohortWeek = ({
             } else {
                 console.error("Form validation is not letting form submission");
             }
-        } catch (error) {
-            console.error(error);
         }
-    };
+        catch(error){
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }  
+        }
+    }
 
     return (
         <Dialog
@@ -214,6 +239,7 @@ const EditCohortWeek = ({
                                 }}
                             >
                                 <MenuBook fontSize="large"></MenuBook>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField

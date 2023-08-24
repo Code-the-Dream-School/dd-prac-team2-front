@@ -13,13 +13,19 @@ import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
     ==========================
 */
 import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
+import useAuth from '../../../../hooks/useAuth';
 /*
     ==========================
     =       COMPONENTS       =
     ==========================
 */
 import EditCohort from './EditCohort';
-import { Link } from 'react-router-dom';
 
 const CohortsActions = ({params, onHandleCohorts}) => {
     /*
@@ -28,6 +34,9 @@ const CohortsActions = ({params, onHandleCohorts}) => {
         ==========================
     */
    const axiosPrivate = useAxiosPrivate();
+   const navigate = useNavigate();
+   const location = useLocation();
+   const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -55,7 +64,24 @@ const CohortsActions = ({params, onHandleCohorts}) => {
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                //User is required to validate auth again
+                console.error(error);
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     }
 

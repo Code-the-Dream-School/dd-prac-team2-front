@@ -17,6 +17,13 @@ import dayjs from "dayjs";
     ==========================
 */
 import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../hooks/useAuth';
 /*
     ==========================
     =        STYLES          =
@@ -130,6 +137,9 @@ const Cohorts = () => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =     ASYNC FUNCTIONS    =
@@ -140,8 +150,26 @@ const Cohorts = () => {
         try {
             const response = await axiosPrivate.post("/cohort", newCohort);
             return response;
-        } catch (error) {
-            console.error(error);
+        }
+        catch(error){
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     };
 
@@ -175,10 +203,28 @@ const Cohorts = () => {
                 });
                 console.log(formattedCohorts);
                 isMounted && setCohorts(formattedCohorts);
-            } catch (error) {
-                console.error(error);
             }
-        };
+            catch(error){
+                console.error(error);
+                if(error.response.status === 403){
+                    //User is required to validate auth again
+                    navigate("/login", {state:{from: location}, replace: true});
+                    setAuth({
+                        userId: "",
+                        userName: "",
+                        userEmail: "",
+                        role: [],
+                        loggedIn: false,
+                        avatarUrl: "",
+                        isActive: undefined,
+                        accessToken: ""
+                    });
+                }
+                else{
+                    console.error(error);
+                }
+            }
+        }
 
         fetchCohorts();
 
@@ -269,9 +315,11 @@ const Cohorts = () => {
             } else {
                 console.error("Form validation is not letting form submission");
             }
-        } catch (error) {
-            console.error(error.response.data);
-        } finally {
+        }
+        catch(error){
+            console.error(error);
+        }
+        finally{
             setReset(true);
             setClassName("");
             setStartDate(dayjs());
@@ -332,6 +380,7 @@ const Cohorts = () => {
                                 }}
                             >
                                 <SchoolRounded fontSize="large"></SchoolRounded>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField
