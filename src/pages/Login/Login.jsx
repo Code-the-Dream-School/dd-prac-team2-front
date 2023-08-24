@@ -185,7 +185,7 @@ const Login = () => {
                                     <br></br>
                                     <br></br>
                                 </Box>
-                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" onHandleError={()=>{}} reset={reset}></FormTextField>
+                                <FormTextField required type="password" label="Password" name="password" isFocused={false} width="100%" variant="light" onHandleError={()=>{}} errorMessage={"Please enter a valid password"} reset={reset}></FormTextField>
                             </AuthFormControl>
                             <AppButton text={"Sign in"} type="submit" width="100%" handlerFunction={()=>{}}>
                             </AppButton>
