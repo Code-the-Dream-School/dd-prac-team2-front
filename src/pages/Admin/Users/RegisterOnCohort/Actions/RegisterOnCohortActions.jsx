@@ -28,7 +28,7 @@ import AppButton from '../../../../../components/Button/AppButton';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import EditCohortUser from './EditCohortUser';
 
-const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
+const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
     /*
         ==========================
         =          HOOKS         =
@@ -50,11 +50,27 @@ const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
         =    HANDLER FUNCTIONS   =
         ==========================
     */
-    const handleDeleteCohortUser = () => {
-        const cohortUserId = params.row.id;
+    const handleDeleteCohortUser = async() => {
+        const cohortUserToBeDeleted = params.row.id;
         try{
+            //Fetch the user information
+            const userToBeDeletedFromCohort = await axiosPrivate.get(`users/${cohortUserToBeDeleted}`);
+            //Gather the user cohorts
+            const userCohorts = userToBeDeletedFromCohort.data.user.cohorts;
+            //Create an array which would have the new cohort list of the user by removing the present cohort
+            const newUserCohorts = userCohorts.filter((userCohort)=>userCohort._id!==cohortData.cohortId)
+            //Create a body for the following request:
+            const body = {
+                cohorts: newUserCohorts.map((newUserCohort)=>newUserCohort._id)
+            }
+            console.log(body);
+            //Create a new request to update the user cohort's:
+            const response = await axiosPrivate.patch(`/users/${cohortUserToBeDeleted}`,
+                body
+            );
+            console.log(response);
             onHandleCohortUsers((prevCohortUsers)=>{
-                return (prevCohortUsers.filter((user)=>user.id!==cohortUserId));
+                return (prevCohortUsers.filter((user)=>user.id!==cohortUserToBeDeleted));
             });
         }
         catch(error){
