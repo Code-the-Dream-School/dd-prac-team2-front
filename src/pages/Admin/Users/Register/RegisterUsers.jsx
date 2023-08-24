@@ -116,7 +116,7 @@ const RegisterUsers = () => {
     */
     const fetchUsers = async () => {
         try{
-            const response = [
+           /* const response = [
                 {
                     _id: "100",
                     name: "Ever Argelio Reyes Reyes",
@@ -135,15 +135,16 @@ const RegisterUsers = () => {
                     isActivated: true
                     
                 }
-            ];
-            if(/*response.status===200*/true){
-                const formattedUsers =  response.map((user)=>{
+            ];*/
+            const response = await axiosPrivate.get("/users");
+            if(response.status===200){
+                const formattedUsers =  response.data.users.map((user)=>{
                     return ({
-                        id: user._id,
+                        id: user.id,
                         userName: user.name,
                         userEmail: user.email,
                         userCohort: user.cohorts,
-                        userRole: user.role,
+                        userRole: user.roles,
                         userActivatedStatus: user.isActivated,
                     });
                 });
@@ -188,7 +189,24 @@ const RegisterUsers = () => {
             setCohortsValueSelected(formattedCohorts[0]);
         }
         catch(error){
-        console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 

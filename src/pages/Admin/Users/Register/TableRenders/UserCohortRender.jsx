@@ -22,8 +22,8 @@ const UserCohortRender = ({params}) => {
                     userCohorts.map((userCohort)=> 
                         (
                             <Chip 
-                                key={`${userCohort.cohort}-${params.row.userId}`} 
-                                label={userCohort.cohort} 
+                                key={`${userCohort.name}-${params.row.userId}`} 
+                                label={userCohort.name} 
                                 sx={
                                     {
                                         backgroundColor: "#0F3460",
