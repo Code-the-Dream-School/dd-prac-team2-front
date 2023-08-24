@@ -1,12 +1,32 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Avatar, Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
-import React, {useState, useEffect, forwardRef} from 'react';
-import AppButton from '../../Button/AppButton';
 import { BadgeRounded, Close, DeleteRounded, EditRounded, Email } from '@mui/icons-material';
+import useAxiosPrivate from './../../../hooks/useAxiosPrivate';
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, {useState, useEffect, forwardRef} from 'react';
+/*
+    ==========================
+    =         STYLES         =
+    ==========================
+*/
 import styles from "./UpdateProfile.module.css";
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
+import AppButton from '../../Button/AppButton';
 import AuthFormControl from '../../FormControl/AuthFormControl';
 import useAuth from './../../../hooks/useAuth';
 import FormTextField from '../../TextField/FormTextField';
-import useAxiosPrivate from './../../../hooks/useAxiosPrivate';
 
 /*
     ==========================

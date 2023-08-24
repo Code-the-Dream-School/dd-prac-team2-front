@@ -91,6 +91,8 @@ const NavigationBar = ({onExpireAuth}) => {
     const [anchorElUser, setAnchorElUser] = useState(null);
     //3. State used to open profile dialog:
     const [openProfileDialog, setOpenProfileDialog] = useState(false);
+    const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
+
     
     /*
         ==========================
@@ -123,6 +125,9 @@ const NavigationBar = ({onExpireAuth}) => {
         }
         else if (setting === "Update profile"){
           setOpenProfileDialog(true);
+        }
+        else if (setting === "Update password"){
+          setOpenPasswordDialog(true);
         }
         else{
             setAnchorElUser(null);
@@ -322,6 +327,11 @@ const NavigationBar = ({onExpireAuth}) => {
         {
           openProfileDialog ?
           (<UpdateProfile open={openProfileDialog} handleOpenDialog={setOpenProfileDialog}></UpdateProfile>)
+          : null
+        }
+        {
+          openPasswordDialog ?
+          (<UpdatePassword open={openPasswordDialog} handleOpenDialog={setOpenPasswordDialog}></UpdatePassword>)
           : null
         }
       </>
