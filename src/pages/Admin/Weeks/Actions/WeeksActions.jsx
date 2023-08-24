@@ -3,15 +3,16 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Container } from '@mui/material'
-import { DeleteRounded, EditRounded } from '@mui/icons-material'
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate'
+import { Container } from "@mui/material";
+import { DeleteRounded, EditRounded } from "@mui/icons-material";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import { useLocation, useNavigate } from 'react-router-dom'
 /*
     ==========================
@@ -27,7 +28,12 @@ import useAuth from '../../../../hooks/useAuth'
 import AppButton from '../../../../components/Button/AppButton'
 import EditCohortWeek from './EditCohortWeek'
 
-const WeeksActions = ({params, cohortData, onHandleCohortWeeks}) => {
+const WeeksActions = ({
+    params,
+    cohortData,
+    cohortId,
+    onHandleCohortWeeks,
+}) => {
     /*
         ==========================
         =          HOOKS         =
@@ -42,16 +48,18 @@ const WeeksActions = ({params, cohortData, onHandleCohortWeeks}) => {
         =         STATES         =
         ==========================
     */
-   const [openEditDialog, setOpenEditDialog] = useState();
+    const [openEditDialog, setOpenEditDialog] = useState();
 
-    const handleDeleteCohortWeek = async() =>{
+    const handleDeleteCohortWeek = async () => {
         const weekId = params.row.id;
-        try{
-            const response = await axiosPrivate.delete(`/week/${weekId}`);
-            if(response.status === 200) {
-                onHandleCohortWeeks(
-                    (prevCohortWeeks) => prevCohortWeeks.filter((week) => {
-                        if(week.id!==weekId){
+        try {
+            const response = await axiosPrivate.delete(
+                `/week/${cohortId}/${weekId}`
+            );
+            if (response.status === 204) {
+                onHandleCohortWeeks((prevCohortWeeks) =>
+                    prevCohortWeeks.filter((week) => {
+                        if (week.id !== weekId) {
                             return week;
                         }
                     })
@@ -78,7 +86,7 @@ const WeeksActions = ({params, cohortData, onHandleCohortWeeks}) => {
                 console.error(error);
             }   
         }
-    }
+    };
 
     const handleOpenEditCohortWeek = () => {
         setOpenEditDialog(true);
@@ -87,24 +95,49 @@ const WeeksActions = ({params, cohortData, onHandleCohortWeeks}) => {
     const handleCloseEditCohortWeek = () => {
         setOpenEditDialog(false);
     };
-    
+
     return (
         <>
-            <Container sx={{display:"flex", flexDirection:"row", gap:"5px", "&":{paddingLeft:0, paddingRight:0}, paddingLeft:0}}>
-                <AppButton text={"Edit"} type="button" width="auto" color="#F3950D" handlerFunction={handleOpenEditCohortWeek}>
+            <Container
+                sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    gap: "5px",
+                    "&": { paddingLeft: 0, paddingRight: 0 },
+                    paddingLeft: 0,
+                }}
+            >
+                <AppButton
+                    text={"Edit"}
+                    type="button"
+                    width="auto"
+                    color="#F3950D"
+                    handlerFunction={handleOpenEditCohortWeek}
+                >
                     <EditRounded></EditRounded>
                 </AppButton>
-                <AppButton text={"Delete"} type="button" width="auto" color="#CD1818"  handlerFunction={handleDeleteCohortWeek}>
+                <AppButton
+                    text={"Delete"}
+                    type="button"
+                    width="auto"
+                    color="#CD1818"
+                    handlerFunction={handleDeleteCohortWeek}
+                >
                     <DeleteRounded></DeleteRounded>
-                </AppButton>                
+                </AppButton>
             </Container>
-            {
-                openEditDialog ?
-                (<EditCohortWeek openDialog={openEditDialog} cohortData={cohortData} weekInfo={params} onCloseDialog={handleCloseEditCohortWeek} onHandleCohortWeeks={onHandleCohortWeeks}></EditCohortWeek>) :
-                (null)
-            }
+            {openEditDialog ? (
+                <EditCohortWeek
+                    cohortId={cohortId}
+                    openDialog={openEditDialog}
+                    cohortData={cohortData}
+                    weekInfo={params}
+                    onCloseDialog={handleCloseEditCohortWeek}
+                    onHandleCohortWeeks={onHandleCohortWeeks}
+                ></EditCohortWeek>
+            ) : null}
         </>
-    )
-}
+    );
+};
 
-export default WeeksActions
+export default WeeksActions;
