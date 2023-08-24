@@ -13,6 +13,7 @@ import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
     ==========================
 */
 import React, {useState, useEffect} from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /*
     ==========================
@@ -20,6 +21,13 @@ import React, {useState, useEffect} from 'react';
     ==========================
 */
 import styles from "./RegisterUsers.module.css";
+
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../../hooks/useAuth';
 
 /*
     ==========================
@@ -50,6 +58,9 @@ const RegisterUsers = () => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
      /*
         ==========================
@@ -94,7 +105,7 @@ const RegisterUsers = () => {
         {field: "userCohort", headerName: "Cohort: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 750, flex: 2, valueGetter: (params)=>(params), renderCell: (params)=>(<UserCohortRender params={params}></UserCohortRender>)},
         {field: "userRole", headerName: "Roles: ", sortable:false, disableColumnMenu:true,minWidth:250, maxWidth: 250, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserRoleRender params={params}></UserRoleRender>)},
         {field: "userActivatedStatus", headerName: "Status: ", sortable:false, disableColumnMenu:true, minWidth:100, maxWidth: 100, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<UserStatusRender params={params}></UserStatusRender>)},
-        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 1, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
+        {field: "actions", headerName: "Actions: ", sortable:false, disableColumnMenu:true, minWidth: 180, flex: 0.5, valueGetter: (params)=>(params), renderCell: (params)=>(<RegisterUserActions params={params} fetchedCohorts={cohorts} onHandleUsers={setUsers}></RegisterUserActions>)},
 
     ];
 
@@ -105,7 +116,7 @@ const RegisterUsers = () => {
     */
     const fetchUsers = async () => {
         try{
-            const response = [
+           /* const response = [
                 {
                     _id: "100",
                     name: "Ever Argelio Reyes Reyes",
@@ -124,15 +135,16 @@ const RegisterUsers = () => {
                     isActivated: true
                     
                 }
-            ];
-            if(/*response.status===200*/true){
-                const formattedUsers =  response.map((user)=>{
+            ];*/
+            const response = await axiosPrivate.get("/users");
+            if(response.status===200){
+                const formattedUsers =  response.data.users.map((user)=>{
                     return ({
-                        id: user._id,
+                        id: user.id,
                         userName: user.name,
                         userEmail: user.email,
-                        userCohort: user.cohorts,
-                        userRole: user.role,
+                        userCohort: user.cohorts.map((cohort)=>({id: cohort._id, cohort: cohort.name})),
+                        userRole: user.roles,
                         userActivatedStatus: user.isActivated,
                     });
                 });
@@ -143,7 +155,24 @@ const RegisterUsers = () => {
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 
@@ -160,7 +189,24 @@ const RegisterUsers = () => {
             setCohortsValueSelected(formattedCohorts[0]);
         }
         catch(error){
-        console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 
@@ -320,10 +366,12 @@ const RegisterUsers = () => {
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <BadgeRounded fontSize="large"></BadgeRounded>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <FormTextField required type="text" label="Full name:" name="userName" isFocused={true} width="100%" variant="light" regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/} onHandleError={handleUserNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <Email fontSize="large"></Email>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField required type="text" label="E-mail:" name="userEmail" isFocused={false} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleUserEmailError} errorMessage={"Please enter a valid e-mail address"} reset={reset}></FormTextField>
@@ -331,6 +379,7 @@ const RegisterUsers = () => {
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <School fontSize="large"/>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <AuthFormControl width="100%" isNested={true}>

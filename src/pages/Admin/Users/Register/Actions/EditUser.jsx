@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React, { forwardRef, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 /*
     ==========================
     =        STYLES          =
@@ -29,15 +30,17 @@ import AppButton from '../../../../../components/Button/AppButton';
 import AuthFormControl from '../../../../../components/FormControl/AuthFormControl';
 import FormAutocomplete from '../../../../../components/Autocomplete/Autocomplete';
 import FormSelect from '../../../../../components/Select/FormSelect';
+import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 /*
     ==========================
     =          HOOKS         =
     ==========================
 */
+import useAuth from '../../../../../hooks/useAuth';
+
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -46,6 +49,15 @@ const Transition = forwardRef(function Transition(props, ref) {
 const rolesList = ["Admin", "Mentor", "Student"];
 
 const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandleUsers}) => {
+    /*
+        ==========================
+        =          HOOKS         =
+        ==========================
+    */
+    const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -67,6 +79,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             errorMessage: "Please select a role for this user"
         },
     });
+    console.log(cohorts, userInfo.row.userCohort);
 
     /*
         ==========================
@@ -83,7 +96,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
     }
 
     //Edit dialog onSubmit:
-    const handleEditUserSubmit = (event) => {
+    const handleEditUserSubmit = async (event) => {
         event.preventDefault();
         const userToBeUpdated = userInfo.row.id;
         const formattedUpdatedUser = {
@@ -91,9 +104,15 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             userCohort: cohortsValueSelected,
             userRole: userRoles.map((role)=>role.toLowerCase())
         };
+        const body = {
+            role: formattedUpdatedUser.userRole,
+            cohorts: formattedUpdatedUser.userCohort.map((cohort)=>cohort.id)
+        }
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
+                const response = await axiosPrivate.patch(`users/${userToBeUpdated}`, body);
+                console.log(response);
                 onHandleUsers((prevUsers) => 
                     prevUsers.map((user)=>{
                     if (user.id===userToBeUpdated){
@@ -117,7 +136,24 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }   
         }
         
     }
@@ -176,6 +212,7 @@ const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandle
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <School fontSize="large"/>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <AuthFormControl width="100%" isNested={true}>

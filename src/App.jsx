@@ -72,11 +72,13 @@ const App = () => {
       });
       console.log("LOGOUT", response);
       setAuth({
-        useId: "",
+        userId: "",
         userName: "",
         userEmail: "",
         role: [],
         loggedIn: false,
+        avatarUrl: "",
+        isActive: undefined,
         accessToken: ""
       });
     } catch (error) {

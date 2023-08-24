@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React, { useState, forwardRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 /*
     ==========================
     =        STYLES          =
@@ -34,6 +35,8 @@ import FormSelect from '../../../../../components/Select/FormSelect';
     =          HOOKS         =
     ==========================
 */
+import useAuth from '../../../../../hooks/useAuth';
+
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -51,24 +54,17 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
         ==========================
     */
     //Form states
-    const [userName, setUserName] = useState(cohortUserInfo.row.userName);
-    const [userEmail, setUserEmail] = useState(cohortUserInfo.row.userEmail);
     const [userRoles, setUserRoles] = useState(cohortUserInfo.row.userRole.map((role)=>(role[0].toUpperCase()+role.slice(1))));
     const [formError, setFormError] = useState({
-        userNameError: {
-            error:false,
-            errorMessage: "Please enter a valid name"
-        },
-        userEmailError: {
-            error:false,
-            errorMessage: "Please enter a valid e-mail address"
-        },
         userRolesError: {
             error: false,
             errorMessage: "Please select a role for this user"
@@ -106,51 +102,29 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
         setUserRoles(selectedRoleName);
     }
 
-    // User name:
-    const handleUserNameError = (inputError) => {
-        setFormError((prevState) => ({
-                ...prevState,
-                userNameError: {
-                    ...prevState.userNameError,
-                    error: inputError
-                }
-            })
-        );
-    }
-
-    //User email
-    const handleUserEmailError = (inputError) => {
-        setFormError((prevState) => ({
-                ...prevState,
-                userEmailError: {
-                    ...prevState.userEmailError,
-                    error: inputError
-                }
-            })
-        );
-    };
-
     //Edit user submit:
-    const handleEditCohortUserSubmit = (event) => {
+    const handleEditCohortUserSubmit = async (event) => {
         event.preventDefault();
-        const cohortUserToBeUpdated = {
-            id: cohortUserInfo.row.id,
-            userName: event.target.userName.value.trim(),
-            userEmail: event.target.userEmail.value.trim(),
-            userRole: userRoles
+        const cohortUserToBeUpdated = cohortUserInfo.row.id;
+        console.log(userRoles);
+        const body = {
+            role: userRoles.map((role)=>role.toLowerCase())
         };        
+        console.log(body);
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
+                const response = await axiosPrivate.patch(`/users/${cohortUserToBeUpdated}`,
+                    body
+                );
+                console.log(response);
                 onHandleCohortUsers((prevCohortUsers) => 
                     prevCohortUsers.map((prevCohortUser)=>{
-                        if (prevCohortUser.id === cohortUserToBeUpdated.id){
+                        if (prevCohortUser.id === cohortUserToBeUpdated){
                             return (
                                 {
                                     ...prevCohortUser,
-                                    userName: cohortUserToBeUpdated.userName,
-                                    userEmail: cohortUserToBeUpdated.userEmail,
-                                    userRole: cohortUserToBeUpdated.userRole.map((role)=>role.toLowerCase()),
+                                    userRole: userRoles.map((role)=>role.toLowerCase()),
                                 }
                             );
                         }
@@ -168,7 +142,24 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 
@@ -195,20 +186,6 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
             >
                 <DialogContent sx={{width:"100%", paddingX:0, paddingY:1}} dividers>
                     <div className={styles.formContainer}>
-                        <AuthFormControl width="75%">
-                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                                <BadgeRounded fontSize="large"></BadgeRounded>
-                                <br></br>
-                            </Box>
-                            <FormTextField required value={userName} type="text" label="Full name:" name="userName" isFocused={true} width="100%" variant="dark" regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/} onHandleError={handleUserNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
-                        </AuthFormControl>
-                        <AuthFormControl width="75%">
-                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
-                                <Email fontSize="large"></Email>
-                                <br></br>
-                            </Box>
-                            <FormTextField required value={userEmail} type="text" label="E-mail:" name="userEmail" isFocused={false} width="100%" variant="dark" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleUserEmailError} errorMessage={"Please enter a valid e-mail address"} reset={reset}></FormTextField>
-                        </AuthFormControl>
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <AdminPanelSettingsRounded fontSize="large"/>

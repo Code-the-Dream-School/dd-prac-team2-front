@@ -1,4 +1,4 @@
-.loginPicture{
+.confirmationPicture{
     /* Sizing */
     width: 200px;
     min-width: 200px;
@@ -18,7 +18,7 @@
 }
 
 @media (max-width: 400px){
-    .loginPicture{
+    .confirmationPicture{
         /* Sizing */
         width: 100px;
         min-width: 100px;

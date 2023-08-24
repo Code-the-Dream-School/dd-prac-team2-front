@@ -12,6 +12,13 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React,{ useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
+import useAuth from '../../../../../hooks/useAuth';
 /*
     ==========================
     =        COMPONENTS      =
@@ -21,13 +28,16 @@ import AppButton from '../../../../../components/Button/AppButton';
 import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 import EditCohortUser from './EditCohortUser';
 
-const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
+const RegisterOnCohortActions = ({params, cohortData, onHandleCohortUsers}) => {
     /*
         ==========================
         =          HOOKS         =
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -40,11 +50,49 @@ const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
         =    HANDLER FUNCTIONS   =
         ==========================
     */
-    const handleDeleteCohortUser = () => {
-        const cohortUserId = params.row.id;
-        onHandleCohortUsers((prevCohortUsers)=>{
-            return (prevCohortUsers.filter((user)=>user.id!==cohortUserId));
-        })
+    const handleDeleteCohortUser = async() => {
+        const cohortUserToBeDeleted = params.row.id;
+        try{
+            //Fetch the user information
+            const userToBeDeletedFromCohort = await axiosPrivate.get(`users/${cohortUserToBeDeleted}`);
+            //Gather the user cohorts
+            const userCohorts = userToBeDeletedFromCohort.data.user.cohorts;
+            //Create an array which would have the new cohort list of the user by removing the present cohort
+            const newUserCohorts = userCohorts.filter((userCohort)=>userCohort._id!==cohortData.cohortId)
+            //Create a body for the following request:
+            const body = {
+                cohorts: newUserCohorts.map((newUserCohort)=>newUserCohort._id)
+            }
+            console.log(body);
+            //Create a new request to update the user cohort's:
+            const response = await axiosPrivate.patch(`/users/${cohortUserToBeDeleted}`,
+                body
+            );
+            console.log(response);
+            onHandleCohortUsers((prevCohortUsers)=>{
+                return (prevCohortUsers.filter((user)=>user.id!==cohortUserToBeDeleted));
+            });
+        }
+        catch(error){
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }            
+        }
     };
 
     const handleOpenEditCohortUserDialog = () => {
