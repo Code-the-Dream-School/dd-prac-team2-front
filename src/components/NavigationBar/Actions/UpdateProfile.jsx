@@ -27,6 +27,7 @@ import AppButton from '../../Button/AppButton';
 import AuthFormControl from '../../FormControl/AuthFormControl';
 import useAuth from './../../../hooks/useAuth';
 import FormTextField from '../../TextField/FormTextField';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /*
     ==========================
@@ -44,12 +45,14 @@ const UpdateProfile = ({open, handleOpenDialog}) => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {auth, setAuth} = useAuth();
     /*
         ==========================
         =         STATES        =
         ==========================
     */
-    const {auth, setAuth} = useAuth();
     const [formError, setFormError] = useState({
         userNameError: {
             error:false,
@@ -111,7 +114,24 @@ const UpdateProfile = ({open, handleOpenDialog}) => {
             }
         }
         catch(error){
-            console.error(error)
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }   
         }
     }
 
@@ -134,9 +154,65 @@ const UpdateProfile = ({open, handleOpenDialog}) => {
             }
         }
         catch(error){
-            console.error(error)
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }   
         }
-    }
+    };
+
+    const handleDeleteAccount = async () => {
+        try{
+            const response = await axiosPrivate.delete("/profile");
+            console.log(response);
+            navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+            });
+            handleOpenDialog(false);
+        }
+        catch(error){
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }          
+        }
+    };
 
     useEffect(()=>{
         setReset(false);
@@ -229,7 +305,7 @@ const UpdateProfile = ({open, handleOpenDialog}) => {
                     </div>
                 </DialogContent>
                 <DialogActions sx={{display:"flex", justifyContent:"center"}}>
-                    <AppButton text={"Delete account"} type="button" width="auto" color="#CD1818"  handlerFunction={()=>{}}>
+                    <AppButton text={"Delete account"} type="button" width="auto" color="#CD1818"  handlerFunction={handleDeleteAccount}>
                         <DeleteRounded></DeleteRounded>
                     </AppButton>                
                 </DialogActions>    
