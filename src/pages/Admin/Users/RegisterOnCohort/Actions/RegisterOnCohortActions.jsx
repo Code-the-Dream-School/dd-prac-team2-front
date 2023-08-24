@@ -12,6 +12,13 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React,{ useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
+import useAuth from '../../../../../hooks/useAuth';
 /*
     ==========================
     =        COMPONENTS      =
@@ -28,6 +35,9 @@ const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -42,9 +52,31 @@ const RegisterOnCohortActions = ({params, onHandleCohortUsers}) => {
     */
     const handleDeleteCohortUser = () => {
         const cohortUserId = params.row.id;
-        onHandleCohortUsers((prevCohortUsers)=>{
-            return (prevCohortUsers.filter((user)=>user.id!==cohortUserId));
-        })
+        try{
+            onHandleCohortUsers((prevCohortUsers)=>{
+                return (prevCohortUsers.filter((user)=>user.id!==cohortUserId));
+            });
+        }
+        catch(error){
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }            
+        }
     };
 
     const handleOpenEditCohortUserDialog = () => {

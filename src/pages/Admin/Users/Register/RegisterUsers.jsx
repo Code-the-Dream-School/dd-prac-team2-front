@@ -13,6 +13,7 @@ import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
     ==========================
 */
 import React, {useState, useEffect} from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 /*
     ==========================
@@ -20,6 +21,13 @@ import React, {useState, useEffect} from 'react';
     ==========================
 */
 import styles from "./RegisterUsers.module.css";
+
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../../hooks/useAuth';
 
 /*
     ==========================
@@ -50,6 +58,9 @@ const RegisterUsers = () => {
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
      /*
         ==========================
@@ -143,7 +154,24 @@ const RegisterUsers = () => {
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 

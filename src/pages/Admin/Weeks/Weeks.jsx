@@ -3,7 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { useNavigate, useParams } from 'react-router-dom';
 import { Box, Container, Paper, Typography } from '@mui/material';
 import {DateRangeRounded, MenuBook } from '@mui/icons-material';
 import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
@@ -14,13 +13,19 @@ import dayjs from 'dayjs';
     ==========================
 */
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 /*
     ==========================
     =        STYLES          =
     ==========================
 */
 import styles from "./Weeks.module.css";
-
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../hooks/useAuth';
 /*
     ==========================
     =        COMPONENTS      =
@@ -42,6 +47,8 @@ const Weeks = () => {
     const {cohortId} = useParams()
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
     /*
         ==========================
@@ -113,7 +120,24 @@ const Weeks = () => {
         
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }    
         }
     };
 
@@ -125,7 +149,24 @@ const Weeks = () => {
             return response;
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }    
         }
     };
 

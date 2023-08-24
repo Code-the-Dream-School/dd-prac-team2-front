@@ -13,6 +13,7 @@ import dayjs from "dayjs";
     ==========================
 */
 import React, { forwardRef, useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 /*
     ==========================
     =       COMPONENTS       =
@@ -35,6 +36,8 @@ import styles from "../Cohorts.module.css";
     ==========================
 */
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+import useAuth from '../../../../hooks/useAuth';
+
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -53,6 +56,9 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
     /*
         ==========================
@@ -106,7 +112,24 @@ const EditCohort = ({openDialog, cohortInfo, onCloseDialog, onHandleCohorts}) =>
             return response;
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     }
 

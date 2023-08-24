@@ -14,6 +14,7 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React, { useState, forwardRef, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 /*
     ==========================
     =        STYLES          =
@@ -34,6 +35,8 @@ import FormSelect from '../../../../../components/Select/FormSelect';
     =          HOOKS         =
     ==========================
 */
+import useAuth from '../../../../../hooks/useAuth';
+
 const Transition = forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -51,6 +54,9 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
         ==========================
     */
     const axiosPrivate = useAxiosPrivate();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
     /*
         ==========================
         =         STATES         =
@@ -168,7 +174,24 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }      
         }
     };
 

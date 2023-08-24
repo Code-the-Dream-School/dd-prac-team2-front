@@ -3,7 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { useNavigate, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import { Container, Paper, Box, Typography } from '@mui/material';
 import { AccountBoxRounded, AdminPanelSettingsRounded, BadgeRounded, Email } from '@mui/icons-material';
@@ -14,6 +13,7 @@ import { AccountBoxRounded, AdminPanelSettingsRounded, BadgeRounded, Email } fro
     ==========================
 */
 import React, {useState, useEffect} from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 /*
     ==========================
@@ -21,6 +21,14 @@ import React, {useState, useEffect} from 'react';
     ==========================
 */
 import styles from "./RegisterOnCohort.module.css";
+
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../../hooks/useAuth';
+
 /*
     ==========================
     =        COMPONENTS      =
@@ -51,6 +59,8 @@ const RegisterOnCohort = () => {
     const {cohortId} = useParams()
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
     /*
         ==========================
@@ -124,7 +134,24 @@ const RegisterOnCohort = () => {
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     }
 
@@ -199,10 +226,26 @@ const RegisterOnCohort = () => {
             else{
                 console.error("There is an error preventing the form submission: check that your entires are correctly validated");
             }
-
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     };
 

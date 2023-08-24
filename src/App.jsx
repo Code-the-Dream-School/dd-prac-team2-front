@@ -77,6 +77,8 @@ const App = () => {
         userEmail: "",
         role: [],
         loggedIn: false,
+        avatarUrl: "",
+        isActive: undefined,
         accessToken: ""
       });
     } catch (error) {
