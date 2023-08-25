@@ -129,8 +129,7 @@ const Login = () => {
     const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
       redirect_uri: "http://localhost:8000/auth/google/callback",
-      client_id:
-        "854954459925-ejkc0b9r41vfivo8mrefol4bm9t5hknr.apps.googleusercontent.com",
+      client_id: process.env.GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
       prompt: "consent",
