@@ -11,8 +11,9 @@ const StudentHome = () => {
   useEffect(() => {
     const fetchCohorts = async () => {
       try {
-        const { data } = await axiosPrivate.get("/users/cohorts", {});
-        setCohorts(data.cohorts);
+        const { data } = await axiosPrivate.get("/profile", {});
+        console.log(data);
+        setCohorts(data.profile.cohorts);
       } catch (err) {
         console.log(err);
       }
