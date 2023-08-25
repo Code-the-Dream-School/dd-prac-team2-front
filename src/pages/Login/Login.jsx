@@ -123,13 +123,14 @@ const Login = () => {
       },
     }));
   }, []);
+  console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
   //3. Google log in
   const handleGoogleAuthUrl = () => {
     const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
       redirect_uri: "http://localhost:8000/auth/google/callback",
-      client_id: process.env.GOOGLE_CLIENT_ID,
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
       prompt: "consent",
