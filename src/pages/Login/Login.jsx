@@ -123,7 +123,6 @@ const Login = () => {
       },
     }));
   }, []);
-  console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
   //3. Google log in
   const handleGoogleAuthUrl = () => {
