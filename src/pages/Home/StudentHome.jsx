@@ -21,9 +21,11 @@ const StudentHome = () => {
     fetchCohorts();
   }, [axiosPrivate]);
 
-  if (cohorts.length === 1) {
-    navigate(`/student/cohort/${cohorts[0]._id}`, { state: cohorts[0] });
-  }
+  useEffect(()=>{
+    if (cohorts.length === 1) {
+      navigate(`/student/cohort/${cohorts[0]._id}`, { state: cohorts[0] });
+    }
+  }, [cohorts]);
 
   return (
     <>

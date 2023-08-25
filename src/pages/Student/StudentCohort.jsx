@@ -15,12 +15,15 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import AppButton from "../../components/Button/AppButton";
 import CheckIcon from "@mui/icons-material/Check";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import { CancelOutlined, CheckCircleOutlineRounded } from "@mui/icons-material";
 
 const StudentCohort = () => {
   const { state } = useLocation();
   const [currentWeek, setCurrentWeek] = useState();
   const [loading, setLoading] = useState(false);
   const [confirm, setConfirm] = useState();
+  const { auth, setAuth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const cohortId = state._id;
   const navigate = useNavigate();
@@ -148,20 +151,57 @@ const StudentCohort = () => {
                   </CardContent>
                 </Box>
                 <CardActions>
-                  <AppButton
-                    text={"Yes"}
-                    type="button"
-                    width="auto"
-                    color={confirm ? "#008000" : "#FF7F50"}
-                    handlerFunction={() => handleConfirmStatus(session._id)}
-                  ></AppButton>
-                  <AppButton
-                    text={"No"}
-                    type="button"
-                    width="auto"
-                    color="#FF7F50"
-                    handlerFunction={() => handleCancelStatus(session._id)}
-                  ></AppButton>
+                  {
+                    session.participant.includes(auth.userId) ?
+                    (
+                      <>
+                        <AppButton
+                          text={"Yes"}
+                          type="button"
+                          width="auto"
+                          color={"#609966"}
+                          handlerFunction={() => handleConfirmStatus(session._id)}
+                        >
+                          <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                        </AppButton>
+                        <AppButton
+                          text={"No"}
+                          type="button"
+                          width="auto"
+                          color={"white"}
+                          textColor={"#1A1A2E"}
+                          handlerFunction={() => handleCancelStatus(session._id)}
+                        >
+                          <CancelOutlined></CancelOutlined>
+                        </AppButton>
+                      </>
+                    )
+                    :
+                    (
+                      <>
+                        <AppButton
+                          text={"Yes"}
+                          type="button"
+                          width="auto"
+                          color={"white"}
+                          textColor={"#1A1A2E"}
+                          handlerFunction={() => handleConfirmStatus(session._id)}
+                        >
+                          <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                        </AppButton>
+                        <AppButton
+                          text={"No"}
+                          type="button"
+                          width="auto"
+                          color="#CD1818"
+                          handlerFunction={() => handleCancelStatus(session._id)}
+                        >
+                          <CancelOutlined></CancelOutlined>
+                        </AppButton>
+                      </>
+                    )
+                  }
+                  
                 </CardActions>
               </Card>
             ))
