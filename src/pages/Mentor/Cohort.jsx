@@ -10,25 +10,22 @@ import {
     CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Cohort = () => {
-    const { state } = useLocation();
     const [currentWeek, setCurrentWeek] = useState();
     const [loading, setLoading] = useState(false);
     const axiosPrivate = useAxiosPrivate();
-    const cohortId = state._id;
+    const [cohort] = useOutletContext();
 
     useEffect(() => {
         const getCurrentWeek = async () => {
             setLoading(true);
-            const res = await axiosPrivate.get(`/week/${cohortId}/current`);
-            console.log(res.data);
+            const res = await axiosPrivate.get(`/week/${cohort._id}/current`);
             setCurrentWeek(res.data.currentWeek);
             setLoading(false);
         };
-
         getCurrentWeek();
     }, []);
 
@@ -53,7 +50,7 @@ const Cohort = () => {
                         fontSize: 25,
                     }}
                 >
-                    {state.name}
+                    {cohort.name}
                 </Typography>
             </Box>
             <Typography
@@ -89,6 +86,7 @@ const Cohort = () => {
                                     display: "flex",
                                     justifyContent: "space-between",
                                     alignItems: "center",
+                                    marginBlockEnd: 2,
                                 }}
                             >
                                 <Box>
@@ -103,12 +101,11 @@ const Cohort = () => {
                                 </Box>
                                 <Box>
                                     <CardContent>
-                                        <Typography>{`Mentor: ${session.creator.name}`}</Typography>
                                         <Typography>{`${session.participant.length} students confirmed`}</Typography>
                                     </CardContent>
                                 </Box>
                                 <CardActions>
-                                    <Button size="small">Confirm</Button>
+                                    <Button size="small">Details</Button>
                                 </CardActions>
                             </Card>
                         ))

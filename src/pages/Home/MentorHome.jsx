@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Box, Button, Paper, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const MentorHome = () => {
     const navigate = useNavigate();
     const axiosPrivate = useAxiosPrivate();
     const [cohorts, setCohorts] = useState([]);
+    const [selectedCohort, setSelectedCohort] = useOutletContext();
 
     useEffect(() => {
         const fetchCohorts = async () => {
@@ -21,10 +22,16 @@ const MentorHome = () => {
                 console.log(err);
             }
         };
-        fetchCohorts();
+
+        if (!selectedCohort) {
+            fetchCohorts();
+        } else {
+            navigate(`/cohort/${selectedCohort._id}`);
+        }
     }, [axiosPrivate]);
 
     if (cohorts.length === 1) {
+        setSelectedCohort(cohorts[0]);
         navigate(`/cohort/${cohorts[0]._id}`, { state: cohorts[0] });
     }
 
@@ -33,6 +40,8 @@ const MentorHome = () => {
     };
 
     const handleClick = (id) => {
+        const selected = cohorts.find((c) => c._id === id);
+        setSelectedCohort(selected);
         navigate(`/cohort/${id}`, { state: getCohort(id) });
         return;
     };

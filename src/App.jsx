@@ -34,6 +34,7 @@ import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCoh
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import Cohort from "./pages/Mentor/Cohort";
 import MentorSessions from "./pages/Mentor/MentorSessions";
+import MentorContext from "./pages/Mentor/MentorContext";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -42,152 +43,177 @@ import MentorSessions from "./pages/Mentor/MentorSessions";
 const font = "Montserrat, sans-serif";
 
 const theme = createTheme({
-  typography: {
-    allVariants: {
-      fontFamily: font,
-      fontWeight: "bold",
-      textTransform: "none",
-      fontSize: 16,
+    typography: {
+        allVariants: {
+            fontFamily: font,
+            fontWeight: "bold",
+            textTransform: "none",
+            fontSize: 16,
+        },
     },
-  },
 });
 const App = () => {
-  /*
+    /*
       ==========================
       =        CONTEXT         =
       ==========================
   */
-  //1. User auth status:
-  const { auth, setAuth } = useAuth();
+    //1. User auth status:
+    const { auth, setAuth } = useAuth();
 
-  /*
+    /*
       ==========================
       =        HANDLERS        =
       ==========================
   */
 
-  const handleExpireAuth = async () => {
-    try {
-      const response = await axios(`auth/logout`, {
-        withCredentials: true,
-      });
-      console.log("LOGOUT", response);
-      setAuth({
-        useId: "",
-        userName: "",
-        userEmail: "",
-        role: [],
-        loggedIn: false,
-        accessToken: "",
-      });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  /*
+    const handleExpireAuth = async () => {
+        try {
+            const response = await axios(`auth/logout`, {
+                withCredentials: true,
+            });
+            console.log("LOGOUT", response);
+            setAuth({
+                useId: "",
+                userName: "",
+                userEmail: "",
+                role: [],
+                loggedIn: false,
+                accessToken: "",
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    /*
     ==========================
     =    COMPONENT RENDER    =
     ==========================
   */
-  return (
-    <>
-      <header>
-        <ThemeProvider theme={theme}>
-          <NavigationBar onExpireAuth={handleExpireAuth} />
-        </ThemeProvider>
-      </header>
-      <main>
-        <br />
-        <Routes>
-          {/* Public routes */}
-          <Route element={<PersistLogin></PersistLogin>}>
-            <Route
-              path="/login"
-              element={
-                auth.loggedIn ? (
-                  <Navigate to="/"></Navigate>
-                ) : (
-                  <ThemeProvider theme={theme}>
-                    <Login />
-                  </ThemeProvider>
-                )
-              }
-            />
-            <Route
-              path="/unauthorized"
-              element={
+    return (
+        <>
+            <header>
                 <ThemeProvider theme={theme}>
-                  <Unauthorized />
+                    <NavigationBar onExpireAuth={handleExpireAuth} />
                 </ThemeProvider>
-              }
-            />
-          </Route>
-          {/* Admin, Mentor, User shared route based on role. */}
-          <Route element={<PersistLogin></PersistLogin>}>
-            <Route
-              element={
-                <RequireAuth
-                  allowedRole={["admin", "mentor", "student"]}
-                ></RequireAuth>
-              }
-            >
-              <Route
-                path="/"
-                exact
-                element={
-                  auth.role.includes("admin") ? (
-                    <AdminHome></AdminHome>
-                  ) : auth.role.includes("mentor") ? (
-                    <MentorHome></MentorHome>
-                  ) : auth.role.includes("student") ? (
-                    <StudentHome></StudentHome>
-                  ) : null
-                }
-              />
-            </Route>
-            <Route
-              element={<RequireAuth allowedRole={["admin"]}></RequireAuth>}
-            >
-              <Route path="/cohorts" exact>
-                <Route path="" exact element={<Cohorts></Cohorts>}></Route>
-                <Route path=":cohortId" exact element={<Weeks></Weeks>}></Route>
-                <Route
-                  path="register/:cohortId"
-                  exact
-                  element={<RegisterOnCohort></RegisterOnCohort>}
-                ></Route>
-              </Route>
-              <Route path="/users" exact>
-                <Route
-                  path=""
-                  exact
-                  element={<RegisterUsers></RegisterUsers>}
-                ></Route>
-              </Route>
-            </Route>
-            <Route
-              element={<RequireAuth allowedRole={["mentor"]}></RequireAuth>}
-            >
-              <Route
-                path="cohort/:cohortId"
-                element={<Cohort></Cohort>}
-              ></Route>
-              <Route
-                path="mentor/sessions"
-                element={<MentorSessions />}
-              ></Route>
-            </Route>
-          </Route>
-        </Routes>
-        <br />
-      </main>
-      <footer>
-        <ThemeProvider theme={theme}>
-          <Footer></Footer>
-        </ThemeProvider>
-      </footer>
-    </>
-  );
+            </header>
+            <main>
+                <br />
+                <Routes>
+                    {/* Public routes */}
+                    <Route element={<PersistLogin></PersistLogin>}>
+                        <Route
+                            path="/login"
+                            element={
+                                auth.loggedIn ? (
+                                    <Navigate to="/"></Navigate>
+                                ) : (
+                                    <ThemeProvider theme={theme}>
+                                        <Login />
+                                    </ThemeProvider>
+                                )
+                            }
+                        />
+                        <Route
+                            path="/unauthorized"
+                            element={
+                                <ThemeProvider theme={theme}>
+                                    <Unauthorized />
+                                </ThemeProvider>
+                            }
+                        />
+                    </Route>
+                    {/* Admin, Mentor, User shared route based on role. */}
+                    <Route element={<PersistLogin></PersistLogin>}>
+                        <Route
+                            element={
+                                <RequireAuth
+                                    allowedRole={["admin", "mentor", "student"]}
+                                ></RequireAuth>
+                            }
+                        >
+                            <Route
+                                path="/"
+                                exact
+                                element={
+                                    auth.role.includes("admin") ? (
+                                        <AdminHome></AdminHome>
+                                    ) : auth.role.includes("mentor") ? (
+                                        // <MentorHome></MentorHome>
+                                        <Navigate to="/mentor" />
+                                    ) : auth.role.includes("student") ? (
+                                        <StudentHome></StudentHome>
+                                    ) : null
+                                }
+                            />
+                        </Route>
+                        <Route
+                            element={
+                                <RequireAuth
+                                    allowedRole={["admin"]}
+                                ></RequireAuth>
+                            }
+                        >
+                            <Route path="/cohorts" exact>
+                                <Route
+                                    path=""
+                                    exact
+                                    element={<Cohorts></Cohorts>}
+                                ></Route>
+                                <Route
+                                    path=":cohortId"
+                                    exact
+                                    element={<Weeks></Weeks>}
+                                ></Route>
+                                <Route
+                                    path="register/:cohortId"
+                                    exact
+                                    element={
+                                        <RegisterOnCohort></RegisterOnCohort>
+                                    }
+                                ></Route>
+                            </Route>
+                            <Route path="/users" exact>
+                                <Route
+                                    path=""
+                                    exact
+                                    element={<RegisterUsers></RegisterUsers>}
+                                ></Route>
+                            </Route>
+                        </Route>
+                        <Route
+                            element={
+                                <RequireAuth
+                                    allowedRole={["mentor"]}
+                                ></RequireAuth>
+                            }
+                        >
+                            <Route element={<MentorContext />}>
+                                <Route
+                                    path="mentor"
+                                    element={<MentorHome />}
+                                ></Route>
+                                <Route
+                                    path="cohort/:cohortId"
+                                    element={<Cohort></Cohort>}
+                                ></Route>
+                                <Route
+                                    path="mentor/sessions"
+                                    element={<MentorSessions />}
+                                ></Route>
+                            </Route>
+                        </Route>
+                    </Route>
+                </Routes>
+                <br />
+            </main>
+            <footer>
+                <ThemeProvider theme={theme}>
+                    <Footer></Footer>
+                </ThemeProvider>
+            </footer>
+        </>
+    );
 };
 
 export default App;
