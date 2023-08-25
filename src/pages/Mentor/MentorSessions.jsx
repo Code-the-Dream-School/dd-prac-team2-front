@@ -11,11 +11,16 @@ function MentorSessions() {
         const getUpcomingSessions = async () => {
             const res = await axiosPrivate.get("/session/upcoming");
 
-            console.log(res.data);
             setSessions(res.data.sessions);
         };
         getUpcomingSessions();
     }, [axiosPrivate]);
+
+    const updateSessions = (session) => {
+        const newSessions = [...sessions, session];
+        newSessions.sort((a, b) => (a.start > b.start ? 1 : -1));
+        setSessions(newSessions.slice(0, 6));
+    };
 
     return (
         <>
@@ -37,7 +42,7 @@ function MentorSessions() {
                     <p>No sessions awaiting</p>
                 )}
             </Box>
-            <CreateSession />
+            <CreateSession updateSessions={updateSessions} />
         </>
     );
 }
