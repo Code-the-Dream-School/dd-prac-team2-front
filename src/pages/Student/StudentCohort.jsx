@@ -1,3 +1,4 @@
+// Line  136  {new Date(session.start).toLocaleDateString()} ==> change to date and time for example 8/23 8:00 PM
 import {
   Box,
   Container,
@@ -13,38 +14,46 @@ import { useLocation } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import AppButton from "../../components/Button/AppButton";
 import CheckIcon from "@mui/icons-material/Check";
-import confirmStudentCount from "../../util/countConfirm";
 import { useNavigate } from "react-router-dom";
 
 const StudentCohort = () => {
   const { state } = useLocation();
   const [currentWeek, setCurrentWeek] = useState();
   const [loading, setLoading] = useState(false);
+  const [confirm, setConfirm] = useState();
   const axiosPrivate = useAxiosPrivate();
   const cohortId = state._id;
   const navigate = useNavigate();
 
-
   const getCurrentWeek = async () => {
     setLoading(true);
-    const res = await axiosPrivate.post("/week/current", {
-      cohortId,
-      userTimeZone: "America/New_York",
-    });
+    const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
+    console.log(data);
 
-    setCurrentWeek(res.data.currentWeek);
+    setCurrentWeek(data.currentWeek);
     setLoading(false);
   };
 
-
-
-  const handleStatus = async (sessionID) => {
-    console.log(sessionID);
+  const handleConfirmStatus = async (sessionID) => {
     setLoading(true);
     const { data } = await axiosPrivate.patch(
       `/session/${sessionID}/student/updateStatus`,
       {
-        userStatus: "Confirm",
+        status: true,
+      }
+    );
+    setLoading(false);
+    setConfirm(true);
+    // setCurrentWeek((prevWeeks) => [...prevWeeks, {
+    // }]);
+  };
+
+  const handleCancelStatus = async (sessionID) => {
+    setLoading(true);
+    const { data } = await axiosPrivate.patch(
+      `/session/${sessionID}/student/updateStatus`,
+      {
+        status: false,
       }
     );
     setLoading(false);
@@ -53,15 +62,12 @@ const StudentCohort = () => {
     // }]);
   };
 
-
-
   const handleClick = (sessionId) => {
     navigate(`/student/session/${sessionId}`);
   };
 
   useEffect(() => {
     getCurrentWeek();
-    
   }, []);
 
   return (
@@ -117,12 +123,15 @@ const StudentCohort = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
+                  marginTop: "1px",
                 }}
-                onClick={() => handleClick(session._id)}
               >
                 <Box>
                   <CardContent>
-                    <Typography variant="h5">{`${session.type} session`}</Typography>
+                    <Typography
+                      onClick={() => handleClick(session._id)}
+                      variant="h5"
+                    >{`${session.type} session`}</Typography>
                     <Typography variant="subtitle1">
                       {new Date(session.start).toLocaleDateString()}
                     </Typography>
@@ -130,22 +139,29 @@ const StudentCohort = () => {
                 </Box>
                 <Box>
                   <CardContent>
-                    <Typography>{`Mentor: ${session.creator.name}`}</Typography>
+                    <Typography>{`Host: ${session.creator.name}`}</Typography>
                     <Typography>
-                      {confirmStudentCount(session)} {"students confirmed"}
+                      {`${session.participant.length}`} student confirmed to
+                      join
                     </Typography>
+                    <Typography></Typography>
                   </CardContent>
                 </Box>
                 <CardActions>
                   <AppButton
-                    text={"Confirm"}
+                    text={"Yes"}
                     type="button"
                     width="auto"
-                    color="#055c1c"
-                    handlerFunction={() => handleStatus(session._id)}
-                  >
-                    <CheckIcon></CheckIcon>
-                  </AppButton>
+                    color={confirm ? "#008000" : "#FF7F50"}
+                    handlerFunction={() => handleConfirmStatus(session._id)}
+                  ></AppButton>
+                  <AppButton
+                    text={"No"}
+                    type="button"
+                    width="auto"
+                    color="#FF7F50"
+                    handlerFunction={() => handleCancelStatus(session._id)}
+                  ></AppButton>
                 </CardActions>
               </Card>
             ))

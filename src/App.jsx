@@ -170,7 +170,7 @@ const App = () => {
               element={<RequireAuth allowedRole={["mentor"]}></RequireAuth>}
             >
               <Route
-                path="cohort/:cohortId"
+                path="mentor/cohort/:cohortId"
                 element={<Cohort></Cohort>}
               ></Route>
             </Route>

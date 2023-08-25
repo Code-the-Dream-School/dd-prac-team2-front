@@ -49,8 +49,11 @@ const StudentSession = () => {
       `/session/${sessionId}/student/status`
     );
     console.log(data);
-    setUserStatus(data.userStatus);
-
+    if (data) {
+      setUserStatus("Confirm");
+    } else {
+      setUserStatus("Not Joining");
+    }
     setLoading(false);
   };
 
@@ -110,7 +113,7 @@ const StudentSession = () => {
             fontSize: 25,
           }}
         >
-          {currentSession?.type}
+          {currentSession?.type} Session
         </Typography>
         <Typography
           sx={{
@@ -123,7 +126,7 @@ const StudentSession = () => {
             fontSize: 25,
           }}
         >
-          Host: {currentSession?.creator.name}
+          {currentSession?.creator.name}
         </Typography>
         <Typography
           sx={{
@@ -177,12 +180,7 @@ const StudentSession = () => {
             >
               <Box>
                 <CardContent>
-                  <Typography variant="h5">{`${p.user.userInfo.name}`}</Typography>
-                </CardContent>
-              </Box>
-              <Box>
-                <CardContent>
-                  <Typography>{`Status: ${p.user.userStatus}`}</Typography>
+                  <Typography variant="h5">{`${p.name}`}</Typography>
                 </CardContent>
               </Box>
             </Card>
@@ -196,7 +194,7 @@ const StudentSession = () => {
               textAlign: "center",
             }}
           >
-            No sessions scheduled for this week
+            No students in this session
           </Typography>
         )}
       </List>
