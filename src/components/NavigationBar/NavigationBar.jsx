@@ -53,6 +53,8 @@ import useAuth from "../../hooks/useAuth";
 */
 import styles from "./NavigationBar.module.css";
 import NavigationBarButton from "../NavigationBar/NavigationBarButton";
+import UpdatePassword from './Actions/UpdatePassword';
+import UpdateProfile from './Actions/UpdateProfile';
 
 const drawerWidth = "auto";
 
@@ -111,26 +113,28 @@ const settings = ["Update profile", "Update password", "Sign out"];
 
 const NavigationBar = ({ onExpireAuth }) => {
   /*
-        ==========================
-        =         CONTEXT        =
-        ==========================
-    */
+    ==========================
+    =         CONTEXT        =
+    ==========================
+  */
   const { auth } = useAuth();
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   //1. State used for nav-bar hamburguer menu position:
   const [anchorNav, setAnchorNav] = useState(false);
   //2. State used for user settings position:
   const [anchorElUser, setAnchorElUser] = useState(null);
-
+  //3. State used to open profile dialog:
+  const [openProfileDialog, setOpenProfileDialog] = useState(false);
+  const [openPasswordDialog, setOpenPasswordDialog] = useState(false);
   /*
-        ==========================
-        =        HANDLERS        =
-        ==========================
-    */
+    ==========================
+    =        HANDLERS        =
+    ==========================
+  */
   //1. Handler for opening the nav-bar hamburguer menu.
   const handleDrawerToggling = (open, event) => {
     //If the user moves the selected list item using the tab key or enters a list item using enter key: do not close the drawer.
@@ -149,27 +153,30 @@ const NavigationBar = ({ onExpireAuth }) => {
   };
   //3. Handler for closing the user settings menu.
   const handleCloseUserMenu = (event, setting) => {
-    if (
-      event &&
-      event.type === "keydown" &&
-      (event.key === "Tab" || event.key === "Shift")
-    ) {
-      return;
+    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) 
+    {
+        return;
     }
-    if (setting === "Sign out") {
-      setAnchorNav(false);
-      setAnchorElUser(null);
-      onExpireAuth();
-    } else {
-      setAnchorElUser(null);
+    if(setting === "Sign out"){
+        setAnchorNav(false);
+        setAnchorElUser(null);
+        onExpireAuth();
+    }
+    else if (setting === "Update profile"){
+      setOpenProfileDialog(true);
+    }
+    else if (setting === "Update password"){
+      setOpenPasswordDialog(true);
+    }
+    else{
+        setAnchorElUser(null);
     }
   };
-
   /*
-        ==========================
-        =    COMPONENT RENDER    =
-        ==========================
-    */
+    ==========================
+    =    COMPONENT RENDER    =
+    ==========================
+  */
   return (
     <>
       <AppBar position="fixed" sx={{ bgcolor: "#1A1A2E" }} open={anchorNav}>
@@ -377,9 +384,19 @@ const NavigationBar = ({ onExpireAuth }) => {
           </List>
         </Box>
       </SwipeableDrawer>
+      {
+        openProfileDialog ?
+        (<UpdateProfile open={openProfileDialog} handleOpenDialog={setOpenProfileDialog}></UpdateProfile>)
+        : null
+      }
+      {
+        openPasswordDialog ?
+        (<UpdatePassword open={openPasswordDialog} handleOpenDialog={setOpenPasswordDialog}></UpdatePassword>)
+        : null
+      }
     </>
   );
-};
+}
 
 export default NavigationBar;
 

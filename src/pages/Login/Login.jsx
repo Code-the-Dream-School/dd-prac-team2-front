@@ -67,24 +67,26 @@ const Login = () => {
         ==========================
         =        HANDLERS        =
         ==========================
-    */
+  */
   //1. Form submit:
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const loggedUser = {
-      email: event.target.email.value.trim().toLowerCase(),
-      password: event.target.password.value.trim(),
+        email: (event.target.email.value.trim()).toLowerCase(),
+        password: event.target.password.value.trim()
     };
     const errors = Object.values(formError);
-    try {
-      if (!errors.some((error) => error.error === true)) {
-        const response = await axios.post(`auth/login`, loggedUser, {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        console.log(response);
+    try{
+      if(!errors.some((error)=>error.error===true)){
+        const response = await axios.post(`auth/login`,
+            loggedUser,
+            {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
         console.log(response.data);
         const userId = response.data.user.userId;
         const userName = response.data.user.name;
@@ -92,23 +94,14 @@ const Login = () => {
         const role = response.data.user.role;
         console.log("Welcome: ", userName, userId);
         console.log("Access token: ", accessToken);
-        setAuth({
-          userId,
-          userName,
-          userEmail: loggedUser.email,
-          role,
-          loggedIn: true,
-          accessToken,
-        });
+        setAuth({userId, userName, userEmail:loggedUser.email, role, loggedIn:true, accessToken});
         setReset(true);
-        navigate(from, { replace: true });
-      } else {
-        console.log(
-          "There is an error that is preventing the form submission",
-          errors
-        );
+        navigate(from, {replace: true});
       }
-    } catch (error) {
+      else{
+        console.log("There is an error that is preventing the form submission", errors);
+      }
+    } catch(error){
       console.error(error.response.data);
     }
   };
@@ -198,6 +191,7 @@ const Login = () => {
                 >
                   <Email fontSize="large"></Email>
                   <br></br>
+                  <br></br>
                 </Box>
                 <FormTextField
                   required
@@ -222,6 +216,7 @@ const Login = () => {
                   }}
                 >
                   <LockRounded fontSize="large"></LockRounded>
+                  <br></br>
                   <br></br>
                 </Box>
                 <FormTextField

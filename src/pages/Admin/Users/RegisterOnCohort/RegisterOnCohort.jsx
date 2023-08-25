@@ -3,7 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { useNavigate, useParams } from 'react-router-dom';
 import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
 import { Container, Paper, Box, Typography } from '@mui/material';
 import { AccountBoxRounded, AdminPanelSettingsRounded, BadgeRounded, Email } from '@mui/icons-material';
@@ -14,6 +13,7 @@ import { AccountBoxRounded, AdminPanelSettingsRounded, BadgeRounded, Email } fro
     ==========================
 */
 import React, {useState, useEffect} from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 /*
     ==========================
@@ -21,6 +21,14 @@ import React, {useState, useEffect} from 'react';
     ==========================
 */
 import styles from "./RegisterOnCohort.module.css";
+
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from '../../../../hooks/useAuth';
+
 /*
     ==========================
     =        COMPONENTS      =
@@ -51,12 +59,15 @@ const RegisterOnCohort = () => {
     const {cohortId} = useParams()
     const axiosPrivate = useAxiosPrivate();
     const navigate = useNavigate();
+    const location = useLocation();
+    const {setAuth} = useAuth();
 
     /*
         ==========================
         =         STATES         =
         ==========================
     */
+    //Fetched data states:
     const [cohortUsers, setCohortUsers] = useState([]);
     const [cohortData, setCohortData] = useState({});
     //Form states
@@ -75,9 +86,8 @@ const RegisterOnCohort = () => {
             errorMessage: "Please select a role for this user"
         },
     });
-    console.log(cohortUsers);
     const [reset, setReset] = useState(false);
-
+    
     /*
         ==========================
         =      AUX VARIABLES     =
@@ -115,6 +125,7 @@ const RegisterOnCohort = () => {
                     cohortId: cohortId,
                     cohortName: response.data.cohort[0].name
                 }
+                console.log(formattedUsers);
                 setCohortUsers(formattedUsers);
                 setCohortData(formattedCohortData);
             }
@@ -123,7 +134,24 @@ const RegisterOnCohort = () => {
             }
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     }
 
@@ -161,7 +189,8 @@ const RegisterOnCohort = () => {
             })
         );
     };
-
+    
+    //Form submit:
     const handleRegisterOnCohortSubmit = async (event) => {
         event.preventDefault();
         const formattedUserRegistration = {
@@ -197,10 +226,26 @@ const RegisterOnCohort = () => {
             else{
                 console.error("There is an error preventing the form submission: check that your entires are correctly validated");
             }
-
         }
         catch(error){
-            console.error(error);
+            if(error.response.status === 403){
+                console.error(error);
+                //User is required to validate auth again
+                navigate("/login", {state:{from: location}, replace: true});
+                setAuth({
+                    userId: "",
+                    userName: "",
+                    userEmail: "",
+                    role: [],
+                    loggedIn: false,
+                    avatarUrl: "",
+                    isActive: undefined,
+                    accessToken: ""
+                });
+            }
+            else{
+                console.error(error);
+            }
         }
     };
 
@@ -270,12 +315,14 @@ const RegisterOnCohort = () => {
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <BadgeRounded fontSize="large"></BadgeRounded>
                                 <br></br>
+                                <br></br>
                             </Box>
                             <FormTextField required type="text" label="Full name:" name="userName" isFocused={true} width="100%" variant="light" regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/} onHandleError={handleUserNameError} errorMessage={"Please enter a valid name"} reset={reset}></FormTextField>
                         </AuthFormControl>
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <Email fontSize="large"></Email>
+                                <br></br>
                                 <br></br>
                             </Box>
                             <FormTextField required type="text" label="E-mail:" name="userEmail" isFocused={false} width="100%" variant="light" regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/} onHandleError={handleUserEmailError} errorMessage={"Please enter a valid e-mail address"} reset={reset}></FormTextField>

@@ -32,6 +32,7 @@ import MentorHome from "./pages/Home/MentorHome";
 import StudentHome from "./pages/Home/StudentHome";
 import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCohort";
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
+import AccountConfirmation from './pages/AccountConfirmation/AccountConfirmation';
 import Cohort from "./pages/Mentor/Cohort";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
@@ -74,12 +75,14 @@ const App = () => {
       });
       console.log("LOGOUT", response);
       setAuth({
-        useId: "",
+        userId: "",
         userName: "",
         userEmail: "",
         role: [],
         loggedIn: false,
-        accessToken: "",
+        avatarUrl: "",
+        isActive: undefined,
+        accessToken: ""
       });
     } catch (error) {
       console.error(error);
@@ -94,22 +97,33 @@ const App = () => {
     <>
       <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar onExpireAuth={handleExpireAuth} />
-        </ThemeProvider>
+          <NavigationBar onExpireAuth={handleExpireAuth}/>
+        </ThemeProvider> 
       </header>
       <main>
-        <br />
+        <br/>
         <Routes>
           {/* Public routes */}
           <Route element={<PersistLogin></PersistLogin>}>
             <Route
-              path="/login"
+              path='/login'
               element={
-                auth.loggedIn ? (
-                  <Navigate to="/"></Navigate>
-                ) : (
+                auth.loggedIn
+                ? (<Navigate to="/"></Navigate>)
+                : (
+                    <ThemeProvider theme={theme}>
+                      <Login/>
+                    </ThemeProvider>
+                  )
+              }
+            />
+            <Route
+              path="/confirmation"
+              element={
+                auth.loggedIn ? (<Navigate to="/"></Navigate>)
+                : (
                   <ThemeProvider theme={theme}>
-                    <Login />
+                    <AccountConfirmation/>
                   </ThemeProvider>
                 )
               }
