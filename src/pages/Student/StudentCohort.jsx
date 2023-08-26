@@ -74,9 +74,14 @@ const StudentCohort = () => {
   */
   const getCurrentWeek = async () => {
     setLoading(true);
-    const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
-    setCurrentWeek(data.currentWeek);
-    setLoading(false);
+    try {
+      const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
+      setCurrentWeek(data.currentWeek);
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   };
 
   const handleConfirmStatus = async (sessionID) => {
@@ -173,7 +178,9 @@ const StudentCohort = () => {
   };
 
   const handleClick = (sessionId) => {
-    navigate(`/student/session/${sessionId}`);
+    if (sessionId) {
+      navigate(`/student/session/${sessionId}`);
+    }
   };
   /* 
       ==========================
