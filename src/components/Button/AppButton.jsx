@@ -33,6 +33,7 @@ const AppButton = ({children, text, type, width, height, color, textColor, handl
                 mx:0, 
                 color: textColor ? textColor : "white", 
                 backgroundColor: color ? color:"#C84B31",
+                border: textColor ? `2px solid ${textColor}` : `2px solid ${color}`,
                 width: width,
                 display:"flex", 
                 alignItems:"center", 
