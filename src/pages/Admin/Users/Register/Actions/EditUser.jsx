@@ -3,9 +3,9 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
-import { AdminPanelSettingsRounded, BadgeRounded, Close, Email } from '@mui/icons-material';
-import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
+import { Dialog, DialogActions, DialogContent, DialogTitle, Slide, Typography } from '@mui/material';
+import { Box } from '@mui/system';
+import { AdminPanelSettingsRounded, Close, School } from '@mui/icons-material';
 import PropTypes from "prop-types";
 
 /*
@@ -13,23 +13,24 @@ import PropTypes from "prop-types";
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState, forwardRef, useEffect } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 /*
     ==========================
     =        STYLES          =
     ==========================
 */
-import styles from "../RegisterOnCohort.module.css";
+import styles from "../RegisterUsers.module.css";
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
 import AppButton from '../../../../../components/Button/AppButton';
-import FormTextField from '../../../../../components/TextField/FormTextField';
 import AuthFormControl from '../../../../../components/FormControl/AuthFormControl';
+import FormAutocomplete from '../../../../../components/Autocomplete/Autocomplete';
 import FormSelect from '../../../../../components/Select/FormSelect';
+import useAxiosPrivate from '../../../../../hooks/useAxiosPrivate';
 /*
     ==========================
     =          HOOKS         =
@@ -47,7 +48,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCohortUsers}) => {
+const EditUser = ({openDialog, userInfo, fetchedCohorts, onCloseDialog, onHandleUsers}) => {
     /*
         ==========================
         =          HOOKS         =
@@ -61,84 +62,77 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
         ==========================
         =         STATES         =
         ==========================
-    */
-    //Form states
-    const [userRoles, setUserRoles] = useState(cohortUserInfo.row.userRole.map((role)=>(role[0].toUpperCase()+role.slice(1))));
+    */   
+    //Fetched data states:
+    const [cohorts, setCohorts] = useState(fetchedCohorts);
+    const [userRoles, setUserRoles] = useState(userInfo.row.userRole.map((role)=>(role[0].toUpperCase()+role.slice(1))));
+    //Form states:
+    const [cohortsValueSelected, setCohortsValueSelected] = useState(userInfo.row.userCohort);
+    const [cohortsInputValueSelected, setCohortsInputValueSelected] = useState("");
     const [formError, setFormError] = useState({
+        userCohortError: {
+            error:false,
+            errorMessage: "Please add a cohort for this user"
+        },        
         userRolesError: {
-            error: false,
+            error: true,
             errorMessage: "Please select a role for this user"
         },
     });
-    const [reset, setReset] = useState(false);
-
-    /* 
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
-    useEffect(()=>{
-        setFormError((prevState) => ({
-                ...prevState,
-                userRolesError: {
-                    ...prevState.userRolesError,
-                    error: userRoles.length === 0 ? true:false
-                }
-            }) 
-        );
-    }, [userRoles]);
-
-    useEffect(()=>{
-        setReset(false);
-    });
+    console.log(cohorts, userInfo.row.userCohort);
 
     /*
         ==========================
         =   HANDLER FUNCTIONS    =
         ==========================
     */
-    // onSelect Role:
-    const handleOnSelectRole = (selectedRoleName) => {
+    //User cohorts
+    const handleValueSelectedChange = (newValue) => {
+        setCohortsValueSelected(newValue);
+    }
+     // onSelect Role:
+     const handleOnSelectRole = (selectedRoleName) => {
         setUserRoles(selectedRoleName);
     }
 
-    //Edit user submit:
-    const handleEditCohortUserSubmit = async (event) => {
+    //Edit dialog onSubmit:
+    const handleEditUserSubmit = async (event) => {
         event.preventDefault();
-        const cohortUserToBeUpdated = cohortUserInfo.row.id;
-        console.log(userRoles);
+        const userToBeUpdated = userInfo.row.id;
+        const formattedUpdatedUser = {
+            id: userToBeUpdated,
+            userCohort: cohortsValueSelected,
+            userRole: userRoles.map((role)=>role.toLowerCase())
+        };
         const body = {
-            role: userRoles.map((role)=>role.toLowerCase())
-        };        
-        console.log(body);
+            role: formattedUpdatedUser.userRole,
+            cohorts: formattedUpdatedUser.userCohort.map((cohort)=>cohort.id)
+        }
         const errors = Object.values(formError);
         try{
             if(!errors.some((error)=>error.error===true)){
-                const response = await axiosPrivate.patch(`/users/${cohortUserToBeUpdated}`,
-                    body
-                );
+                const response = await axiosPrivate.patch(`users/${userToBeUpdated}`, body);
                 console.log(response);
-                onHandleCohortUsers((prevCohortUsers) => 
-                    prevCohortUsers.map((prevCohortUser)=>{
-                        if (prevCohortUser.id === cohortUserToBeUpdated){
-                            return (
-                                {
-                                    ...prevCohortUser,
-                                    userRole: userRoles.map((role)=>role.toLowerCase()),
-                                }
-                            );
-                        }
-                        else{
-                            return prevCohortUser;
-                        }
+                onHandleUsers((prevUsers) => 
+                    prevUsers.map((user)=>{
+                    if (user.id===userToBeUpdated){
+                        return (
+                            {
+                                ...user,
+                                userCohort: formattedUpdatedUser.userCohort,
+                                userRole: formattedUpdatedUser.userRole
+                            }
+                        );
+                    }
+                    else{
+                        return user;
+                    }
                     })
                 );
-                setReset(true);
-                setUserRoles([]);
                 onCloseDialog();
             }
             else{
-                console.error("There is an error preventing the form submission: check that your entires are correctly validated");
+                console.error("There are some errors preventing the form to be submitted");
             }
         }
         catch(error){
@@ -159,9 +153,38 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
             }
             else{
                 console.error(error);
-            }      
+            }   
         }
-    };
+        
+    }
+    /* 
+        ==========================
+        =        EFFECTS         =
+        ==========================
+    */
+    useEffect(()=>{
+        setFormError((prevState)=>
+        (
+            {
+                ...prevState,
+                userCohortError:{
+                    ...prevState.userCohortError,
+                    error: cohortsValueSelected.length === 0 ? true:false
+                }
+            }
+        ));
+    }, [cohortsValueSelected]);
+
+    useEffect(()=>{
+        setFormError((prevState) => ({
+                ...prevState,
+                userRolesError: {
+                    ...prevState.userRolesError,
+                    error: userRoles.length === 0 ? true:false
+                }
+            }) 
+        );
+    }, [userRoles]);
 
     return (
         <Dialog open={openDialog} TransitionComponent={Transition} onClose={onCloseDialog} fullWidth maxWidth="sm">
@@ -182,10 +205,20 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
                     color: "#C84B31"
                 }}
                 autoComplete="off"
-                onSubmit={handleEditCohortUserSubmit}
+                onSubmit={handleEditUserSubmit}
             >
-                <DialogContent sx={{width:"100%", paddingX:0, paddingY:1}} dividers>
+                <DialogContent sx={{width:"100%", height: "auto",  paddingX:0, paddingY:1}} dividers>
                     <div className={styles.formContainer}>
+                        <AuthFormControl width="75%">
+                            <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
+                                <School fontSize="large"/>
+                                <br></br>
+                                <br></br>
+                            </Box>
+                            <AuthFormControl width="100%" isNested={true}>
+                                <FormAutocomplete multiple={true} value={cohortsValueSelected} onHandleSelectedValueChange={handleValueSelectedChange} inputValue={cohortsInputValueSelected} onHandleInputValueChange={setCohortsInputValueSelected} options={cohorts} error={formError.userCohortError} variant={"dark"}></FormAutocomplete>
+                            </AuthFormControl>
+                        </AuthFormControl>
                         <AuthFormControl width="75%">
                             <Box sx={{display:"flex", flexDirection:"column", justifyContent:"center"}}>
                                 <AdminPanelSettingsRounded fontSize="large"/>
@@ -205,11 +238,12 @@ const EditCohortUser = ({openDialog, cohortUserInfo, onCloseDialog, onHandleCoho
     )
 };
 
-export default EditCohortUser;
+export default EditUser;
 
-EditCohortUser.propTypes = {
+EditUser.propTypes = {
     openDialog: PropTypes.bool.isRequired,
-    cohortUserInfo: PropTypes.object.isRequired,
+    userInfo: PropTypes.object.isRequired,
+    fetchedCohorts: PropTypes.array.isRequired,
     onCloseDialog: PropTypes.func.isRequired,
-    onHandleCohortUsers: PropTypes.func.isRequired,
+    onHandleUsers: PropTypes.func.isRequired,
 };

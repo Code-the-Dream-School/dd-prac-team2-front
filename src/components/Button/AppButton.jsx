@@ -17,7 +17,7 @@ const StyledButton = styled(Button)(() => ({
     transition: "all 0.2s ease-in-out",
 }));
 
-const AppButton = ({children, text, type, width, color, textColor, handlerFunction}) => {
+const AppButton = ({children, text, type, width, height, color, textColor, handlerFunction}) => {
 
 
     const handleOnClick = () => {

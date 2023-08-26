@@ -3,9 +3,10 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import {createContext, useState} from "react";
+import { createContext, useState } from "react";
 
 const AuthContext = createContext({});
+
 
 export const AuthProvider = ({children})=>{
     const [auth, setAuth] = useState({
@@ -14,14 +15,16 @@ export const AuthProvider = ({children})=>{
         userEmail: "",
         role: [],
         loggedIn: false,
+        avatarUrl: "",
+        isActive: undefined,
         accessToken: ""
     });
 
-    return(
-        <AuthContext.Provider value={{auth, setAuth}}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ auth, setAuth }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthContext;
