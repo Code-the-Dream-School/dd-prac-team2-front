@@ -21,7 +21,7 @@ const StudentHome = () => {
     fetchCohorts();
   }, [axiosPrivate]);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (cohorts.length === 1) {
       navigate(`/student/cohort/${cohorts[0]._id}`, { state: cohorts[0] });
     }

@@ -45,7 +45,7 @@ const StudentCohort = () => {
       ==========================
       =         STATES         =
       ==========================
-  */   
+  */
   const [currentWeek, setCurrentWeek] = useState();
   const [loading, setLoading] = useState(false);
   const cohortId = state._id;
@@ -57,14 +57,15 @@ const StudentCohort = () => {
       ==========================
   */
   const isUserOnSession = (sessionID) => {
-    const sessionToBeChecked = currentWeek.sessions.filter((session)=>session._id === sessionID);
-    if(sessionToBeChecked[0].participant.includes(auth.userId)){
+    const sessionToBeChecked = currentWeek.sessions.filter(
+      (session) => session._id === sessionID
+    );
+    if (sessionToBeChecked[0].participant.includes(auth.userId)) {
       return true;
-    }
-    else{
+    } else {
       return false;
     }
-  }
+  };
 
   /*
       ==========================
@@ -79,121 +80,95 @@ const StudentCohort = () => {
   };
 
   const handleConfirmStatus = async (sessionID) => {
-    if(!isUserOnSession(sessionID)){
+    if (!isUserOnSession(sessionID)) {
       setLoading(true);
-      try{
+      try {
         const { data } = await axiosPrivate.patch(
           `/session/${sessionID}/student/updateStatus`,
           {
             status: true,
           }
         );
-        setCurrentWeek((prevState) => 
-          (
-            {
-              ...prevState,
-              sessions: prevState.sessions.map(
-                (session) => {
-                  if(session._id===sessionID){
-                    return (
-                      {
-                        ...session,
-                        participant: [
-                          ...session.participant,
-                          auth.userId
-                        ]
-                      }
-                    );
-                  }
-                  else{
-                    return session;
-                  }
-                }
-              )
+        setCurrentWeek((prevState) => ({
+          ...prevState,
+          sessions: prevState.sessions.map((session) => {
+            if (session._id === sessionID) {
+              return {
+                ...session,
+                participant: [...session.participant, auth.userId],
+              };
+            } else {
+              return session;
             }
-          )
-        )
+          }),
+        }));
         setLoading(false);
-      }
-      catch(error){
-        if(error.response.status === 403){
+      } catch (error) {
+        if (error.response.status === 403) {
           setLoading(false);
           //User is required to validate auth again
-          navigate("/login", {state:{from: location}, replace: true});
+          navigate("/login", { state: { from: location }, replace: true });
           setAuth({
-              userId: "",
-              userName: "",
-              userEmail: "",
-              role: [],
-              loggedIn: false,
-              avatarUrl: "",
-              isActive: undefined,
-              accessToken: ""
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
           });
-        }
-        else{
+        } else {
           setLoading(false);
           console.error(error);
-        }   
-      }          
+        }
+      }
     }
   };
 
   const handleCancelStatus = async (sessionID) => {
-    if(isUserOnSession(sessionID)){
+    if (isUserOnSession(sessionID)) {
       setLoading(true);
-      try{
-        await axiosPrivate.patch(
-          `/session/${sessionID}/student/updateStatus`,
-          {
-            status: false,
-          }
-        );
-        setCurrentWeek((prevState) => 
-          (
-            {
-              ...prevState,
-              sessions: prevState.sessions.map(
-                (session) => {
-                  if(session._id===sessionID){
-                    return (
-                      {
-                        ...session,
-                        participant: session.participant.filter((participant) => participant!==auth.userId)
-                      }
-                    );
-                  }
-                  else{
-                    return session;
-                  }
-                }
-              )
+      try {
+        await axiosPrivate.patch(`/session/${sessionID}/student/updateStatus`, {
+          status: false,
+        });
+        setCurrentWeek((prevState) => ({
+          ...prevState,
+          sessions: prevState.sessions.map((session) => {
+            if (session._id === sessionID) {
+              return {
+                ...session,
+                participant: session.participant.filter(
+                  (participant) => participant !== auth.userId
+                ),
+              };
+            } else {
+              return session;
             }
-          )
-        );    
+          }),
+        }));
         setLoading(false);
-      }
-      catch(error){
-        if(error.response.status === 403){
+      } catch (error) {
+        if (error.response.status === 403) {
           setLoading(false);
           //User is required to validate auth again
-          navigate("/login", {state:{from: location}, replace: true});
+          navigate("/login", { state: { from: location }, replace: true });
           setAuth({
-              userId: "",
-              userName: "",
-              userEmail: "",
-              role: [],
-              loggedIn: false,
-              avatarUrl: "",
-              isActive: undefined,
-              accessToken: ""
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
           });
+        } else {
+          setLoading(false);
+          console.error(error);
         }
-        else{
-            setLoading(false);
-            console.error(error);
-        }   
-      } 
+      }
     }
   };
 
@@ -287,57 +262,51 @@ const StudentCohort = () => {
                   </CardContent>
                 </Box>
                 <CardActions>
-                  {
-                    session.participant.includes(auth.userId) ?
-                    (
-                      <>
-                        <AppButton
-                          text={"Yes"}
-                          type="button"
-                          width="auto"
-                          color={"#609966"}
-                          handlerFunction={() => handleConfirmStatus(session._id)}
-                        >
-                          <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
-                        </AppButton>
-                        <AppButton
-                          text={"No"}
-                          type="button"
-                          width="auto"
-                          color={"white"}
-                          textColor={"#1A1A2E"}
-                          handlerFunction={() => handleCancelStatus(session._id)}
-                        >
-                          <CancelOutlined></CancelOutlined>
-                        </AppButton>
-                      </>
-                    )
-                    :
-                    (
-                      <>
-                        <AppButton
-                          text={"Yes"}
-                          type="button"
-                          width="auto"
-                          color={"white"}
-                          textColor={"#1A1A2E"}
-                          handlerFunction={() => handleConfirmStatus(session._id)}
-                        >
-                          <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
-                        </AppButton>
-                        <AppButton
-                          text={"No"}
-                          type="button"
-                          width="auto"
-                          color="#CD1818"
-                          handlerFunction={() => handleCancelStatus(session._id)}
-                        >
-                          <CancelOutlined></CancelOutlined>
-                        </AppButton>
-                      </>
-                    )
-                  }
-                  
+                  {session.participant.includes(auth.userId) ? (
+                    <>
+                      <AppButton
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"#609966"}
+                        handlerFunction={() => handleConfirmStatus(session._id)}
+                      >
+                        <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                      </AppButton>
+                      <AppButton
+                        text={"No"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+                        handlerFunction={() => handleCancelStatus(session._id)}
+                      >
+                        <CancelOutlined></CancelOutlined>
+                      </AppButton>
+                    </>
+                  ) : (
+                    <>
+                      <AppButton
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+                        handlerFunction={() => handleConfirmStatus(session._id)}
+                      >
+                        <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                      </AppButton>
+                      <AppButton
+                        text={"No"}
+                        type="button"
+                        width="auto"
+                        color="#CD1818"
+                        handlerFunction={() => handleCancelStatus(session._id)}
+                      >
+                        <CancelOutlined></CancelOutlined>
+                      </AppButton>
+                    </>
+                  )}
                 </CardActions>
               </Card>
             ))

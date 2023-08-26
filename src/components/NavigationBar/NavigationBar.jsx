@@ -53,8 +53,8 @@ import useAuth from "../../hooks/useAuth";
 */
 import styles from "./NavigationBar.module.css";
 import NavigationBarButton from "../NavigationBar/NavigationBarButton";
-import UpdatePassword from './Actions/UpdatePassword';
-import UpdateProfile from './Actions/UpdateProfile';
+import UpdatePassword from "./Actions/UpdatePassword";
+import UpdateProfile from "./Actions/UpdateProfile";
 
 const drawerWidth = "auto";
 
@@ -106,16 +106,16 @@ const adminPages = [
 ];
 
 const mentorPages = [
-    {
-        title: "Home",
-        icon: <HomeRounded sx={{ color: "white" }} />,
-        link: "/mentor",
-    },
-    {
-        title: "Sessions",
-        icon: <SchoolRounded sx={{ color: "white" }} />,
-        link: "/mentor/sessions",
-    },
+  {
+    title: "Home",
+    icon: <HomeRounded sx={{ color: "white" }} />,
+    link: "/mentor",
+  },
+  {
+    title: "Sessions",
+    icon: <SchoolRounded sx={{ color: "white" }} />,
+    link: "/mentor/sessions",
+  },
 ];
 
 const studentPages = [
@@ -166,23 +166,23 @@ const NavigationBar = ({ onExpireAuth }) => {
   };
   //3. Handler for closing the user settings menu.
   const handleCloseUserMenu = (event, setting) => {
-    if (event && event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) 
-    {
-        return;
+    if (
+      event &&
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
     }
-    if(setting === "Sign out"){
-        setAnchorNav(false);
-        setAnchorElUser(null);
-        onExpireAuth();
-    }
-    else if (setting === "Update profile"){
+    if (setting === "Sign out") {
+      setAnchorNav(false);
+      setAnchorElUser(null);
+      onExpireAuth();
+    } else if (setting === "Update profile") {
       setOpenProfileDialog(true);
-    }
-    else if (setting === "Update password"){
+    } else if (setting === "Update password") {
       setOpenPasswordDialog(true);
-    }
-    else{
-        setAnchorElUser(null);
+    } else {
+      setAnchorElUser(null);
     }
   };
   /*
@@ -257,27 +257,17 @@ const NavigationBar = ({ onExpireAuth }) => {
                     : auth.role.includes("mentor")
                     ? mentorPages.map((page) => {
                         return (
-                          <Link
-                              key={page.title}
-                              to={page.link}
-                          >
+                          <Link key={page.title} to={page.link}>
                             <NavigationBarButton
-                                text={page.title}
-                                iconComponent={
-                                    page.icon
-                                }
-                                onDrawerToggling={(
-                                    event
-                                ) =>
-                                    handleDrawerToggling(
-                                        false,
-                                        event
-                                    )
-                                }
+                              text={page.title}
+                              iconComponent={page.icon}
+                              onDrawerToggling={(event) =>
+                                handleDrawerToggling(false, event)
+                              }
                             />
                           </Link>
                         );
-                    })
+                      })
                     : auth.role.includes("student")
                     ? studentPages.map((page) => {
                         return (
@@ -419,19 +409,21 @@ const NavigationBar = ({ onExpireAuth }) => {
           </List>
         </Box>
       </SwipeableDrawer>
-      {
-        openProfileDialog ?
-        (<UpdateProfile open={openProfileDialog} handleOpenDialog={setOpenProfileDialog}></UpdateProfile>)
-        : null
-      }
-      {
-        openPasswordDialog ?
-        (<UpdatePassword open={openPasswordDialog} handleOpenDialog={setOpenPasswordDialog}></UpdatePassword>)
-        : null
-      }
+      {openProfileDialog ? (
+        <UpdateProfile
+          open={openProfileDialog}
+          handleOpenDialog={setOpenProfileDialog}
+        ></UpdateProfile>
+      ) : null}
+      {openPasswordDialog ? (
+        <UpdatePassword
+          open={openPasswordDialog}
+          handleOpenDialog={setOpenPasswordDialog}
+        ></UpdatePassword>
+      ) : null}
     </>
   );
-}
+};
 
 export default NavigationBar;
 

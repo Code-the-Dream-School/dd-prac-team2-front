@@ -7,18 +7,17 @@ import { createContext, useState } from "react";
 
 const AuthContext = createContext({});
 
-
-export const AuthProvider = ({children})=>{
-    const [auth, setAuth] = useState({
-        userId: "",
-        userName: "",
-        userEmail: "",
-        role: [],
-        loggedIn: false,
-        avatarUrl: "",
-        isActive: undefined,
-        accessToken: ""
-    });
+export const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState({
+    userId: "",
+    userName: "",
+    userEmail: "",
+    role: [],
+    loggedIn: false,
+    avatarUrl: "",
+    isActive: undefined,
+    accessToken: "",
+  });
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
