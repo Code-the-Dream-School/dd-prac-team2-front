@@ -1,5 +1,5 @@
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -21,9 +21,12 @@ function CreateSession({ updateSessions }) {
     const axiosPrivate = useAxiosPrivate();
     const [cohort] = useOutletContext();
 
-    if (!cohort) {
-        navigate("/mentor");
-    }
+    useEffect(()=>{
+        if (!cohort) {
+            navigate("/mentor");
+        }
+    }, [])
+
 
     const handleClick = async () => {
         const res = await axiosPrivate.post("/session", {
