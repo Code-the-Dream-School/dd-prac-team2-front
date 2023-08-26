@@ -9,7 +9,11 @@ import {
   AccountBoxRounded,
   AdminPanelSettingsRounded,
   BadgeRounded,
+  CloudDownloadRounded,
   Email,
+  FindInPageRounded,
+  PersonAddRounded,
+  PersonSearch,
 } from "@mui/icons-material";
 
 /*
@@ -361,6 +365,35 @@ const RegisterOnCohort = () => {
           {" "}
           {cohortData.cohortName}'S users management{" "}
         </Typography>
+        <div className={styles.formContainer}>
+          <AuthFormControl width="75%">
+            <AppButton
+              text={"Add new user"}
+              type="button"
+              width="100%"
+              handlerFunction={() => {}}
+            >
+              <PersonAddRounded fontSize="large"></PersonAddRounded>
+            </AppButton>
+            <AppButton
+              text={"Add existing user"}
+              type="button"
+              width="100%"
+              handlerFunction={() => {}}
+            >
+              <PersonSearch fontSize="large"></PersonSearch>
+            </AppButton>
+            <AppButton
+              text={"Import users from Slack"}
+              type="button"
+              width="100%"
+              handlerFunction={() => {}}
+            >
+              <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
+            </AppButton>
+          </AuthFormControl>
+        </div>
+        {/*
         <Box
           component={"form"}
           sx={{
@@ -463,10 +496,12 @@ const RegisterOnCohort = () => {
             />
           </div>
         </Box>
+      */}
+        
         <AppDataGrid
           columns={columns}
           rows={cohortUsers}
-          pageSize={10}
+          pageSize={15}
           fieldToBeSorted={"userName"}
           sortType={"asc"}
         />
