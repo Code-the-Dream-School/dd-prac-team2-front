@@ -1,0 +1,8 @@
+logs
+*.log
+npm-debug.log*
+dist/
+.npm
+.eslintcache
+.env
+.DS_Store
