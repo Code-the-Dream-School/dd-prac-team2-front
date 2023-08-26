@@ -34,6 +34,8 @@ import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCoh
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import AccountConfirmation from './pages/AccountConfirmation/AccountConfirmation';
 import Cohort from "./pages/Mentor/Cohort";
+import MentorSessions from "./pages/Mentor/MentorSessions";
+import MentorContext from "./pages/Mentor/MentorContext";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
 /*
@@ -44,14 +46,14 @@ import StudentSession from "./pages/Student/StudentSession";
 const font = "Montserrat, sans-serif";
 
 const theme = createTheme({
-  typography: {
-    allVariants: {
-      fontFamily: font,
-      fontWeight: "bold",
-      textTransform: "none",
-      fontSize: 16,
+    typography: {
+        allVariants: {
+            fontFamily: font,
+            fontWeight: "bold",
+            textTransform: "none",
+            fontSize: 16,
+        },
     },
-  },
 });
 const App = () => {
   /*
@@ -59,15 +61,14 @@ const App = () => {
       =        CONTEXT         =
       ==========================
   */
-  //1. User auth status:
-  const { auth, setAuth } = useAuth();
+    //1. User auth status:
+    const { auth, setAuth } = useAuth();
 
   /*
       ==========================
       =        HANDLERS        =
       ==========================
   */
-
   const handleExpireAuth = async () => {
     try {
       const response = await axios(`auth/logout`, {
@@ -153,7 +154,8 @@ const App = () => {
                   auth.role.includes("admin") ? (
                     <AdminHome></AdminHome>
                   ) : auth.role.includes("mentor") ? (
-                    <MentorHome></MentorHome>
+                    // <MentorHome></MentorHome>
+                    <Navigate to="/mentor" />
                   ) : auth.role.includes("student") ? (
                     <StudentHome></StudentHome>
                   ) : null
@@ -181,12 +183,26 @@ const App = () => {
               </Route>
             </Route>
             <Route
-              element={<RequireAuth allowedRole={["mentor"]}></RequireAuth>}
+              element={
+                <RequireAuth
+                    allowedRole={["mentor"]}
+                ></RequireAuth>
+              }
             >
-              <Route
-                path="mentor/cohort/:cohortId"
-                element={<Cohort></Cohort>}
-              ></Route>
+              <Route element={<MentorContext />}>
+                  <Route
+                      path="mentor"
+                      element={<MentorHome />}
+                  ></Route>
+                  <Route
+                      path="cohort/:cohortId"
+                      element={<Cohort></Cohort>}
+                  ></Route>
+                  <Route
+                      path="mentor/sessions"
+                      element={<MentorSessions />}
+                  ></Route>
+              </Route>
             </Route>
             <Route
               element={<RequireAuth allowedRole={["student"]}></RequireAuth>}

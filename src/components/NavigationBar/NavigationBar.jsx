@@ -105,6 +105,19 @@ const adminPages = [
   },
 ];
 
+const mentorPages = [
+    {
+        title: "Home",
+        icon: <HomeRounded sx={{ color: "white" }} />,
+        link: "/mentor",
+    },
+    {
+        title: "Sessions",
+        icon: <SchoolRounded sx={{ color: "white" }} />,
+        link: "/mentor/sessions",
+    },
+];
+
 const studentPages = [
   { title: "Home", icon: <HomeRounded sx={{ color: "white" }} />, link: "/" },
 ];
@@ -242,7 +255,29 @@ const NavigationBar = ({ onExpireAuth }) => {
                         );
                       })
                     : auth.role.includes("mentor")
-                    ? null
+                    ? mentorPages.map((page) => {
+                        return (
+                          <Link
+                              key={page.title}
+                              to={page.link}
+                          >
+                            <NavigationBarButton
+                                text={page.title}
+                                iconComponent={
+                                    page.icon
+                                }
+                                onDrawerToggling={(
+                                    event
+                                ) =>
+                                    handleDrawerToggling(
+                                        false,
+                                        event
+                                    )
+                                }
+                            />
+                          </Link>
+                        );
+                    })
                     : auth.role.includes("student")
                     ? studentPages.map((page) => {
                         return (
