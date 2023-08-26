@@ -233,14 +233,28 @@ const StudentCohort = () => {
           <Chip
             variant="outlined"
             label={`Start Date:  ${new Date(
-              currentWeek?.start
+              currentWeek.start
             ).toLocaleDateString()}`}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#C84B31',
+                transform: 'scale(1.05)',
+                transition: 'all 0.2s ease-in-out',
+              },
+            }}
           />
           <Chip
             variant="outlined"
             label={`End Date:  ${new Date(
-              currentWeek?.end
+              currentWeek.end
             ).toLocaleDateString()}`}
+            sx={{
+              '&:hover': {
+                backgroundColor: '#C84B31',
+                transform: 'scale(1.05)',
+                transition: 'all 0.2s ease-in-out',
+              },
+            }}
           />
         </Stack>
       </Typography>
