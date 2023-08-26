@@ -78,6 +78,7 @@ const StudentCohort = () => {
       const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
       setCurrentWeek(data.currentWeek);
       setLoading(false);
+      console.log(data);
     } catch (err) {
       console.log(err);
       setLoading(false);
