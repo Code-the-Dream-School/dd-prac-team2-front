@@ -15,13 +15,15 @@ import AuthFormControl from "../../../components/FormControl/AuthFormControl";
 import styles from "../Student.module.css";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
 const Review = ({ sessionId }) => {
-  const Transition = forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
+
   const axiosPrivate = useAxiosPrivate();
   const [review, setReview] = useState();
-  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
   const [reset, setReset] = useState(false);
   const [formError, setFormError] = useState({
     reviewError: {
@@ -29,12 +31,12 @@ const Review = ({ sessionId }) => {
       errorMessage: "Please enter a valid review",
     },
   });
-  const handleOpenEditCohort = () => {
-    setOpenEditDialog(true);
+  const handleOpenReview = () => {
+    setOpenDialog(true);
   };
 
-  const handleCloseEditCohort = () => {
-    setOpenEditDialog(false);
+  const handleCloseReview = () => {
+    setOpenDialog(false);
   };
   const handleReviewError = (inputError) => {
     setFormError((prevState) => ({
@@ -54,6 +56,7 @@ const Review = ({ sessionId }) => {
     });
     console.log(data);
     setReview("");
+    handleCloseReview();
   };
   return (
     <>
@@ -63,17 +66,17 @@ const Review = ({ sessionId }) => {
         width="100%"
         color="#F3950D"
         handlerFunction={() => {
-          handleOpenEditCohort();
+          handleOpenReview();
         }}
       >
         <EditRounded></EditRounded>
       </AppButton>
 
-      {openEditDialog ? (
+      {openDialog ? (
         <Dialog
-          open={openEditDialog}
+          open={openDialog}
           TransitionComponent={Transition}
-          onClose={handleCloseEditCohort}
+          onClose={handleCloseReview}
           fullWidth
           maxWidth="sm"
         >
@@ -97,7 +100,7 @@ const Review = ({ sessionId }) => {
               type="button"
               width="10%"
               handlerFunction={() => {
-                handleCloseEditCohort();
+                handleCloseReview();
               }}
             >
               <Close></Close>
