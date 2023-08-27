@@ -53,6 +53,10 @@ const Login = () => {
       error: false,
       errorMessage: "Please enter a valid email address.",
     },
+    passwordError: {
+      error: false,
+      errorMessage: "Please enter a valid password address.",
+    },
   });
   /*
         ==========================
@@ -97,6 +101,8 @@ const Login = () => {
           userEmail: loggedUser.email,
           role,
           loggedIn: true,
+          avatarUrl: "",
+          isActive: true,
           accessToken,
         });
         setReset(true);
@@ -122,6 +128,16 @@ const Login = () => {
       },
     }));
   }, []);
+
+  const handlePasswordError = (inputError) => {
+    setFormError((prevState) => ({
+      ...prevState,
+      passwordError: {
+        ...prevState.passwordError,
+        error: inputError,
+      },
+    }));
+  };
 
   //3. Google log in
   const handleGoogleAuthUrl = () => {
@@ -233,7 +249,10 @@ const Login = () => {
                   isFocused={false}
                   width="100%"
                   variant="light"
-                  onHandleError={() => {}}
+                  errorMessage={
+                    "This field is required"
+                  }
+                  onHandleError={handlePasswordError}
                   reset={reset}
                 ></FormTextField>
               </AuthFormControl>
