@@ -120,6 +120,16 @@ const StudentCohort = () => {
             avatarUrl: '',
             isActive: undefined,
             accessToken: '',
+          navigate("/login", { state: { from: location }, replace: true });
+          setAuth({
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
           });
         } else {
           setLoading(false);
@@ -156,6 +166,7 @@ const StudentCohort = () => {
         if (error.response.status === 403) {
           setLoading(false);
           //User is required to validate auth again
+
           navigate('/login', { state: { from: location }, replace: true });
           setAuth({
             userId: '',
@@ -166,6 +177,18 @@ const StudentCohort = () => {
             avatarUrl: '',
             isActive: undefined,
             accessToken: '',
+
+          navigate("/login", { state: { from: location }, replace: true });
+          setAuth({
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
+
           });
         } else {
           setLoading(false);
@@ -306,16 +329,28 @@ const StudentCohort = () => {
                         type="button"
                         width="auto"
                         color={'#609966'}
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"#609966"}
+
                         handlerFunction={() => handleConfirmStatus(session._id)}
                       >
                         <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
                       </AppButton>
                       <AppButton
+
                         text={'No'}
                         type="button"
                         width="auto"
                         color={'white'}
                         textColor={'#1A1A2E'}
+                        text={"No"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+
                         handlerFunction={() => handleCancelStatus(session._id)}
                       >
                         <CancelOutlined></CancelOutlined>
@@ -324,17 +359,29 @@ const StudentCohort = () => {
                   ) : (
                     <>
                       <AppButton
+
                         text={'Yes'}
                         type="button"
                         width="auto"
                         color={'white'}
                         textColor={'#1A1A2E'}
+
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+
                         handlerFunction={() => handleConfirmStatus(session._id)}
                       >
                         <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
                       </AppButton>
                       <AppButton
+
                         text={'No'}
+
+                        text={"No"}
+
                         type="button"
                         width="auto"
                         color="#CD1818"
