@@ -105,6 +105,20 @@ const adminPages = [
   },
 ];
 
+const studentPages = [
+  { title: "Home", icon: <HomeRounded sx={{ color: "white" }} />, link: "/" },
+  {
+    title: "Cohorts",
+    icon: <SchoolRounded sx={{ color: "white" }} />,
+    link: "student/cohorts",
+  },
+  {
+    title: "Users",
+    icon: <SupervisedUserCircleRounded sx={{ color: "white" }} />,
+    link: "/sessions",
+  },
+];
+
 const mentorPages = [
   {
     title: "Home",
@@ -116,10 +130,6 @@ const mentorPages = [
     icon: <SchoolRounded sx={{ color: "white" }} />,
     link: "/mentor/sessions",
   },
-];
-
-const studentPages = [
-  { title: "Home", icon: <HomeRounded sx={{ color: "white" }} />, link: "/" },
 ];
 
 const settings = ["Update profile", "Update password", "Sign out"];
