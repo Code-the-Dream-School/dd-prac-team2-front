@@ -1,28 +1,28 @@
-.loginPicture{
+.loginPicture {
+  /* Sizing */
+  width: 200px;
+  min-width: 200px;
+  height: auto;
+  transition: all 0.2s ease-in-out;
+}
+
+.formContainer {
+  /* Display */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 5px;
+  /* Sizing */
+  width: 75%;
+}
+
+@media (max-width: 400px) {
+  .loginPicture {
     /* Sizing */
-    width: 200px;
-    min-width: 200px;
+    width: 100px;
+    min-width: 100px;
     height: auto;
     transition: all 0.2s ease-in-out;
-}
-
-.formContainer{
-    /* Display */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 5px;
-    /* Sizing */
-    width: 75%;
-}
-
-@media (max-width: 400px){
-    .loginPicture{
-        /* Sizing */
-        width: 100px;
-        min-width: 100px;
-        height: auto;
-        transition: all 0.2s ease-in-out;
-    }
+  }
 }

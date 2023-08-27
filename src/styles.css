@@ -3,98 +3,102 @@
 *,
 *::before,
 *::after {
-    /* Animation */
-    scroll-behavior: smooth;
+  /* Animation */
+  scroll-behavior: smooth;
 }
 
 body {
-    /* Display */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    /* Spacing */
-    margin: 0px;
-    /* Sizing */
-    width: 100%;
-    min-width: 100%;
-    /* Colors */
-    background: linear-gradient(365deg, rgba(26,26,46,1) 0%, rgba(22,33,62,1) 35%, rgba(15,52,96,1) 100%) fixed;
-    background-size: cover;
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Spacing */
+  margin: 0px;
+  /* Sizing */
+  width: 100%;
+  min-width: 100%;
+  /* Colors */
+  background: linear-gradient(
+      365deg,
+      rgba(26, 26, 46, 1) 0%,
+      rgba(22, 33, 62, 1) 35%,
+      rgba(15, 52, 96, 1) 100%
+    )
+    fixed;
+  background-size: cover;
 }
 
-header{
-    /* Sizing */
-    min-height: 70px;
-    width: 100%;
-    height: auto;
+header {
+  /* Sizing */
+  min-height: 70px;
+  width: 100%;
+  height: auto;
 }
 
 main {
-    /* Display */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex: 1 1;
-    /* Sizing */
-    width: 100%;
-    height: auto;
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1;
+  /* Sizing */
+  width: 100%;
+  height: auto;
 }
 
-footer{
-    /* Display */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    /* Spacing */
-    margin-top: auto;
-    /* Sizing */
-    width: 100%;
-    min-width: 100%;
+footer {
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* Spacing */
+  margin-top: auto;
+  /* Sizing */
+  width: 100%;
+  min-width: 100%;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
-
-#root{
-    /* Position */
-    position: relative;
-    /* Display */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    /* Spacing */
-    width: 100%;
-    min-width: 100%;
-    height: 100vh;
-    min-height: 100vh;
+#root {
+  /* Position */
+  position: relative;
+  /* Display */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Spacing */
+  width: 100%;
+  min-width: 100%;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 /* MUI Autocomplete global style*/
 /* 1. Default style for list items*/
-.MuiAutocomplete-popper .MuiPaper-root ul li{
-    font-weight: bold;
-    color: black;
+.MuiAutocomplete-popper .MuiPaper-root ul li {
+  font-weight: bold;
+  color: black;
 }
 /* 2. Style when list item is selected */
-.MuiAutocomplete-popper .MuiPaper-root ul li[aria-selected="true"]{
-    background-color: #C84B31;
-    color: white;
-    border-bottom: 1px solid #1A1A2E;
+.MuiAutocomplete-popper .MuiPaper-root ul li[aria-selected="true"] {
+  background-color: #c84b31;
+  color: white;
+  border-bottom: 1px solid #1a1a2e;
 }
 /* 3. Style when list item is selected and focused */
-.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused[aria-selected="true"]{
-    background-color: #C84B31;
-    color: white
+.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused[aria-selected="true"] {
+  background-color: #c84b31;
+  color: white;
 }
 /* 4. Style when list item is hovered and focused */
 .MuiAutocomplete-popper .MuiPaper-root ul li:hover,
-.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused:hover
-{
-    background-color: #C84B31;
-    color: white
+.MuiAutocomplete-popper .MuiPaper-root ul li.Mui-focused:hover {
+  background-color: #c84b31;
+  color: white;
 }

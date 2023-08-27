@@ -32,7 +32,7 @@ import MentorHome from "./pages/Home/MentorHome";
 import StudentHome from "./pages/Home/StudentHome";
 import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCohort";
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
-import AccountConfirmation from './pages/AccountConfirmation/AccountConfirmation';
+import AccountConfirmation from "./pages/AccountConfirmation/AccountConfirmation";
 import Cohort from "./pages/Mentor/Cohort";
 import MentorSessions from "./pages/Mentor/MentorSessions";
 import MentorContext from "./pages/Mentor/MentorContext";
@@ -46,14 +46,14 @@ import StudentSession from "./pages/Student/StudentSession";
 const font = "Montserrat, sans-serif";
 
 const theme = createTheme({
-    typography: {
-        allVariants: {
-            fontFamily: font,
-            fontWeight: "bold",
-            textTransform: "none",
-            fontSize: 16,
-        },
+  typography: {
+    allVariants: {
+      fontFamily: font,
+      fontWeight: "bold",
+      textTransform: "none",
+      fontSize: 16,
     },
+  },
 });
 const App = () => {
   /*
@@ -61,8 +61,8 @@ const App = () => {
       =        CONTEXT         =
       ==========================
   */
-    //1. User auth status:
-    const { auth, setAuth } = useAuth();
+  //1. User auth status:
+  const { auth, setAuth } = useAuth();
 
   /*
       ==========================
@@ -83,7 +83,7 @@ const App = () => {
         loggedIn: false,
         avatarUrl: "",
         isActive: undefined,
-        accessToken: ""
+        accessToken: "",
       });
     } catch (error) {
       console.error(error);
@@ -98,33 +98,34 @@ const App = () => {
     <>
       <header>
         <ThemeProvider theme={theme}>
-          <NavigationBar onExpireAuth={handleExpireAuth}/>
-        </ThemeProvider> 
+          <NavigationBar onExpireAuth={handleExpireAuth} />
+        </ThemeProvider>
       </header>
       <main>
-        <br/>
+        <br />
         <Routes>
           {/* Public routes */}
           <Route element={<PersistLogin></PersistLogin>}>
             <Route
-              path='/login'
+              path="/login"
               element={
-                auth.loggedIn
-                ? (<Navigate to="/"></Navigate>)
-                : (
-                    <ThemeProvider theme={theme}>
-                      <Login/>
-                    </ThemeProvider>
-                  )
+                auth.loggedIn ? (
+                  <Navigate to="/"></Navigate>
+                ) : (
+                  <ThemeProvider theme={theme}>
+                    <Login />
+                  </ThemeProvider>
+                )
               }
             />
             <Route
               path="/confirmation"
               element={
-                auth.loggedIn ? (<Navigate to="/"></Navigate>)
-                : (
+                auth.loggedIn ? (
+                  <Navigate to="/"></Navigate>
+                ) : (
                   <ThemeProvider theme={theme}>
-                    <AccountConfirmation/>
+                    <AccountConfirmation />
                   </ThemeProvider>
                 )
               }
@@ -183,25 +184,18 @@ const App = () => {
               </Route>
             </Route>
             <Route
-              element={
-                <RequireAuth
-                    allowedRole={["mentor"]}
-                ></RequireAuth>
-              }
+              element={<RequireAuth allowedRole={["mentor"]}></RequireAuth>}
             >
               <Route element={<MentorContext />}>
-                  <Route
-                      path="mentor"
-                      element={<MentorHome />}
-                  ></Route>
-                  <Route
-                      path="cohort/:cohortId"
-                      element={<Cohort></Cohort>}
-                  ></Route>
-                  <Route
-                      path="mentor/sessions"
-                      element={<MentorSessions />}
-                  ></Route>
+                <Route path="mentor" element={<MentorHome />}></Route>
+                <Route
+                  path="cohort/:cohortId"
+                  element={<Cohort></Cohort>}
+                ></Route>
+                <Route
+                  path="mentor/sessions"
+                  element={<MentorSessions />}
+                ></Route>
               </Route>
             </Route>
             <Route

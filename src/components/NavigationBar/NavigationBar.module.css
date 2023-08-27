@@ -1,9 +1,9 @@
 .mentorUpLogoLink,
-.mentorUpLogo{
-    /* Spacing */
-    margin-right: 1px;
-    /* Sizing */
-    width: 200px;
-    min-width: 200px;
-    height: auto;
+.mentorUpLogo {
+  /* Spacing */
+  margin-right: 1px;
+  /* Sizing */
+  width: 200px;
+  min-width: 200px;
+  height: auto;
 }
