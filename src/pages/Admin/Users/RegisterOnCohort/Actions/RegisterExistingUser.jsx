@@ -13,6 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import { Close, GroupAddRounded } from "@mui/icons-material";
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -300,3 +302,9 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
 };
 
 export default RegisterExistingUser;
+
+RegisterExistingUser.propTypes = {
+    open: PropTypes.bool.isRequired,
+    handleOpen: PropTypes.func.isRequired,
+    onRegisterCohortSubmit: PropTypes.func.isRequired
+}

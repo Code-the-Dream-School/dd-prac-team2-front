@@ -18,6 +18,8 @@ import {
   Close,
   Email,
 } from "@mui/icons-material";
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -355,3 +357,9 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
 };
 
 export default RegisterCohortUser;
+
+RegisterCohortUser.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterCohortSubmit: PropTypes.func.isRequired
+}
