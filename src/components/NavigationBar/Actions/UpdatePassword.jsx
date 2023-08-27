@@ -70,9 +70,13 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
         ==========================
     */
   const [formError, setFormError] = useState({
-    passwordError: {
+    currentPasswordError: {
       error: false,
-      errorMessage: "Please enter a valid password address.",
+      errorMessage: "Current password is invalid",
+    },
+    newPasswordError: {
+      error: false,
+      errorMessage: "Please enter a valid password.",
     },
   });
   const [reset, setReset] = useState(false);
@@ -82,11 +86,22 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
         =        HANDLERS        =
         ==========================
     */
-  const handlePasswordSubmit = (event) => {
+  const handlePasswordSubmit = async (event) => {
     event.preventDefault();
-    const newPassword = event.target.password.value;
+    const body = {
+      currentPassword: event.target["current-password"].value,
+      newPassword: event.target["new-password"].value
+    }
+    const errors = Object.values(formError);
     try {
-      handleOpenDialog(false);
+      if (!errors.some((error) => error.error === true)) {
+        const response = await axiosPrivate.patch("profile/password", body);
+        console.log(response);
+        handleOpenDialog(false);
+      }
+      else{
+        console.error("There is an error preventing the form submission");
+      }
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
@@ -108,11 +123,21 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
     }
   };
 
-  const handlePasswordError = (inputError) => {
+  const handleCurrentPasswordError = (inputError) => {
     setFormError((prevState) => ({
       ...prevState,
-      passwordError: {
-        ...prevState.passwordError,
+      currentPasswordError: {
+        ...prevState.currentPasswordError,
+        error: inputError,
+      },
+    }));
+  };
+
+  const handleNewPasswordError = (inputError) => {
+    setFormError((prevState) => ({
+      ...prevState,
+      newPasswordError: {
+        ...prevState.newPasswordError,
         error: inputError,
       },
     }));
@@ -183,8 +208,35 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
                 <FormTextField
                   required
                   type="password"
-                  label="Password"
-                  name="password"
+                  label="Current password: "
+                  name="current-password"
+                  isFocused={false}
+                  width="100%"
+                  variant="dark"
+                  errorMessage={
+                    "This field is required"
+                  }
+                  onHandleError={handleCurrentPasswordError}
+                  reset={reset}
+                ></FormTextField>
+              </AuthFormControl>
+              <AuthFormControl width="75%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LockRounded fontSize="large"></LockRounded>
+                  <br></br>
+                  <br></br>
+                </Box>
+                <FormTextField
+                  required
+                  type="password"
+                  label="New password:"
+                  name="new-password"
                   isFocused={false}
                   width="100%"
                   variant="dark"
@@ -192,7 +244,7 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
                   errorMessage={
                     "Must be 6 char long and contain at least one number"
                   }
-                  onHandleError={handlePasswordError}
+                  onHandleError={handleNewPasswordError}
                   reset={reset}
                 ></FormTextField>
               </AuthFormControl>

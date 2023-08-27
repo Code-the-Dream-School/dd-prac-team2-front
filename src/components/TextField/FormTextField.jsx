@@ -84,7 +84,7 @@ const FormTextField = ({
       onChange={handleTextChange}
       sx={{
         WebkitTextFillColor:
-          variant === "light" ? (error ? "red" : "white") : "#1A1A2E",
+          variant === "light" ? (error ? "red" : "white") : (error ? "red" : "#1A1A2E"),
         width: width,
         "& label": {
           fontWeight: "bold",
