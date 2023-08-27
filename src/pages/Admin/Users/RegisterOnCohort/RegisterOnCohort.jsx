@@ -6,12 +6,7 @@
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { Container, Paper, Box, Typography } from "@mui/material";
 import {
-  AccountBoxRounded,
-  AdminPanelSettingsRounded,
-  BadgeRounded,
   CloudDownloadRounded,
-  Email,
-  FindInPageRounded,
   PersonAddRounded,
   PersonSearch,
 } from "@mui/icons-material";
@@ -49,9 +44,8 @@ import UserRoleRender from "./TableRenders/UserRoleRender";
 import UserStatusRender from "./TableRenders/UserStatusRender";
 import RegisterOnCohortActions from "./Actions/RegisterOnCohortActions";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
-import FormTextField from "../../../../components/TextField/FormTextField";
-import FormSelect from "../../../../components/Select/FormSelect";
 import RegisterCohortUser from "./Actions/RegisterCohortUser";
+import RegisterExistingUser from "./Actions/RegisterExistingUser";
 
 const RegisterOnCohort = () => {
   /*
@@ -75,6 +69,8 @@ const RegisterOnCohort = () => {
   const [cohortData, setCohortData] = useState({});
   // Dialog states
   const [openNewUserDialog, setOpenNewUserDialog] = useState(false);
+  const [openExistingUserDialog, setOpenExistingUserDialog] = useState(false);
+
   /*
     ==========================
     =      AUX VARIABLES     =
@@ -253,7 +249,7 @@ const RegisterOnCohort = () => {
               text={"Add existing user"}
               type="button"
               width="100%"
-              handlerFunction={() => {}}
+              handlerFunction={() => setOpenExistingUserDialog(true)}
             >
               <PersonSearch fontSize="large"></PersonSearch>
             </AppButton>
@@ -284,7 +280,8 @@ const RegisterOnCohort = () => {
             }}
           ></AppButton>
         </div>
-        {openNewUserDialog ? <RegisterCohortUser open={openNewUserDialog} handleOpen={setOpenNewUserDialog} onRegisterOnCohortSubmit={setCohortUsers}></RegisterCohortUser> : null}
+        {openNewUserDialog ? <RegisterCohortUser open={openNewUserDialog} handleOpen={setOpenNewUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterCohortUser> : null}
+        {openExistingUserDialog ? <RegisterExistingUser open={openExistingUserDialog} handleOpen={setOpenExistingUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterExistingUser> : null}
       </Paper>
     </Container>
   );

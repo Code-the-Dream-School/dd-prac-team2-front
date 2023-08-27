@@ -266,6 +266,8 @@ const EditUser = ({
                 <FormAutocomplete
                   multiple={true}
                   value={cohortsValueSelected}
+                  computedIdProperty={"id"}
+                  computedProperty={"cohort"}
                   onHandleSelectedValueChange={handleValueSelectedChange}
                   inputValue={cohortsInputValueSelected}
                   onHandleInputValueChange={setCohortsInputValueSelected}

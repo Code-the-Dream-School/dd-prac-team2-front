@@ -59,7 +59,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const RegisterCohortUser = ({ open, handleOpen, onRegisterOnCohortSubmit }) => {
+const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
   /*
     ==========================
     =          HOOKS         =
@@ -147,7 +147,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterOnCohortSubmit }) => {
           formattedUserRegistration
         );
         if (response.data.users.length > 0) {
-          onRegisterOnCohortSubmit((prevState) => [
+          onRegisterCohortSubmit((prevState) => [
             ...prevState,
             {
               id: response.data.users[0]._id,

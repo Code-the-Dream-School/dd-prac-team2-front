@@ -4,6 +4,8 @@ import { Autocomplete, TextField } from "@mui/material";
 const FormAutocomplete = ({
   multiple,
   value,
+  computedProperty,
+  computedIdProperty,
   onHandleSelectedValueChange,
   inputValue,
   onHandleInputValueChange,
@@ -11,7 +13,6 @@ const FormAutocomplete = ({
   error,
   variant,
 }) => {
-  console.log(value, options);
   return (
     <Autocomplete
       disableCloseOnSelect={multiple}
@@ -20,10 +21,9 @@ const FormAutocomplete = ({
       options={options}
       value={value}
       getOptionLabel={(option) => {
-        console.log(option);
-        return option.cohort;
+        return option[computedProperty];
       }}
-      isOptionEqualToValue={(option, value) => option.cohort === value.cohort}
+      isOptionEqualToValue={(option, value) => option[computedProperty] === value[computedProperty]}
       onChange={(event, newValue) => {
         onHandleSelectedValueChange(newValue);
       }}
@@ -82,6 +82,13 @@ const FormAutocomplete = ({
             },
           },
         },
+      }}
+      renderOption={(props, option) => {
+        return (
+          <li {...props} key={option[computedIdProperty]}>
+            {option[computedProperty]}
+          </li>
+        );
       }}
       renderInput={(params) => (
         <TextField
