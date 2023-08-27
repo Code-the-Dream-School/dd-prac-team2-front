@@ -6,7 +6,8 @@
   flex-direction: column;
   gap: 5px;
   /* Spacing */
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 0px;
   /* Sizing */
   width: 100%;
 }
