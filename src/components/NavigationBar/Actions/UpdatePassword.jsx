@@ -95,7 +95,7 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
     const errors = Object.values(formError);
     try {
       if (!errors.some((error) => error.error === true)) {
-        const response = await axiosPrivate.patch("/profile", body);
+        const response = await axiosPrivate.patch("profile/password", body);
         console.log(response);
         handleOpenDialog(false);
       }
