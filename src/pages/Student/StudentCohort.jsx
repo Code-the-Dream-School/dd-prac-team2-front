@@ -15,23 +15,23 @@ import {
   CircularProgress,
   Chip,
   Stack,
-} from '@mui/material';
-import { CancelOutlined, CheckCircleOutlineRounded } from '@mui/icons-material';
-import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+} from "@mui/material";
+import { CancelOutlined, CheckCircleOutlineRounded } from "@mui/icons-material";
+import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
-import AppButton from '../../components/Button/AppButton';
-import useAuth from '../../hooks/useAuth';
+import AppButton from "../../components/Button/AppButton";
+import useAuth from "../../hooks/useAuth";
 
 const StudentCohort = () => {
   /*
@@ -109,17 +109,16 @@ const StudentCohort = () => {
       } catch (error) {
         if (error.response.status === 403) {
           setLoading(false);
-          //User is required to validate auth again
-          navigate('/login', { state: { from: location }, replace: true });
+          navigate("/login", { state: { from: location }, replace: true });
           setAuth({
-            userId: '',
-            userName: '',
-            userEmail: '',
+            userId: "",
+            userName: "",
+            userEmail: "",
             role: [],
             loggedIn: false,
-            avatarUrl: '',
+            avatarUrl: "",
             isActive: undefined,
-            accessToken: '',
+            accessToken: "",
           });
         } else {
           setLoading(false);
@@ -155,17 +154,16 @@ const StudentCohort = () => {
       } catch (error) {
         if (error.response.status === 403) {
           setLoading(false);
-          //User is required to validate auth again
-          navigate('/login', { state: { from: location }, replace: true });
+          navigate("/login", { state: { from: location }, replace: true });
           setAuth({
-            userId: '',
-            userName: '',
-            userEmail: '',
+            userId: "",
+            userName: "",
+            userEmail: "",
             role: [],
             loggedIn: false,
-            avatarUrl: '',
+            avatarUrl: "",
             isActive: undefined,
-            accessToken: '',
+            accessToken: "",
           });
         } else {
           setLoading(false);
@@ -191,20 +189,20 @@ const StudentCohort = () => {
     <Container>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          bgcolor: 'transparent',
+          display: "flex",
+          justifyContent: "center",
+          bgcolor: "transparent",
         }}
       >
         <Typography
-          component={'h1'}
+          component={"h1"}
           sx={{
-            backgroundColor: '#C84B31',
+            backgroundColor: "#C84B31",
             borderRadius: 2,
             padding: 2,
             margin: 1,
-            textAlign: 'center',
-            fontWeight: 'bold',
+            textAlign: "center",
+            fontWeight: "bold",
             fontSize: 25,
           }}
         >
@@ -213,19 +211,19 @@ const StudentCohort = () => {
       </Box>
       <Typography
         sx={{
-          backgroundColor: '#C84B31',
+          backgroundColor: "#C84B31",
           borderRadius: 2,
           padding: 1,
           margin: 1,
-          textAlign: 'center',
-          fontWeight: 'bold',
+          textAlign: "center",
+          fontWeight: "bold",
           fontSize: 25,
         }}
+        component={"div"}
       >
         {currentWeek?.name}
-
         <Stack
-          direction={{ xs: 'column', sm: 'row' }}
+          direction={{ xs: "column", sm: "row" }}
           spacing={{ xs: 1, sm: 2, md: 4 }}
           alignItems="center"
           justifyContent="center"
@@ -236,10 +234,10 @@ const StudentCohort = () => {
               currentWeek?.start
             ).toLocaleDateString()}`}
             sx={{
-              '&:hover': {
-                backgroundColor: '#C84B31',
-                transform: 'scale(1.05)',
-                transition: 'all 0.2s ease-in-out',
+              "&:hover": {
+                backgroundColor: "#C84B31",
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
               },
             }}
           />
@@ -249,10 +247,10 @@ const StudentCohort = () => {
               currentWeek?.end
             ).toLocaleDateString()}`}
             sx={{
-              '&:hover': {
-                backgroundColor: '#C84B31',
-                transform: 'scale(1.05)',
-                transition: 'all 0.2s ease-in-out',
+              "&:hover": {
+                backgroundColor: "#C84B31",
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
               },
             }}
           />
@@ -260,7 +258,7 @@ const StudentCohort = () => {
       </Typography>
       {loading ? (
         <Box
-          sx={{ display: 'flex', justifyContent: 'center', paddingBlock: 2 }}
+          sx={{ display: "flex", justifyContent: "center", paddingBlock: 2 }}
         >
           <CircularProgress />
         </Box>
@@ -271,10 +269,10 @@ const StudentCohort = () => {
               <Card
                 key={session._id}
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginTop: '1px',
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginTop: "1px",
                 }}
               >
                 <Box>
@@ -302,20 +300,20 @@ const StudentCohort = () => {
                   {session.participant.includes(auth.userId) ? (
                     <>
                       <AppButton
-                        text={'Yes'}
+                        text={"Yes"}
                         type="button"
                         width="auto"
-                        color={'#609966'}
+                        color={"#609966"}
                         handlerFunction={() => handleConfirmStatus(session._id)}
                       >
                         <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
                       </AppButton>
                       <AppButton
-                        text={'No'}
+                        text={"No"}
                         type="button"
                         width="auto"
-                        color={'white'}
-                        textColor={'#1A1A2E'}
+                        color={"white"}
+                        textColor={"#1A1A2E"}
                         handlerFunction={() => handleCancelStatus(session._id)}
                       >
                         <CancelOutlined></CancelOutlined>
@@ -324,17 +322,17 @@ const StudentCohort = () => {
                   ) : (
                     <>
                       <AppButton
-                        text={'Yes'}
+                        text={"Yes"}
                         type="button"
                         width="auto"
-                        color={'white'}
-                        textColor={'#1A1A2E'}
+                        color={"white"}
+                        textColor={"#1A1A2E"}
                         handlerFunction={() => handleConfirmStatus(session._id)}
                       >
                         <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
                       </AppButton>
                       <AppButton
-                        text={'No'}
+                        text={"No"}
                         type="button"
                         width="auto"
                         color="#CD1818"
@@ -350,10 +348,10 @@ const StudentCohort = () => {
           ) : (
             <Typography
               sx={{
-                backgroundColor: '#f2f2f2',
+                backgroundColor: "#f2f2f2",
                 padding: 2,
                 borderRadius: 2,
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               No sessions scheduled for this week
