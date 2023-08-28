@@ -209,7 +209,7 @@ const Cohorts = () => {
         console.error(error);
         if (error.response.status === 403) {
           //User is required to validate auth again
-          setLoading(false)
+          setLoading(false);
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -222,7 +222,7 @@ const Cohorts = () => {
             accessToken: "",
           });
         } else {
-          setLoading(false)
+          setLoading(false);
           console.error(error);
         }
       }
@@ -488,8 +488,7 @@ const Cohorts = () => {
         )}
       </Paper>
     </Container>
-  </>
-);
+  );
 };
 
 export default Cohorts;
