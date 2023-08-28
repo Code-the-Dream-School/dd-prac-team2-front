@@ -13,7 +13,12 @@ import {
   CardContent,
   CardActions,
   CircularProgress,
+  Chip,
+  Stack,
+  Badge,
+  ListItemText,
 } from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
 import { CancelOutlined, CheckCircleOutlineRounded } from "@mui/icons-material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 /*
@@ -106,7 +111,6 @@ const StudentCohort = () => {
       } catch (error) {
         if (error.response.status === 403) {
           setLoading(false);
-          //User is required to validate auth again
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -152,7 +156,6 @@ const StudentCohort = () => {
       } catch (error) {
         if (error.response.status === 403) {
           setLoading(false);
-          //User is required to validate auth again
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -218,8 +221,42 @@ const StudentCohort = () => {
           fontWeight: "bold",
           fontSize: 25,
         }}
+        component={"div"}
       >
         {currentWeek?.name}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 2, md: 4 }}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Chip
+            label={`Start Date:  ${new Date(
+              currentWeek?.start
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#112f57",
+              color: "white",
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
+            }}
+          />
+          <Chip
+            label={`End Date:  ${new Date(
+              currentWeek?.end
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#112f57",
+              color: "white",
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
+            }}
+          />
+        </Stack>
       </Typography>
       {loading ? (
         <Box
@@ -251,14 +288,54 @@ const StudentCohort = () => {
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box>
+                <Box display="flex">
                   <CardContent>
-                    <Typography>{`Host: ${session.creator.name}`}</Typography>
-                    <Typography>
-                      {`${session.participant.length}`} student confirmed to
-                      join
-                    </Typography>
-                    <Typography></Typography>
+                    <ListItemText
+                      sx={{
+                        "& .MuiListItemText-primary": {
+                          marginBottom: "8px",
+                        },
+                      }}
+                      primary={
+                        <Box>
+                          Host:
+                          <Typography
+                            sx={{ display: "inline" }}
+                            paragraph={true}
+                            variant="h8"
+                            color="#112f57"
+                          >
+                            {` ${session.creator.name ?? "Not assigned"}`}
+                          </Typography>
+                        </Box>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="text.primary"
+                            textAlign="center"
+                          >
+                            {`Attendees:  `}
+                          </Typography>
+                          <Badge
+                            sx={{
+                              "& .MuiBadge-badge": {
+                                backgroundColor:
+                                  session.participant.length > 0
+                                    ? { main: "#2196f3", contrastText: "white" }
+                                    : "gray",
+                              },
+                            }}
+                            badgeContent={`${session.participant.length}`}
+                            color="success"
+                          >
+                            <GroupIcon />
+                          </Badge>
+                        </>
+                      }
+                    />
                   </CardContent>
                 </Box>
                 <CardActions>
