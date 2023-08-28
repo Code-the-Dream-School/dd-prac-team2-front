@@ -1,4 +1,3 @@
-// Line  136  {new Date(session.start).toLocaleDateString()} ==> change to date and time for example 8/23 8:00 PM
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
@@ -71,7 +70,15 @@ const StudentCohort = () => {
       return false;
     }
   };
-
+  const convertLocalTime = (val) => {
+    const utcTime = new Date(val);
+    const localTime = `${
+      utcTime.getMonth() + 1
+    }/${utcTime.getDate()} @ ${utcTime.getHours()}:${utcTime.getMinutes()} ${
+      utcTime.getHours() < 12 ? "AM" : "PM"
+    }`;
+    return localTime;
+  };
   /*
       ==========================
       =   HANDLER FUNCTIONS    =
@@ -281,10 +288,12 @@ const StudentCohort = () => {
                   <CardContent>
                     <Typography
                       onClick={() => handleClick(session._id)}
-                      variant="h5"
-                    >{`${session.type} session`}</Typography>
-                    <Typography variant="subtitle1">
-                      {new Date(session.start).toLocaleDateString()}
+                      variant="h6"
+                    >
+                      <b>{`${session.type} Session`}</b>
+                    </Typography>
+                    <Typography variant="subtitle1" color="#c84b31">
+                      <b> {convertLocalTime(session.start)}</b>
                     </Typography>
                   </CardContent>
                 </Box>
@@ -305,7 +314,9 @@ const StudentCohort = () => {
                             variant="h8"
                             color="#112f57"
                           >
-                            {` ${session.creator.name ?? "Not assigned"}`}
+                            <b>
+                              {` ${session.creator.name ?? "Not assigned"}`}
+                            </b>
                           </Typography>
                         </Box>
                       }
