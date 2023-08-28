@@ -11,46 +11,46 @@ import {
   DialogTitle,
   Slide,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 import {
   CalendarMonthRounded,
   Close,
   LaptopRounded,
   SchoolRounded,
-} from '@mui/icons-material';
-import PropTypes from 'prop-types';
-import dayjs from 'dayjs';
+} from "@mui/icons-material";
+import PropTypes from "prop-types";
+import dayjs from "dayjs";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { forwardRef, useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { forwardRef, useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 /*
     ==========================
     =       COMPONENTS       =
     ==========================
 */
-import AppButton from '../../../../components/Button/AppButton';
-import FormTextField from '../../../../components/TextField/FormTextField';
-import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
-import FormSelect from '../../../../components/Select/FormSelect';
-import AppDatePicker from '../../../../components/DatePicker/AppDatePicker';
-import Loader from '../../../../components/Loader/Loader';
+import AppButton from "../../../../components/Button/AppButton";
+import FormTextField from "../../../../components/TextField/FormTextField";
+import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
+import FormSelect from "../../../../components/Select/FormSelect";
+import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
+import Loader from "../../../../components/Loader/Loader";
 /*
     ==========================
     =          STYLES        =
     ==========================
 */
-import styles from '../Cohorts.module.css';
+import styles from "../Cohorts.module.css";
 /*
     ==========================
     =          HOOKS         =
     ==========================
 */
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
-import useAuth from '../../../../hooks/useAuth';
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import useAuth from "../../../../hooks/useAuth";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -61,10 +61,10 @@ const Transition = forwardRef(function Transition(props, ref) {
     ==========================
 */
 const classList = [
-  'Intro to programming',
-  'React.js',
-  'Node.js/Express',
-  'Ruby on Rails',
+  "Intro to programming",
+  "React.js",
+  "Node.js/Express",
+  "Ruby on Rails",
 ];
 
 const EditCohort = ({
@@ -96,19 +96,19 @@ const EditCohort = ({
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
-      errorMessage: 'Please enter a valid name',
+      errorMessage: "Please enter a valid name",
     },
     classNameError: {
       error: false, //Initial value will always be filled, this is why I set the error to false.
-      errorMessage: 'Please select a class for this cohort',
+      errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
       error: false,
-      errorMessage: 'Please select a start date for this cohort',
+      errorMessage: "Please select a start date for this cohort",
     },
     endDateError: {
       error: false,
-      errorMessage: 'Please select an end date for this cohort',
+      errorMessage: "Please select an end date for this cohort",
     },
   });
   const [reset, setReset] = useState(false);
@@ -129,34 +129,36 @@ const EditCohort = ({
         ==========================
     */
   const editCohort = async (cohortId, editedCohort) => {
+    setLoading(true);
     try {
-      setLoading(true);
       const response = await axiosPrivate.patch(
         `/cohort/${cohortId}`,
         editedCohort
       );
+      setLoading(false);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        navigate('/login', { state: { from: location }, replace: true });
+        setLoading(false);
+        navigate("/login", { state: { from: location }, replace: true });
         setAuth({
-          userId: '',
-          userName: '',
-          userEmail: '',
+          userId: "",
+          userName: "",
+          userEmail: "",
           role: [],
           loggedIn: false,
-          avatarUrl: '',
+          avatarUrl: "",
           isActive: undefined,
-          accessToken: '',
+          accessToken: "",
         });
       } else {
         console.error(error);
+        setLoading(false);
       }
     }
   };
-  setLoading(false);
 
   /*
         ==========================
@@ -241,15 +243,15 @@ const EditCohort = ({
             })
           );
           setReset(true);
-          setCohortName('');
-          setClassName('');
+          setCohortName("");
+          setClassName("");
           setStartDate(dayjs());
           setEndDate(dayjs());
           onCloseDialog(true);
         }
       } else {
         console.log(
-          'There is an error that is preventing the form submission',
+          "There is an error that is preventing the form submission",
           errors
         );
       }
@@ -267,22 +269,22 @@ const EditCohort = ({
       maxWidth="sm"
     >
       <DialogTitle
-        display={'flex'}
-        justifyContent={'space-between'}
-        alignItems={'center'}
-        gap={'5px'}
-        component={'div'}
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        gap={"5px"}
+        component={"div"}
       >
         <Typography
           variant="h1"
-          textAlign={'center'}
-          fontSize={'30px'}
-          fontWeight={'bold'}
+          textAlign={"center"}
+          fontSize={"30px"}
+          fontWeight={"bold"}
         >
-          Edit cohort:{' '}
+          Edit cohort:{" "}
         </Typography>
         <AppButton
-          text={''}
+          text={""}
           type="button"
           width="10%"
           handlerFunction={() => {
@@ -293,29 +295,29 @@ const EditCohort = ({
         </AppButton>
       </DialogTitle>
       <Box
-        component={'form'}
+        component={"form"}
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          color: '#C84B31',
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          color: "#C84B31",
         }}
         autoComplete="off"
         onSubmit={handleEditCohortSubmit}
       >
         <DialogContent
-          sx={{ width: '100%', paddingX: 0, paddingY: 1 }}
+          sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
           dividers
         >
           <div className={styles.formContainer}>
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <SchoolRounded fontSize="large"></SchoolRounded>
@@ -333,16 +335,16 @@ const EditCohort = ({
                 variant="dark"
                 regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
                 onHandleError={handleCohortNameError}
-                errorMessage={'Please enter a valid name'}
+                errorMessage={"Please enter a valid name"}
                 reset={reset}
               ></FormTextField>
             </AuthFormControl>
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <LaptopRounded fontSize="large" />
@@ -350,9 +352,9 @@ const EditCohort = ({
               </Box>
               <AuthFormControl width="100%" isNested={true}>
                 <FormSelect
-                  id={'class'}
-                  name={'class'}
-                  label={'Class:'}
+                  id={"class"}
+                  name={"class"}
+                  label={"Class:"}
                   selectValue={className}
                   onSelectValue={handleClassNameChange}
                   list={classList}
@@ -364,37 +366,37 @@ const EditCohort = ({
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <CalendarMonthRounded fontSize="large" />
                 <br></br>
               </Box>
               <AppDatePicker
-                id={'startDate'}
-                name={'startDate'}
-                label={'Start date:'}
+                id={"startDate"}
+                name={"startDate"}
+                label={"Start date:"}
                 dateValue={startDate}
                 onDateValueChange={handleStartDateChange}
-                variant={'dark'}
+                variant={"dark"}
               ></AppDatePicker>
               <AppDatePicker
-                id={'endDate'}
-                name={'endDate'}
-                label={'End date:'}
+                id={"endDate"}
+                name={"endDate"}
+                label={"End date:"}
                 dateValue={endDate}
                 onDateValueChange={handleEndDateChange}
                 minDate={startDate}
-                variant={'dark'}
+                variant={"dark"}
               ></AppDatePicker>
             </AuthFormControl>
           </div>
         </DialogContent>
-        <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
+        <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
           <AppButton
-            text={'Edit cohort'}
+            text={"Edit cohort"}
             type="submit"
             width="100%"
             handlerFunction={() => {}}

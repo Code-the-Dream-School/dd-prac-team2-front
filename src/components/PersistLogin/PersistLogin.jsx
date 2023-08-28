@@ -3,16 +3,16 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Outlet } from "react-router-dom";
 /*
     ==========================
     =      CUSTOM HOOKS      =
     ==========================
 */
-import useRefreshToken from '../../hooks/useRefreshToken';
-import useAuth from '../../hooks/useAuth';
-import Loader from '../Loader/Loader';
+import useRefreshToken from "../../hooks/useRefreshToken";
+import useAuth from "../../hooks/useAuth";
+import Loader from "../Loader/Loader";
 
 const PersistLogin = () => {
   /*

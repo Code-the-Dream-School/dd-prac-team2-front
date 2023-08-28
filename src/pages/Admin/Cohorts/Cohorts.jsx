@@ -3,57 +3,57 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Paper, Typography, styled } from '@mui/material';
+import { Box, Container, Paper, Typography, styled } from "@mui/material";
 import {
   CalendarMonthRounded,
   LaptopRounded,
   SchoolRounded,
-} from '@mui/icons-material';
-import useAxiosPrivate from '../../../hooks/useAxiosPrivate';
-import dayjs from 'dayjs';
+} from "@mui/icons-material";
+import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import dayjs from "dayjs";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 /*
     ==========================
     =         HOOKS          =
     ==========================
 */
-import useAuth from '../../../hooks/useAuth';
+import useAuth from "../../../hooks/useAuth";
 
 /*
     ==========================
     =        STYLES          =
     ==========================
 */
-import styles from './Cohorts.module.css';
+import styles from "./Cohorts.module.css";
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
-import AuthFormControl from '../../../components/FormControl/AuthFormControl';
-import FormTextField from '../../../components/TextField/FormTextField';
-import FormSelect from '../../../components/Select/FormSelect';
-import AppButton from '../../../components/Button/AppButton';
-import AppDataGrid from '../../../components/DataGrid/AppDataGrid';
-import AppDatePicker from '../../../components/DatePicker/AppDatePicker';
-import CohortsActions from './Actions/CohortsActions';
-import Loader from '../../../components/Loader/Loader';
+import AuthFormControl from "../../../components/FormControl/AuthFormControl";
+import FormTextField from "../../../components/TextField/FormTextField";
+import FormSelect from "../../../components/Select/FormSelect";
+import AppButton from "../../../components/Button/AppButton";
+import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
+import AppDatePicker from "../../../components/DatePicker/AppDatePicker";
+import CohortsActions from "./Actions/CohortsActions";
+import Loader from "../../../components/Loader/Loader";
 /*
     ==========================
     =     AUX VARIABLES      =
     ==========================
 */
 const classList = [
-  'Intro to programming',
-  'React.js',
-  'Node.js/Express',
-  'Ruby on Rails',
+  "Intro to programming",
+  "React.js",
+  "Node.js/Express",
+  "Ruby on Rails",
 ];
 
 const Cohorts = () => {
@@ -63,7 +63,7 @@ const Cohorts = () => {
         ==========================
     */
   const [reset, setReset] = useState(false);
-  const [className, setClassName] = useState('');
+  const [className, setClassName] = useState("");
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
 
@@ -72,56 +72,56 @@ const Cohorts = () => {
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
-      errorMessage: 'Please enter a valid name',
+      errorMessage: "Please enter a valid name",
     },
     classNameError: {
       error: true, //Initial value is blank, this is why I set the error to true.
-      errorMessage: 'Please select a class for this cohort',
+      errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
       error: false,
-      errorMessage: 'Please select a start date for this cohort',
+      errorMessage: "Please select a start date for this cohort",
     },
     endDateError: {
       error: false,
-      errorMessage: 'Please select an end date for this cohort',
+      errorMessage: "Please select an end date for this cohort",
     },
   });
   const [cohorts, setCohorts] = useState([]);
   const columns = [
-    { field: 'id', headerName: 'ID', maxWidth: 130, flex: 1 },
+    { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
-      field: 'cohort',
-      headerName: 'Cohort',
+      field: "cohort",
+      headerName: "Cohort",
       minWidth: 200,
       maxWidth: 200,
       flex: 1,
     },
     {
-      field: 'class',
-      headerName: 'Class',
+      field: "class",
+      headerName: "Class",
       minWidth: 200,
       maxWidth: 200,
       flex: 1,
     },
     {
-      field: 'startDate',
-      headerName: 'Start date',
-      type: 'date',
+      field: "startDate",
+      headerName: "Start date",
+      type: "date",
       minWidth: 150,
       maxWidth: 150,
       flex: 1,
     },
     {
-      field: 'endDate',
-      headerName: 'End date',
-      type: 'date',
+      field: "endDate",
+      headerName: "End date",
+      type: "date",
       minWidth: 150,
       maxWidth: 150,
     },
     {
-      field: 'actions',
-      headerName: 'Actions',
+      field: "actions",
+      headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
@@ -153,25 +153,22 @@ const Cohorts = () => {
   const postCohorts = async (newCohort) => {
     console.log(newCohort);
     try {
-      setLoading(true); //Set loading before sending API request//
-
-      const response = await axiosPrivate.post('/cohort', newCohort);
-
+      const response = await axiosPrivate.post("/cohort", newCohort);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate("/login", { state: { from: location }, replace: true });
         setAuth({
-          userId: '',
-          userName: '',
-          userEmail: '',
+          userId: "",
+          userName: "",
+          userEmail: "",
           role: [],
           loggedIn: false,
-          avatarUrl: '',
+          avatarUrl: "",
           isActive: undefined,
-          accessToken: '',
+          accessToken: "",
         });
       } else {
         console.error(error);
@@ -193,12 +190,11 @@ const Cohorts = () => {
     const controller = new AbortController();
 
     const fetchCohorts = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        const response = await axiosPrivate.get('/cohort', {
+        const response = await axiosPrivate.get("/cohort", {
           signal: controller.signal,
         });
-
         console.log(response);
         const formattedCohorts = response.data.cohorts.map((cohort) => {
           return {
@@ -209,29 +205,30 @@ const Cohorts = () => {
             endDate: new Date(cohort.end),
           };
         });
-
         console.log(formattedCohorts);
         isMounted && setCohorts(formattedCohorts);
+        setLoading(false);
       } catch (error) {
         console.error(error);
         if (error.response.status === 403) {
           //User is required to validate auth again
-          navigate('/login', { state: { from: location }, replace: true });
+          setLoading(false)
+          navigate("/login", { state: { from: location }, replace: true });
           setAuth({
-            userId: '',
-            userName: '',
-            userEmail: '',
+            userId: "",
+            userName: "",
+            userEmail: "",
             role: [],
             loggedIn: false,
-            avatarUrl: '',
+            avatarUrl: "",
             isActive: undefined,
-            accessToken: '',
+            accessToken: "",
           });
         } else {
+          setLoading(false)
           console.error(error);
         }
       }
-      setLoading(false);
     };
 
     fetchCohorts();
@@ -324,13 +321,13 @@ const Cohorts = () => {
           ]);
         }
       } else {
-        console.error('Form validation is not letting form submission');
+        console.error("Form validation is not letting form submission");
       }
     } catch (error) {
       console.error(error);
     } finally {
       setReset(true);
-      setClassName('');
+      setClassName("");
       setStartDate(dayjs());
       setEndDate(dayjs());
     }
@@ -343,40 +340,40 @@ const Cohorts = () => {
         <Paper
           elevation={3}
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            bgcolor: '#1A1A2E',
-            color: '#FFFFFF',
-            borderRadius: '10px',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            bgcolor: "#1A1A2E",
+            color: "#FFFFFF",
+            borderRadius: "10px",
             padding: 2,
-            height: 'auto',
+            height: "auto",
           }}
         >
           <Typography
-            component={'h1'}
+            component={"h1"}
             sx={{
-              backgroundColor: '#C84B31',
+              backgroundColor: "#C84B31",
               borderRadius: 2,
               padding: 1,
               margin: 1,
-              textAlign: 'center',
-              fontWeight: 'bold',
+              textAlign: "center",
+              fontWeight: "bold",
               fontSize: 25,
             }}
           >
-            {' '}
-            COHORTS MANAGEMENT{' '}
+            {" "}
+            COHORTS MANAGEMENT{" "}
           </Typography>
           <Box
-            component={'form'}
+            component={"form"}
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              width: '100%',
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
             }}
             autoComplete="off"
             onSubmit={handleCohortSubmit}
@@ -385,9 +382,9 @@ const Cohorts = () => {
               <AuthFormControl width="75%">
                 <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
                   <SchoolRounded fontSize="large"></SchoolRounded>
@@ -404,16 +401,16 @@ const Cohorts = () => {
                   variant="light"
                   regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
                   onHandleError={handleCohortNameError}
-                  errorMessage={'Please enter a valid name'}
+                  errorMessage={"Please enter a valid name"}
                   reset={reset}
                 ></FormTextField>
               </AuthFormControl>
               <AuthFormControl width="75%">
                 <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
                   <LaptopRounded fontSize="large" />
@@ -425,13 +422,13 @@ const Cohorts = () => {
                   error={formError.classNameError.error}
                 >
                   <FormSelect
-                    id={'class'}
-                    name={'class'}
-                    label={'Class:'}
+                    id={"class"}
+                    name={"class"}
+                    label={"Class:"}
                     selectValue={className}
                     onSelectValue={handleClassNameChange}
                     list={classList}
-                    variant={'light'}
+                    variant={"light"}
                     multiple={false}
                     error={formError.classNameError}
                   ></FormSelect>
@@ -440,34 +437,34 @@ const Cohorts = () => {
               <AuthFormControl width="75%">
                 <Box
                   sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
                   }}
                 >
                   <CalendarMonthRounded fontSize="large" />
                   <br></br>
                 </Box>
                 <AppDatePicker
-                  id={'startDate'}
-                  name={'startDate'}
-                  label={'Start date:'}
+                  id={"startDate"}
+                  name={"startDate"}
+                  label={"Start date:"}
                   dateValue={startDate}
                   onDateValueChange={handleStartDateChange}
-                  variant={'light'}
+                  variant={"light"}
                 ></AppDatePicker>
                 <AppDatePicker
-                  id={'endDate'}
-                  name={'endDate'}
-                  label={'End date:'}
+                  id={"endDate"}
+                  name={"endDate"}
+                  label={"End date:"}
                   dateValue={endDate}
                   onDateValueChange={handleEndDateChange}
                   minDate={startDate}
-                  variant={'light'}
+                  variant={"light"}
                 ></AppDatePicker>
               </AuthFormControl>
               <AppButton
-                text={'Add new cohort'}
+                text={"Add new cohort"}
                 type="submit"
                 width="25%"
                 handlerFunction={() => {}}
@@ -477,20 +474,20 @@ const Cohorts = () => {
           {loading ? (
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
               }}
             >
               <Loader />
             </Box>
           ) : (
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: "flex" }}>
               <AppDataGrid
                 columns={columns}
                 rows={cohorts}
-                fieldToBeSorted={'class'}
-                sortType={'asc'}
+                fieldToBeSorted={"class"}
+                sortType={"asc"}
               />
             </Box>
           )}

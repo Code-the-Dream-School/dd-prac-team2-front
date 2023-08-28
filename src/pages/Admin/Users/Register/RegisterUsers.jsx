@@ -3,59 +3,59 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Paper, TextField, Typography } from '@mui/material';
+import { Box, Container, Paper, TextField, Typography } from "@mui/material";
 import {
   AdminPanelSettingsRounded,
   BadgeRounded,
   Email,
   School,
-} from '@mui/icons-material';
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+} from "@mui/icons-material";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 /*
     ==========================
     =        STYLES          =
     ==========================
 */
-import styles from './RegisterUsers.module.css';
+import styles from "./RegisterUsers.module.css";
 
 /*
     ==========================
     =         HOOKS          =
     ==========================
 */
-import useAuth from '../../../../hooks/useAuth';
+import useAuth from "../../../../hooks/useAuth";
 
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
-import UserRoleRender from '../RegisterOnCohort/TableRenders/UserRoleRender';
-import UserStatusRender from '../RegisterOnCohort/TableRenders/UserStatusRender';
-import AppDataGrid from '../../../../components/DataGrid/AppDataGrid';
-import RegisterUserActions from './Actions/RegisterUserActions';
-import UserCohortRender from './TableRenders/UserCohortRender';
-import AuthFormControl from '../../../../components/FormControl/AuthFormControl';
-import FormAutocomplete from '../../../../components/Autocomplete/Autocomplete';
-import FormTextField from '../../../../components/TextField/FormTextField';
-import FormSelect from '../../../../components/Select/FormSelect';
-import AppButton from '../../../../components/Button/AppButton';
-import Loader from '../../../../components/Loader/Loader';
+import UserRoleRender from "../RegisterOnCohort/TableRenders/UserRoleRender";
+import UserStatusRender from "../RegisterOnCohort/TableRenders/UserStatusRender";
+import AppDataGrid from "../../../../components/DataGrid/AppDataGrid";
+import RegisterUserActions from "./Actions/RegisterUserActions";
+import UserCohortRender from "./TableRenders/UserCohortRender";
+import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
+import FormAutocomplete from "../../../../components/Autocomplete/Autocomplete";
+import FormTextField from "../../../../components/TextField/FormTextField";
+import FormSelect from "../../../../components/Select/FormSelect";
+import AppButton from "../../../../components/Button/AppButton";
+import Loader from "../../../../components/Loader/Loader";
 /*
     ==========================
     =     AUX VARIABLES      =
     ==========================
 */
-const rolesList = ['Admin', 'Mentor', 'Student'];
+const rolesList = ["Admin", "Mentor", "Student"];
 
 const RegisterUsers = () => {
   /*
@@ -79,28 +79,28 @@ const RegisterUsers = () => {
   // From states
   const [userRoles, setUserRoles] = useState([]);
   const [cohortsValueSelected, setCohortsValueSelected] = useState({
-    id: '',
-    cohort: '',
+    id: "",
+    cohort: "",
   });
   const [cohortsInputValueSelected, setCohortsInputValueSelected] =
-    useState('');
+    useState("");
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     userNameError: {
       error: false,
-      errorMessage: 'Please enter a valid name',
+      errorMessage: "Please enter a valid name",
     },
     userEmailError: {
       error: false,
-      errorMessage: 'Please enter a valid e-mail address',
+      errorMessage: "Please enter a valid e-mail address",
     },
     userCohortError: {
       error: false,
-      errorMessage: 'Please add a cohort for this user',
+      errorMessage: "Please add a cohort for this user",
     },
     userRolesError: {
       error: true,
-      errorMessage: 'Please select a role for this user',
+      errorMessage: "Please select a role for this user",
     },
   });
   const [reset, setReset] = useState(false);
@@ -110,24 +110,24 @@ const RegisterUsers = () => {
         ==========================
     */
   const columns = [
-    { field: 'id', headerName: 'ID', minWidth: 100, maxWidth: 130, flex: 1 },
+    { field: "id", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
     {
-      field: 'userName',
-      headerName: 'Full name:',
+      field: "userName",
+      headerName: "Full name:",
       minWidth: 250,
       maxWidth: 250,
       flex: 1,
     },
     {
-      field: 'userEmail',
-      headerName: 'E-mail:',
+      field: "userEmail",
+      headerName: "E-mail:",
       minWidth: 200,
       maxWidth: 300,
       flex: 1,
     },
     {
-      field: 'userCohort',
-      headerName: 'Cohort: ',
+      field: "userCohort",
+      headerName: "Cohort: ",
       sortable: false,
       disableColumnMenu: true,
       minWidth: 250,
@@ -139,8 +139,8 @@ const RegisterUsers = () => {
       ),
     },
     {
-      field: 'userRole',
-      headerName: 'Roles: ',
+      field: "userRole",
+      headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
       minWidth: 250,
@@ -150,8 +150,8 @@ const RegisterUsers = () => {
       renderCell: (params) => <UserRoleRender params={params}></UserRoleRender>,
     },
     {
-      field: 'userActivatedStatus',
-      headerName: 'Status: ',
+      field: "userActivatedStatus",
+      headerName: "Status: ",
       sortable: false,
       disableColumnMenu: true,
       minWidth: 100,
@@ -163,8 +163,8 @@ const RegisterUsers = () => {
       ),
     },
     {
-      field: 'actions',
-      headerName: 'Actions: ',
+      field: "actions",
+      headerName: "Actions: ",
       sortable: false,
       disableColumnMenu: true,
       minWidth: 180,
@@ -209,7 +209,7 @@ const RegisterUsers = () => {
                     
                 }
             ];*/
-      const response = await axiosPrivate.get('/users');
+      const response = await axiosPrivate.get("/users");
       if (response.status === 200) {
         const formattedUsers = response.data.users.map((user) => {
           return {
@@ -227,22 +227,22 @@ const RegisterUsers = () => {
         setUsers(formattedUsers);
         setLoading(false); // Stop loading in case of error
       } else {
-        console.error('There was an error fetching the users of this cohort');
+        console.error("There was an error fetching the users of this cohort");
       }
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate("/login", { state: { from: location }, replace: true });
         setAuth({
-          userId: '',
-          userName: '',
-          userEmail: '',
+          userId: "",
+          userName: "",
+          userEmail: "",
           role: [],
           loggedIn: false,
-          avatarUrl: '',
+          avatarUrl: "",
           isActive: undefined,
-          accessToken: '',
+          accessToken: "",
         });
       } else {
         console.error(error);
@@ -253,7 +253,7 @@ const RegisterUsers = () => {
   const fetchCohorts = async () => {
     try {
       setLoading(true);
-      const response = await axiosPrivate.get('/cohort');
+      const response = await axiosPrivate.get("/cohort");
       const formattedCohorts = response.data.cohorts.map((cohort) => {
         return {
           id: cohort._id,
@@ -266,16 +266,16 @@ const RegisterUsers = () => {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate("/login", { state: { from: location }, replace: true });
         setAuth({
-          userId: '',
-          userName: '',
-          userEmail: '',
+          userId: "",
+          userName: "",
+          userEmail: "",
           role: [],
           loggedIn: false,
-          avatarUrl: '',
+          avatarUrl: "",
           isActive: undefined,
-          accessToken: '',
+          accessToken: "",
         });
       } else {
         console.error(error);
@@ -339,7 +339,7 @@ const RegisterUsers = () => {
       setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.post(
-          'auth/register',
+          "auth/register",
           formattedUserRegistration
         );
         console.log(response);
@@ -363,7 +363,7 @@ const RegisterUsers = () => {
         }
       } else {
         console.error(
-          'There is an error preventing the form submission: check that your entires are correctly validated'
+          "There is an error preventing the form submission: check that your entires are correctly validated"
         );
       }
     } catch (error) {
@@ -407,41 +407,41 @@ const RegisterUsers = () => {
       <Paper
         elevation={3}
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          bgcolor: '#1A1A2E',
-          color: '#FFFFFF',
-          borderRadius: '10px',
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#1A1A2E",
+          color: "#FFFFFF",
+          borderRadius: "10px",
           padding: 2,
-          height: 'auto',
+          height: "auto",
         }}
       >
         <Typography
-          component={'h1'}
+          component={"h1"}
           sx={{
-            backgroundColor: '#C84B31',
+            backgroundColor: "#C84B31",
             borderRadius: 2,
             padding: 1,
             margin: 1,
-            textAlign: 'center',
-            textTransform: 'uppercase',
-            fontWeight: 'bold',
+            textAlign: "center",
+            textTransform: "uppercase",
+            fontWeight: "bold",
             fontSize: 25,
           }}
         >
-          {' '}
-          Users Management{' '}
+          {" "}
+          Users Management{" "}
         </Typography>
         <Box
-          component={'form'}
+          component={"form"}
           sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100%",
           }}
           autoComplete="off"
           onSubmit={handleRegisterOnCohortSubmit}
@@ -450,9 +450,9 @@ const RegisterUsers = () => {
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <BadgeRounded fontSize="large"></BadgeRounded>
@@ -469,14 +469,14 @@ const RegisterUsers = () => {
                 variant="light"
                 regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/}
                 onHandleError={handleUserNameError}
-                errorMessage={'Please enter a valid name'}
+                errorMessage={"Please enter a valid name"}
                 reset={reset}
               ></FormTextField>
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <Email fontSize="large"></Email>
@@ -493,16 +493,16 @@ const RegisterUsers = () => {
                 variant="light"
                 regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
                 onHandleError={handleUserEmailError}
-                errorMessage={'Please enter a valid e-mail address'}
+                errorMessage={"Please enter a valid e-mail address"}
                 reset={reset}
               ></FormTextField>
             </AuthFormControl>
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <School fontSize="large" />
@@ -518,16 +518,16 @@ const RegisterUsers = () => {
                   onHandleInputValueChange={setCohortsInputValueSelected}
                   options={cohorts}
                   error={formError.userCohortError}
-                  variant={'light'}
+                  variant={"light"}
                 ></FormAutocomplete>
               </AuthFormControl>
             </AuthFormControl>
             <AuthFormControl width="75%">
               <Box
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
                 <AdminPanelSettingsRounded fontSize="large" />
@@ -539,20 +539,20 @@ const RegisterUsers = () => {
                 error={formError.userRolesError.error}
               >
                 <FormSelect
-                  id={'userRoles'}
-                  name={'userRoles'}
-                  label={'Roles:'}
+                  id={"userRoles"}
+                  name={"userRoles"}
+                  label={"Roles:"}
                   selectValue={userRoles}
                   onSelectValue={handleOnSelectRole}
                   list={rolesList}
-                  variant={'light'}
+                  variant={"light"}
                   multiple={true}
                   error={formError.userRolesError}
                 ></FormSelect>
               </AuthFormControl>
             </AuthFormControl>
             <AppButton
-              text={'Add new user'}
+              text={"Add new user"}
               type="submit"
               width="25%"
               handlerFunction={() => {}}
@@ -567,8 +567,8 @@ const RegisterUsers = () => {
             columns={columns}
             rows={users}
             pageSize={10}
-            fieldToBeSorted={'userName'}
-            sortType={'asc'}
+            fieldToBeSorted={"userName"}
+            sortType={"asc"}
           />
         )}
       </Paper>

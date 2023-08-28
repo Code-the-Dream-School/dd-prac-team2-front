@@ -3,14 +3,14 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { CircularProgress, styled } from '@mui/material';
-import PropTypes from 'prop-types';
+import { CircularProgress, styled } from "@mui/material";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from 'react';
+import React from "react";
 
 const StyledLoader = styled(CircularProgress)(() => ({}));
 
@@ -36,6 +36,6 @@ Loader.propTypes = {
   //   sx: (PropTypes.array < func) | object | (bool > PropTypes.func) | object,
   thickness: PropTypes.number,
   value: PropTypes.number,
-  variant: PropTypes.oneOf(['determinate', 'indeterminate']),
+  variant: PropTypes.oneOf(["determinate", "indeterminate"]),
   handlerFunction: PropTypes.func.isRequired,
 };

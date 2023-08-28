@@ -3,35 +3,35 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import AppButton from '../../../../components/Button/AppButton';
-import { Container } from '@mui/material';
+import AppButton from "../../../../components/Button/AppButton";
+import { Container } from "@mui/material";
 import {
   ChecklistRounded,
   DeleteRounded,
   EditRounded,
   PeopleAltRounded,
-} from '@mui/icons-material';
-import useAxiosPrivate from '../../../../hooks/useAxiosPrivate';
+} from "@mui/icons-material";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 /*
     ==========================
     =          HOOKS         =
     ==========================
 */
-import useAuth from '../../../../hooks/useAuth';
+import useAuth from "../../../../hooks/useAuth";
 /*
     ==========================
     =       COMPONENTS       =
     ==========================
 */
-import EditCohort from './EditCohort';
-import Loader from '../../../../components/Loader/Loader';
+import EditCohort from "./EditCohort";
+import Loader from "../../../../components/Loader/Loader";
 
 const CohortsActions = ({ params, onHandleCohorts }) => {
   /*
@@ -70,16 +70,16 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
       if (error.response.status === 403) {
         //User is required to validate auth again
         console.error(error);
-        navigate('/login', { state: { from: location }, replace: true });
+        navigate("/login", { state: { from: location }, replace: true });
         setAuth({
-          userId: '',
-          userName: '',
-          userEmail: '',
+          userId: "",
+          userName: "",
+          userEmail: "",
           role: [],
           loggedIn: false,
-          avatarUrl: '',
+          avatarUrl: "",
           isActive: undefined,
-          accessToken: '',
+          accessToken: "",
         });
       } else {
         console.error(error);
@@ -101,16 +101,16 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
       {loading ? <Loader /> : null}
       <Container
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          gap: '5px',
-          '&': { paddingLeft: 0, paddingRight: 0 },
+          display: "flex",
+          flexDirection: "row",
+          gap: "5px",
+          "&": { paddingLeft: 0, paddingRight: 0 },
           paddingLeft: 0,
         }}
       >
         <Link to={`${params.row.id}`}>
           <AppButton
-            text={'Lessons'}
+            text={"Lessons"}
             type="button"
             width="auto"
             color="#609966"
@@ -121,7 +121,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
         </Link>
         <Link to={`register/${params.row.id}`}>
           <AppButton
-            text={'Users'}
+            text={"Users"}
             type="button"
             width="auto"
             color="#609966"
@@ -131,7 +131,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           </AppButton>
         </Link>
         <AppButton
-          text={'Edit'}
+          text={"Edit"}
           type="button"
           width="auto"
           color="#F3950D"
@@ -142,7 +142,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           <EditRounded></EditRounded>
         </AppButton>
         <AppButton
-          text={'Delete'}
+          text={"Delete"}
           type="button"
           width="auto"
           color="#CD1818"
