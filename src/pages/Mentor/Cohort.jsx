@@ -23,6 +23,7 @@ const Cohort = () => {
     const getCurrentWeek = async () => {
       setLoading(true);
       const res = await axiosPrivate.get(`/week/${cohort._id}/current`);
+      console.log(res);
       setCurrentWeek(res.data.currentWeek);
       setLoading(false);
     };
@@ -50,7 +51,7 @@ const Cohort = () => {
             fontSize: 25,
           }}
         >
-          {cohort.name}
+          {/* {cohort.name} */}
         </Typography>
       </Box>
       <Typography
