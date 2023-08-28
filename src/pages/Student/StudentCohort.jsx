@@ -1,4 +1,3 @@
-// Line  136  {new Date(session.start).toLocaleDateString()} ==> change to date and time for example 8/23 8:00 PM
 /*
     ==========================
     =  THIRD PARTY LIBRARIES =
@@ -16,6 +15,7 @@ import {
   Chip,
   Stack,
   Badge,
+  Tooltip,
   ListItemText,
 } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group";
@@ -70,6 +70,22 @@ const StudentCohort = () => {
     } else {
       return false;
     }
+  };
+  const convertLocalTime = (val) => {
+    const utcTime = new Date(val);
+    let hour = utcTime.getHours() % 12;
+    if (hour === 0) {
+      hour = 12;
+    }
+    let minute = utcTime.getMinutes();
+    if (minute < 10) {
+      minute = "0" + minute;
+    }
+    const ampm = utcTime.getHours() < 12 ? "AM" : "PM";
+    const localTime = `${
+      utcTime.getMonth() + 1
+    }/${utcTime.getDate()} — ${hour}:${minute} ${ampm}`;
+    return localTime;
   };
 
   /*
@@ -207,13 +223,19 @@ const StudentCohort = () => {
         <Typography
           component={"h1"}
           sx={{
-            backgroundColor: "#C84B31",
+            backgroundColor: "#112f58",
+            border: 2,
+            borderColor: "#C84B31",
             borderRadius: 2,
             padding: 2,
             margin: 1,
+            color: "background.paper",
             textAlign: "center",
             fontWeight: "bold",
             fontSize: 25,
+            "&:hover": {
+              backgroundColor: "#f3950d",
+            },
           }}
         >
           {state.name}
@@ -225,13 +247,28 @@ const StudentCohort = () => {
           borderRadius: 2,
           padding: 1,
           margin: 1,
+          color: "background.paper",
           textAlign: "center",
           fontWeight: "bold",
           fontSize: 25,
         }}
         component={"div"}
       >
-        {currentWeek?.name}
+        <Box
+          sx={{
+            backgroundColor: "#112f58",
+            borderRadius: 2,
+            marginBottom: 1,
+            p: 0.5,
+            fontSize: 22,
+            "&:hover": {
+              transform: "scale(1.02)",
+              transition: "all 0.2s ease-in-out",
+            },
+          }}
+        >
+          {currentWeek?.name}
+        </Box>
         <Stack
           direction={{ xs: "column", sm: "row" }}
           spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -285,14 +322,31 @@ const StudentCohort = () => {
                   marginTop: "1px",
                 }}
               >
-                <Box>
-                  <CardContent>
+                <Box sx={{ p: 0.3 }}>
+                  <CardContent
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "#f3950d",
+                        borderRadius: 1.5,
+                      },
+                    }}
+                  >
                     <Typography
                       onClick={() => handleClick(session._id)}
-                      variant="h5"
-                    >{`${session.type} session`}</Typography>
-                    <Typography variant="subtitle1">
-                      {new Date(session.start).toLocaleDateString()}
+                      variant="h6"
+                      color="#112f58"
+                    >
+                      <Tooltip
+                        title="Click to see session details."
+                        followCursor
+                        placement="top"
+                      >
+                        <b>{`${session.type} Session`}</b>
+                      </Tooltip>
+                    </Typography>
+                    <Typography variant="subtitle1" color="#c84b31">
+                      <b> {convertLocalTime(session.start)}</b>
                     </Typography>
                   </CardContent>
                 </Box>
@@ -310,10 +364,12 @@ const StudentCohort = () => {
                           <Typography
                             sx={{ display: "inline" }}
                             paragraph={true}
-                            variant="h8"
-                            color="#112f57"
+                            variant="h7"
+                            color="#112f58"
                           >
-                            {` ${session.creator.name ?? "Not assigned"}`}
+                            <b>
+                              {` ${session.creator.name ?? "Not assigned"}`}
+                            </b>
                           </Typography>
                         </Box>
                       }
