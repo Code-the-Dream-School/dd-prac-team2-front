@@ -559,14 +559,18 @@ const RegisterUsers = () => {
             />
           </div>
         </Box>
-        {loading ? <Loader /> : null}
-        <AppDataGrid
-          columns={columns}
-          rows={users}
-          pageSize={10}
-          fieldToBeSorted={'userName'}
-          sortType={'asc'}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          // null}
+          <AppDataGrid
+            columns={columns}
+            rows={users}
+            pageSize={10}
+            fieldToBeSorted={'userName'}
+            sortType={'asc'}
+          />
+        )}
       </Paper>
     </Container>
   );

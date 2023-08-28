@@ -475,16 +475,25 @@ const Cohorts = () => {
             </div>
           </Box>
           {loading ? (
-            <Box sx={{ display: 'flex' }}>
-              <Loader sx={{ size: '20rem' }} />
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+              }}
+            >
+              <Loader />
             </Box>
-          ) : null}
-          <AppDataGrid
-            columns={columns}
-            rows={cohorts}
-            fieldToBeSorted={'class'}
-            sortType={'asc'}
-          />
+          ) : (
+            <Box sx={{ display: 'flex' }}>
+              <AppDataGrid
+                columns={columns}
+                rows={cohorts}
+                fieldToBeSorted={'class'}
+                sortType={'asc'}
+              />
+            </Box>
+          )}
         </Paper>
       </Container>
     </>

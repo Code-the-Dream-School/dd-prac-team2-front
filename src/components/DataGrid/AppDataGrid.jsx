@@ -85,8 +85,9 @@ const StyledDataGrid = styled(DataGrid)(() => ({
     },
   },
 }));
-
-const MyCustomNoRowsOverlay = () => <GridOverlay />;
+const MyCustomNoRowsOverlay = () => {
+  <GridOverlay />;
+};
 
 const AppDataGrid = ({
   columns,
