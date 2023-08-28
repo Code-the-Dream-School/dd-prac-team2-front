@@ -10,7 +10,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Cohort = () => {
@@ -96,7 +96,10 @@ const Cohort = () => {
               >
                 <Box>
                   <CardContent>
-                    <Typography variant="h5">{`${session.type} session`}</Typography>
+                    <Link to={`/mentor/session/${session._id}`}>
+                      {" "}
+                      {`${session.type} session`}
+                    </Link>
                     <Typography variant="subtitle1">
                       {new Date(session.start).toLocaleDateString()}
                     </Typography>
