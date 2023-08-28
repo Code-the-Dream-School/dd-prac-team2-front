@@ -16,6 +16,8 @@ import AppButton from "../../components/Button/AppButton";
 import styles from "./Student.module.css";
 import useAuth from "../../hooks/useAuth";
 import Review from "./Actions/Review";
+import { LocalGasStation } from "@mui/icons-material";
+import { formatDateAndTime } from "../../util";
 
 const StudentSession = () => {
   const [currentSession, setCurrentSession] = useState();
@@ -39,6 +41,7 @@ const StudentSession = () => {
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
     setLoading(false);
+    console.log(formatDateAndTime(data.session.end));
   };
 
   console.log(currentSession);
@@ -92,6 +95,7 @@ const StudentSession = () => {
       },
     }));
   };
+  console.log(currentSession);
   return (
     <Container>
       <Box
@@ -152,7 +156,10 @@ const StudentSession = () => {
           fontSize: 20,
         }}
       >
-        Start: {currentSession?.start}
+        Start:{" "}
+        {currentSession?.start
+          ? formatDateAndTime(currentSession?.start)
+          : null}
       </Typography>
       <Typography
         sx={{
@@ -164,7 +171,8 @@ const StudentSession = () => {
           fontSize: 20,
         }}
       >
-        End: {currentSession?.end}
+        End:{" "}
+        {currentSession?.end ? formatDateAndTime(currentSession?.end) : null}
       </Typography>
       <Review sessionId={sessionId} />
       <List>
