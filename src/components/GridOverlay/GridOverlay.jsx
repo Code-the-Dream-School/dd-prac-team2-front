@@ -70,7 +70,6 @@ const GridOverlay = () => {
           </g>
         </g>
       </svg>
-
       <Box>
         <Typography
           variant="h1"

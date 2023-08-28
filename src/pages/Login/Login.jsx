@@ -53,6 +53,10 @@ const Login = () => {
       error: false,
       errorMessage: "Please enter a valid email address.",
     },
+    passwordError: {
+      error: false,
+      errorMessage: "Please enter a valid password address.",
+    },
   });
   /*
         ==========================
@@ -72,21 +76,18 @@ const Login = () => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     const loggedUser = {
-        email: (event.target.email.value.trim()).toLowerCase(),
-        password: event.target.password.value.trim()
+      email: event.target.email.value.trim().toLowerCase(),
+      password: event.target.password.value.trim(),
     };
     const errors = Object.values(formError);
-    try{
-      if(!errors.some((error)=>error.error===true)){
-        const response = await axios.post(`auth/login`,
-            loggedUser,
-            {
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+    try {
+      if (!errors.some((error) => error.error === true)) {
+        const response = await axios.post(`auth/login`, loggedUser, {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         console.log(response.data);
         const userId = response.data.user.userId;
         const userName = response.data.user.name;
@@ -94,14 +95,25 @@ const Login = () => {
         const role = response.data.user.role;
         console.log("Welcome: ", userName, userId);
         console.log("Access token: ", accessToken);
-        setAuth({userId, userName, userEmail:loggedUser.email, role, loggedIn:true, accessToken});
+        setAuth({
+          userId,
+          userName,
+          userEmail: loggedUser.email,
+          role,
+          loggedIn: true,
+          avatarUrl: "",
+          isActive: true,
+          accessToken,
+        });
         setReset(true);
-        navigate(from, {replace: true});
+        navigate(from, { replace: true });
+      } else {
+        console.log(
+          "There is an error that is preventing the form submission",
+          errors
+        );
       }
-      else{
-        console.log("There is an error that is preventing the form submission", errors);
-      }
-    } catch(error){
+    } catch (error) {
       console.error(error.response.data);
     }
   };
@@ -116,6 +128,16 @@ const Login = () => {
       },
     }));
   }, []);
+
+  const handlePasswordError = (inputError) => {
+    setFormError((prevState) => ({
+      ...prevState,
+      passwordError: {
+        ...prevState.passwordError,
+        error: inputError,
+      },
+    }));
+  };
 
   //3. Google log in
   const handleGoogleAuthUrl = () => {
@@ -227,7 +249,10 @@ const Login = () => {
                   isFocused={false}
                   width="100%"
                   variant="light"
-                  onHandleError={() => {}}
+                  errorMessage={
+                    "This field is required"
+                  }
+                  onHandleError={handlePasswordError}
                   reset={reset}
                 ></FormTextField>
               </AuthFormControl>

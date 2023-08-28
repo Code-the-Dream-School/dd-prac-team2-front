@@ -62,7 +62,7 @@ const RegisterUsers = () => {
         ==========================
         =          HOOKS         =
         ==========================
-    */
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
@@ -72,7 +72,7 @@ const RegisterUsers = () => {
         ==========================
         =         STATES         =
         ==========================
-    */
+  */
   // Fetched data states:
   const [users, setUsers] = useState([]);
   const [cohorts, setCohorts] = useState([]);
@@ -181,34 +181,13 @@ const RegisterUsers = () => {
   ];
 
   /*
-        ==========================
-        =    ASYNC FUNCTIONS     =
-        ==========================
-    */
+    ==========================
+    =    ASYNC FUNCTIONS     =
+    ==========================
+  */
   const fetchUsers = async () => {
     try {
       setLoading(true); //Set loading before sending API request//
-
-      /* const response = [
-                {
-                    _id: "100",
-                    name: "Ever Argelio Reyes Reyes",
-                    email: "everreyes07@gmail.com",
-                    cohorts: [{id: "64dac04fcb9ce97f7f0db4de", cohort: "Dove"}, {id: "64dabe8dcb9ce97f7f0db49d", cohort: "Deer"}],
-                    role: ["student"],
-                    isActivated: false
-                    
-                },
-                {
-                    _id: "101",
-                    name: "Marisela Castillo Chamagua",
-                    email: "marisela@gmail.com",
-                    cohorts: [{id: "64dabe8dcb9ce97f7f0db49d", cohort: "Deer"}],
-                    role: ["mentor", "student"],
-                    isActivated: true
-                    
-                }
-            ];*/
       const response = await axiosPrivate.get("/users");
       if (response.status === 200) {
         const formattedUsers = response.data.users.map((user) => {
@@ -371,12 +350,11 @@ const RegisterUsers = () => {
     }
     setLoading(false);
   };
-
   /* 
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
+      ==========================
+      =        EFFECTS         =
+      ==========================
+  */
   useEffect(() => {
     fetchUsers();
     fetchCohorts();
@@ -387,7 +365,7 @@ const RegisterUsers = () => {
       ...prevState,
       userCohortError: {
         ...prevState.userCohortError,
-        error: cohortsValueSelected.length === 0 ? true : false,
+        error: cohortsValueSelected === null ? true : false,
       },
     }));
   }, [cohortsValueSelected]);
@@ -513,6 +491,8 @@ const RegisterUsers = () => {
                 <FormAutocomplete
                   multiple={false}
                   value={cohortsValueSelected}
+                  computedIdProperty={"id"}
+                  computedProperty={"cohort"}
                   onHandleSelectedValueChange={handleValueSelectedChange}
                   inputValue={cohortsInputValueSelected}
                   onHandleInputValueChange={setCohortsInputValueSelected}

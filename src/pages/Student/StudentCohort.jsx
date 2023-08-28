@@ -1,4 +1,9 @@
 // Line  136  {new Date(session.start).toLocaleDateString()} ==> change to date and time for example 8/23 8:00 PM
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import {
   Box,
   Container,
@@ -8,64 +13,184 @@ import {
   CardContent,
   CardActions,
   CircularProgress,
+  Chip,
+  Stack,
+  Badge,
+  ListItemText,
 } from "@mui/material";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import GroupIcon from "@mui/icons-material/Group";
+import { CancelOutlined, CheckCircleOutlineRounded } from "@mui/icons-material";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
 import AppButton from "../../components/Button/AppButton";
-import CheckIcon from "@mui/icons-material/Check";
-import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 const StudentCohort = () => {
+  /*
+      ==========================
+      =          HOOKS         =
+      ==========================
+  */
+  const axiosPrivate = useAxiosPrivate();
+  const { auth, setAuth } = useAuth();
   const { state } = useLocation();
+  const location = useLocation();
+  /*
+      ==========================
+      =         STATES         =
+      ==========================
+  */
   const [currentWeek, setCurrentWeek] = useState();
   const [loading, setLoading] = useState(false);
-  const [confirm, setConfirm] = useState();
-  const axiosPrivate = useAxiosPrivate();
   const cohortId = state._id;
   const navigate = useNavigate();
 
+  /*
+      ==========================
+      =      AUX FUNCTION      =
+      ==========================
+  */
+  const isUserOnSession = (sessionID) => {
+    const sessionToBeChecked = currentWeek.sessions.filter(
+      (session) => session._id === sessionID
+    );
+    if (sessionToBeChecked[0].participant.includes(auth.userId)) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  /*
+      ==========================
+      =   HANDLER FUNCTIONS    =
+      ==========================
+  */
   const getCurrentWeek = async () => {
     setLoading(true);
-    const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
-    console.log(data);
-
-    setCurrentWeek(data.currentWeek);
-    setLoading(false);
+    try {
+      const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
+      setCurrentWeek(data.currentWeek);
+      setLoading(false);
+      console.log(data);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+    }
   };
 
   const handleConfirmStatus = async (sessionID) => {
-    setLoading(true);
-    const { data } = await axiosPrivate.patch(
-      `/session/${sessionID}/student/updateStatus`,
-      {
-        status: true,
+    if (!isUserOnSession(sessionID)) {
+      setLoading(true);
+      try {
+        const { data } = await axiosPrivate.patch(
+          `/session/${sessionID}/student/updateStatus`,
+          {
+            status: true,
+          }
+        );
+        setCurrentWeek((prevState) => ({
+          ...prevState,
+          sessions: prevState.sessions.map((session) => {
+            if (session._id === sessionID) {
+              return {
+                ...session,
+                participant: [...session.participant, auth.userId],
+              };
+            } else {
+              return session;
+            }
+          }),
+        }));
+        setLoading(false);
+      } catch (error) {
+        if (error.response.status === 403) {
+          setLoading(false);
+          navigate("/login", { state: { from: location }, replace: true });
+          setAuth({
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
+          });
+        } else {
+          setLoading(false);
+          console.error(error);
+        }
       }
-    );
-    setLoading(false);
-    setConfirm(true);
-    // setCurrentWeek((prevWeeks) => [...prevWeeks, {
-    // }]);
+    }
   };
 
   const handleCancelStatus = async (sessionID) => {
-    setLoading(true);
-    const { data } = await axiosPrivate.patch(
-      `/session/${sessionID}/student/updateStatus`,
-      {
-        status: false,
+    if (isUserOnSession(sessionID)) {
+      setLoading(true);
+      try {
+        await axiosPrivate.patch(`/session/${sessionID}/student/updateStatus`, {
+          status: false,
+        });
+        setCurrentWeek((prevState) => ({
+          ...prevState,
+          sessions: prevState.sessions.map((session) => {
+            if (session._id === sessionID) {
+              return {
+                ...session,
+                participant: session.participant.filter(
+                  (participant) => participant !== auth.userId
+                ),
+              };
+            } else {
+              return session;
+            }
+          }),
+        }));
+        setLoading(false);
+      } catch (error) {
+        if (error.response.status === 403) {
+          setLoading(false);
+          navigate("/login", { state: { from: location }, replace: true });
+          setAuth({
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
+          });
+        } else {
+          setLoading(false);
+          console.error(error);
+        }
       }
-    );
-    setLoading(false);
-    // setCurrentWeek((prevWeeks) => [...prevWeeks, {
-
-    // }]);
+    }
   };
 
   const handleClick = (sessionId) => {
-    navigate(`/student/session/${sessionId}`);
+    if (sessionId) {
+      navigate(`/student/session/${sessionId}`);
+    }
   };
-
+  /* 
+      ==========================
+      =        EFFECTS         =
+      ==========================
+  */
   useEffect(() => {
     getCurrentWeek();
   }, []);
@@ -104,8 +229,42 @@ const StudentCohort = () => {
           fontWeight: "bold",
           fontSize: 25,
         }}
+        component={"div"}
       >
         {currentWeek?.name}
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 2, md: 4 }}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Chip
+            label={`Start Date:  ${new Date(
+              currentWeek?.start
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#112f57",
+              color: "white",
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
+            }}
+          />
+          <Chip
+            label={`End Date:  ${new Date(
+              currentWeek?.end
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#112f57",
+              color: "white",
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
+            }}
+          />
+        </Stack>
       </Typography>
       {loading ? (
         <Box
@@ -137,31 +296,102 @@ const StudentCohort = () => {
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box>
+                <Box display="flex">
                   <CardContent>
-                    <Typography>{`Host: ${session.creator.name}`}</Typography>
-                    <Typography>
-                      {`${session.participant.length}`} student confirmed to
-                      join
-                    </Typography>
-                    <Typography></Typography>
+                    <ListItemText
+                      sx={{
+                        "& .MuiListItemText-primary": {
+                          marginBottom: "8px",
+                        },
+                      }}
+                      primary={
+                        <Box>
+                          Host:
+                          <Typography
+                            sx={{ display: "inline" }}
+                            paragraph={true}
+                            variant="h8"
+                            color="#112f57"
+                          >
+                            {` ${session.creator.name ?? "Not assigned"}`}
+                          </Typography>
+                        </Box>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="text.primary"
+                            textAlign="center"
+                          >
+                            {`Attendees:  `}
+                          </Typography>
+                          <Badge
+                            sx={{
+                              "& .MuiBadge-badge": {
+                                backgroundColor:
+                                  session.participant.length > 0
+                                    ? { main: "#2196f3", contrastText: "white" }
+                                    : "gray",
+                              },
+                            }}
+                            badgeContent={`${session.participant.length}`}
+                            color="success"
+                          >
+                            <GroupIcon />
+                          </Badge>
+                        </>
+                      }
+                    />
                   </CardContent>
                 </Box>
                 <CardActions>
-                  <AppButton
-                    text={"Yes"}
-                    type="button"
-                    width="auto"
-                    color={confirm ? "#008000" : "#FF7F50"}
-                    handlerFunction={() => handleConfirmStatus(session._id)}
-                  ></AppButton>
-                  <AppButton
-                    text={"No"}
-                    type="button"
-                    width="auto"
-                    color="#FF7F50"
-                    handlerFunction={() => handleCancelStatus(session._id)}
-                  ></AppButton>
+                  {session.participant.includes(auth.userId) ? (
+                    <>
+                      <AppButton
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"#609966"}
+                        handlerFunction={() => handleConfirmStatus(session._id)}
+                      >
+                        <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                      </AppButton>
+                      <AppButton
+                        text={"No"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+                        handlerFunction={() => handleCancelStatus(session._id)}
+                      >
+                        <CancelOutlined></CancelOutlined>
+                      </AppButton>
+                    </>
+                  ) : (
+                    <>
+                      <AppButton
+                        text={"Yes"}
+                        type="button"
+                        width="auto"
+                        color={"white"}
+                        textColor={"#1A1A2E"}
+                        handlerFunction={() => handleConfirmStatus(session._id)}
+                      >
+                        <CheckCircleOutlineRounded></CheckCircleOutlineRounded>
+                      </AppButton>
+                      <AppButton
+                        text={"No"}
+                        type="button"
+                        width="auto"
+                        color="#CD1818"
+                        handlerFunction={() => handleCancelStatus(session._id)}
+                      >
+                        <CancelOutlined></CancelOutlined>
+                      </AppButton>
+                    </>
+                  )}
                 </CardActions>
               </Card>
             ))

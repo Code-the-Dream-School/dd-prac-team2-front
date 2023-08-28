@@ -24,7 +24,6 @@ import { useLocation, useNavigate } from "react-router-dom";
     ==========================
 */
 import useAuth from "../../../hooks/useAuth";
-
 /*
     ==========================
     =        STYLES          =
@@ -66,9 +65,7 @@ const Cohorts = () => {
   const [className, setClassName] = useState("");
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
-
   const [loading, setLoading] = useState(false);
-
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -306,7 +303,6 @@ const Cohorts = () => {
         const response = await postCohorts(newCohort);
         console.log(response);
         setLoading(false); // Stop loading in case of error
-
         if (response.status === 201) {
           console.log(cohorts);
           setCohorts((prevCohorts) => [
@@ -335,166 +331,165 @@ const Cohorts = () => {
   };
 
   return (
-    <>
-      <Container maxWidth="lg">
-        <Paper
-          elevation={3}
+    <Container maxWidth="lg">
+      <Paper
+        elevation={3}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          bgcolor: "#1A1A2E",
+          color: "#FFFFFF",
+          borderRadius: "10px",
+          padding: 2,
+          height: "auto",
+        }}
+      >
+        <Typography
+          component={"h1"}
+          sx={{
+            backgroundColor: "#C84B31",
+            borderRadius: 2,
+            padding: 1,
+            margin: 1,
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: 25,
+          }}
+        >
+          {" "}
+          COHORTS MANAGEMENT{" "}
+        </Typography>
+        <Box
+          component={"form"}
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            bgcolor: "#1A1A2E",
-            color: "#FFFFFF",
-            borderRadius: "10px",
-            padding: 2,
-            height: "auto",
+            width: "100%",
           }}
+          autoComplete="off"
+          onSubmit={handleCohortSubmit}
         >
-          <Typography
-            component={"h1"}
-            sx={{
-              backgroundColor: "#C84B31",
-              borderRadius: 2,
-              padding: 1,
-              margin: 1,
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: 25,
-            }}
-          >
-            {" "}
-            COHORTS MANAGEMENT{" "}
-          </Typography>
+          <div className={styles.formContainer}>
+            <AuthFormControl width="75%">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <SchoolRounded fontSize="large"></SchoolRounded>
+                <br></br>
+                <br></br>
+              </Box>
+              <FormTextField
+                required
+                type="text"
+                label="Cohort:"
+                name="cohort"
+                isFocused={true}
+                width="100%"
+                variant="light"
+                regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                onHandleError={handleCohortNameError}
+                errorMessage={"Please enter a valid name"}
+                reset={reset}
+              ></FormTextField>
+            </AuthFormControl>
+            <AuthFormControl width="75%">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <LaptopRounded fontSize="large" />
+                <br></br>
+              </Box>
+              <AuthFormControl
+                width="100%"
+                isNested={true}
+                error={formError.classNameError.error}
+              >
+                <FormSelect
+                  id={"class"}
+                  name={"class"}
+                  label={"Class:"}
+                  selectValue={className}
+                  onSelectValue={handleClassNameChange}
+                  list={classList}
+                  variant={"light"}
+                  multiple={false}
+                  error={formError.classNameError}
+                ></FormSelect>
+              </AuthFormControl>
+            </AuthFormControl>
+            <AuthFormControl width="75%">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+              >
+                <CalendarMonthRounded fontSize="large" />
+                <br></br>
+              </Box>
+              <AppDatePicker
+                id={"startDate"}
+                name={"startDate"}
+                label={"Start date:"}
+                dateValue={startDate}
+                onDateValueChange={handleStartDateChange}
+                variant={"light"}
+              ></AppDatePicker>
+              <AppDatePicker
+                id={"endDate"}
+                name={"endDate"}
+                label={"End date:"}
+                dateValue={endDate}
+                onDateValueChange={handleEndDateChange}
+                minDate={startDate}
+                variant={"light"}
+              ></AppDatePicker>
+            </AuthFormControl>
+            <AppButton
+              text={"Add new cohort"}
+              type="submit"
+              width="25%"
+              handlerFunction={() => {}}
+            />
+          </div>
+        </Box>
+        {loading ? (
           <Box
-            component={"form"}
             sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
             }}
-            autoComplete="off"
-            onSubmit={handleCohortSubmit}
           >
-            <div className={styles.formContainer}>
-              <AuthFormControl width="75%">
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <SchoolRounded fontSize="large"></SchoolRounded>
-                  <br></br>
-                  <br></br>
-                </Box>
-                <FormTextField
-                  required
-                  type="text"
-                  label="Cohort:"
-                  name="cohort"
-                  isFocused={true}
-                  width="100%"
-                  variant="light"
-                  regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                  onHandleError={handleCohortNameError}
-                  errorMessage={"Please enter a valid name"}
-                  reset={reset}
-                ></FormTextField>
-              </AuthFormControl>
-              <AuthFormControl width="75%">
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <LaptopRounded fontSize="large" />
-                  <br></br>
-                </Box>
-                <AuthFormControl
-                  width="100%"
-                  isNested={true}
-                  error={formError.classNameError.error}
-                >
-                  <FormSelect
-                    id={"class"}
-                    name={"class"}
-                    label={"Class:"}
-                    selectValue={className}
-                    onSelectValue={handleClassNameChange}
-                    list={classList}
-                    variant={"light"}
-                    multiple={false}
-                    error={formError.classNameError}
-                  ></FormSelect>
-                </AuthFormControl>
-              </AuthFormControl>
-              <AuthFormControl width="75%">
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <CalendarMonthRounded fontSize="large" />
-                  <br></br>
-                </Box>
-                <AppDatePicker
-                  id={"startDate"}
-                  name={"startDate"}
-                  label={"Start date:"}
-                  dateValue={startDate}
-                  onDateValueChange={handleStartDateChange}
-                  variant={"light"}
-                ></AppDatePicker>
-                <AppDatePicker
-                  id={"endDate"}
-                  name={"endDate"}
-                  label={"End date:"}
-                  dateValue={endDate}
-                  onDateValueChange={handleEndDateChange}
-                  minDate={startDate}
-                  variant={"light"}
-                ></AppDatePicker>
-              </AuthFormControl>
-              <AppButton
-                text={"Add new cohort"}
-                type="submit"
-                width="25%"
-                handlerFunction={() => {}}
-              />
-            </div>
+            <Loader />
           </Box>
-          {loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <Loader />
-            </Box>
-          ) : (
-            <Box sx={{ display: "flex" }}>
-              <AppDataGrid
-                columns={columns}
-                rows={cohorts}
-                fieldToBeSorted={"class"}
-                sortType={"asc"}
-              />
-            </Box>
-          )}
-        </Paper>
-      </Container>
-    </>
-  );
+        ) : (
+          <Box sx={{ display: "flex" }}>
+            <AppDataGrid
+              columns={columns}
+              rows={cohorts}
+              fieldToBeSorted={"class"}
+              sortType={"asc"}
+            />
+          </Box>
+        )}
+      </Paper>
+    </Container>
+  </>
+);
 };
 
 export default Cohorts;
