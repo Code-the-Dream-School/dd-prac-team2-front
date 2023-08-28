@@ -225,6 +225,7 @@ const RegisterUsers = () => {
           };
         });
         setUsers(formattedUsers);
+        setLoading(false); // Stop loading in case of error
       } else {
         console.error('There was an error fetching the users of this cohort');
       }
@@ -251,6 +252,7 @@ const RegisterUsers = () => {
 
   const fetchCohorts = async () => {
     try {
+      setLoading(true);
       const response = await axiosPrivate.get('/cohort');
       const formattedCohorts = response.data.cohorts.map((cohort) => {
         return {
@@ -279,6 +281,7 @@ const RegisterUsers = () => {
         console.error(error);
       }
     }
+    setLoading(false);
   };
 
   /*
@@ -333,6 +336,7 @@ const RegisterUsers = () => {
     };
     const errors = Object.values(formError);
     try {
+      setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.post(
           'auth/register',
@@ -365,7 +369,7 @@ const RegisterUsers = () => {
     } catch (error) {
       console.error(error);
     }
-    loading(false);
+    setLoading(false);
   };
 
   /* 

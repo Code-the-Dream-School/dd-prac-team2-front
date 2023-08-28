@@ -194,6 +194,7 @@ const Cohorts = () => {
 
     const fetchCohorts = async () => {
       try {
+        setLoading(true);
         const response = await axiosPrivate.get('/cohort', {
           signal: controller.signal,
         });
@@ -230,6 +231,7 @@ const Cohorts = () => {
           console.error(error);
         }
       }
+      setLoading(false);
     };
 
     fetchCohorts();
@@ -293,6 +295,7 @@ const Cohorts = () => {
   };
   //5. Form onSubmit event handler
   const handleCohortSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     const newCohort = {
       name: event.target.cohort.value.trim(),
@@ -331,10 +334,8 @@ const Cohorts = () => {
       setStartDate(dayjs());
       setEndDate(dayjs());
     }
+    setLoading(false);
   };
-  //   {loading ? (
-  //     <Loader />
-  //   ) : (
 
   return (
     <>
@@ -473,7 +474,11 @@ const Cohorts = () => {
               />
             </div>
           </Box>
-          {loading ? <Loader /> : null}
+          {loading ? (
+            <Box sx={{ display: 'flex' }}>
+              <Loader sx={{ size: '20rem' }} />
+            </Box>
+          ) : null}
           <AppDataGrid
             columns={columns}
             rows={cohorts}
