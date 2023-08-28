@@ -31,6 +31,7 @@ import useAuth from "../../../../hooks/useAuth";
     ==========================
 */
 import EditCohort from "./EditCohort";
+import Loader from "../../../../components/Loader/Loader";
 
 const CohortsActions = ({ params, onHandleCohorts }) => {
   /*
@@ -48,6 +49,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
         ==========================
     */
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [loading, setLoading] = useState(false);
   /*
         ==========================
         =         HANDLERS       =
@@ -55,6 +57,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
     */
   const handleDeleteCohort = async () => {
     try {
+      setLoading(true);
       const response = await axiosPrivate.delete(`/cohort/${params.row.id}`, {
         withCredentials: true,
       });
@@ -82,6 +85,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
         console.error(error);
       }
     }
+    setLoading(false);
   };
 
   const handleOpenEditCohort = () => {
@@ -94,6 +98,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
 
   return (
     <>
+      {loading ? <Loader /> : null}
       <Container
         sx={{
           display: "flex",

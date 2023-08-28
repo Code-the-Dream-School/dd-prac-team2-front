@@ -42,6 +42,7 @@ import AppButton from "../../../components/Button/AppButton";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import AppDatePicker from "../../../components/DatePicker/AppDatePicker";
 import CohortsActions from "./Actions/CohortsActions";
+import Loader from "../../../components/Loader/Loader";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -64,6 +65,7 @@ const Cohorts = () => {
   const [className, setClassName] = useState("");
   const [startDate, setStartDate] = useState(dayjs());
   const [endDate, setEndDate] = useState(dayjs());
+  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -185,6 +187,7 @@ const Cohorts = () => {
     const controller = new AbortController();
 
     const fetchCohorts = async () => {
+      setLoading(true);
       try {
         const response = await axiosPrivate.get("/cohort", {
           signal: controller.signal,
@@ -201,10 +204,12 @@ const Cohorts = () => {
         });
         console.log(formattedCohorts);
         isMounted && setCohorts(formattedCohorts);
+        setLoading(false);
       } catch (error) {
         console.error(error);
         if (error.response.status === 403) {
           //User is required to validate auth again
+          setLoading(false)
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -217,6 +222,7 @@ const Cohorts = () => {
             accessToken: "",
           });
         } else {
+          setLoading(false)
           console.error(error);
         }
       }
@@ -283,6 +289,7 @@ const Cohorts = () => {
   };
   //5. Form onSubmit event handler
   const handleCohortSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     const newCohort = {
       name: event.target.cohort.value.trim(),
@@ -295,6 +302,7 @@ const Cohorts = () => {
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
         console.log(response);
+        setLoading(false); // Stop loading in case of error
         if (response.status === 201) {
           console.log(cohorts);
           setCohorts((prevCohorts) => [
@@ -319,6 +327,7 @@ const Cohorts = () => {
       setStartDate(dayjs());
       setEndDate(dayjs());
     }
+    setLoading(false);
   };
 
   return (
@@ -457,15 +466,30 @@ const Cohorts = () => {
             />
           </div>
         </Box>
-        <AppDataGrid
-          columns={columns}
-          rows={cohorts}
-          fieldToBeSorted={"class"}
-          sortType={"asc"}
-        />
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Loader />
+          </Box>
+        ) : (
+          <Box sx={{ display: "flex" }}>
+            <AppDataGrid
+              columns={columns}
+              rows={cohorts}
+              fieldToBeSorted={"class"}
+              sortType={"asc"}
+            />
+          </Box>
+        )}
       </Paper>
     </Container>
-  );
+  </>
+);
 };
 
 export default Cohorts;

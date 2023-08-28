@@ -12,6 +12,7 @@ import { Outlet } from "react-router-dom";
 */
 import useRefreshToken from "../../hooks/useRefreshToken";
 import useAuth from "../../hooks/useAuth";
+import Loader from "../Loader/Loader";
 
 const PersistLogin = () => {
   /*
@@ -51,7 +52,16 @@ const PersistLogin = () => {
     console.log(auth);
   }, [isLoading]);
 
-  return <>{isLoading ? <p>Loading...</p> : <Outlet></Outlet>}</>;
+  return (
+    <>
+      {isLoading ? (
+        // ? <p>Loading...</p>
+        <Loader />
+      ) : (
+        <Outlet></Outlet>
+      )}
+    </>
+  );
 };
 
 export default PersistLogin;

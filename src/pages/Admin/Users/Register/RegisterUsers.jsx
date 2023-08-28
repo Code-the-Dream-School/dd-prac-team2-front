@@ -49,6 +49,7 @@ import FormAutocomplete from "../../../../components/Autocomplete/Autocomplete";
 import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppButton from "../../../../components/Button/AppButton";
+import Loader from "../../../../components/Loader/Loader";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -83,6 +84,7 @@ const RegisterUsers = () => {
   });
   const [cohortsInputValueSelected, setCohortsInputValueSelected] =
     useState("");
+  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     userNameError: {
       error: false,
@@ -185,6 +187,7 @@ const RegisterUsers = () => {
   */
   const fetchUsers = async () => {
     try {
+      setLoading(true); //Set loading before sending API request//
       const response = await axiosPrivate.get("/users");
       if (response.status === 200) {
         const formattedUsers = response.data.users.map((user) => {
@@ -201,6 +204,7 @@ const RegisterUsers = () => {
           };
         });
         setUsers(formattedUsers);
+        setLoading(false); // Stop loading in case of error
       } else {
         console.error("There was an error fetching the users of this cohort");
       }
@@ -227,6 +231,7 @@ const RegisterUsers = () => {
 
   const fetchCohorts = async () => {
     try {
+      setLoading(true);
       const response = await axiosPrivate.get("/cohort");
       const formattedCohorts = response.data.cohorts.map((cohort) => {
         return {
@@ -255,6 +260,7 @@ const RegisterUsers = () => {
         console.error(error);
       }
     }
+    setLoading(false);
   };
 
   /*
@@ -309,6 +315,7 @@ const RegisterUsers = () => {
     };
     const errors = Object.values(formError);
     try {
+      setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.post(
           "auth/register",
@@ -341,8 +348,8 @@ const RegisterUsers = () => {
     } catch (error) {
       console.error(error);
     }
+    setLoading(false);
   };
-
   /* 
       ==========================
       =        EFFECTS         =
@@ -532,13 +539,18 @@ const RegisterUsers = () => {
             />
           </div>
         </Box>
-        <AppDataGrid
-          columns={columns}
-          rows={users}
-          pageSize={10}
-          fieldToBeSorted={"userName"}
-          sortType={"asc"}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          // null}
+          <AppDataGrid
+            columns={columns}
+            rows={users}
+            pageSize={10}
+            fieldToBeSorted={"userName"}
+            sortType={"asc"}
+          />
+        )}
       </Paper>
     </Container>
   );

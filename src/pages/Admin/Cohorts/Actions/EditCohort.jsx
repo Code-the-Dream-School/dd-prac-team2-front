@@ -37,6 +37,7 @@ import FormTextField from "../../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
+import Loader from "../../../../components/Loader/Loader";
 /*
     ==========================
     =          STYLES        =
@@ -91,6 +92,7 @@ const EditCohort = ({
   const [className, setClassName] = useState(cohortInfo.row.class);
   const [startDate, setStartDate] = useState(dayjs(cohortInfo.row.startDate));
   const [endDate, setEndDate] = useState(dayjs(cohortInfo.row.endDate));
+  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -127,16 +129,19 @@ const EditCohort = ({
         ==========================
     */
   const editCohort = async (cohortId, editedCohort) => {
+    setLoading(true);
     try {
       const response = await axiosPrivate.patch(
         `/cohort/${cohortId}`,
         editedCohort
       );
+      setLoading(false);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
+        setLoading(false);
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",
@@ -150,6 +155,7 @@ const EditCohort = ({
         });
       } else {
         console.error(error);
+        setLoading(false);
       }
     }
   };
