@@ -19,7 +19,7 @@ const MentorSession = () => {
   const { auth } = useAuth();
   const [currentSession, setCurrentSession] = useState();
   const [loading, setLoading] = useState(true);
-  const [comment, setComment] = useState();
+  const [comment, setComment] = useState("");
 
   const getCurrentSession = async () => {
     setLoading(true);
@@ -94,7 +94,9 @@ const MentorSession = () => {
       {loading ? (
         <h1>Loading</h1>
       ) : (
-        <Container sx={{ backgroundColor: "#f2f2f2", marginBlock: 4 }}>
+        <Container
+          sx={{ backgroundColor: "#f2f2f2", marginBlock: 4, borderRadius: 2 }}
+        >
           <Typography component="h1" sx={{ fontSize: "2rem" }}>
             Session Details
           </Typography>
@@ -182,9 +184,7 @@ const MentorSession = () => {
             autoComplete="off"
             onSubmit={handleCommentSubmit}
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
+              alignItems: "center",
             }}
           >
             <TextField
@@ -193,11 +193,30 @@ const MentorSession = () => {
               label="Add new comment"
               name="comment"
               value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              sx={{ display: "flex" }}
             ></TextField>
-            <Button type="submit">Add new comment</Button>
+            <Box
+              sx={{ display: "flex", justifyContent: "center", marginBlock: 1 }}
+            >
+              <Button
+                type="submit"
+                sx={{
+                  color: "white",
+                  backgroundColor: "#C84B31",
+                  "&:hover": {
+                    backgroundColor: "#C84B31",
+                    transform: "scale(1.05)",
+                    transition: "all 0.2s ease-in-out",
+                  },
+                }}
+              >
+                Add new Comment
+              </Button>
+            </Box>
           </Box>
 
-          <List sx={{ backgroundColor: "#fefefe", marginBlockEnd: 4 }}>
+          <List sx={{ marginBlockEnd: 4 }}>
             {currentSession?.discussion?.length > 0 ? (
               currentSession?.discussion.map((d) => (
                 <Box
@@ -206,6 +225,9 @@ const MentorSession = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    marginBlockEnd: 1,
+                    backgroundColor: "#fefefe",
+                    borderRadius: 2,
                   }}
                 >
                   <Box>
