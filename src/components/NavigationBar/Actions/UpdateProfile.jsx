@@ -309,6 +309,7 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
                   isFocused={true}
                   width="100%"
                   variant="dark"
+                  regex={/^(?!\s)(.{3,})(?<!\s)$/}
                   onHandleError={handleUserNameError}
                   errorMessage={"Please enter a valid name"}
                   reset={reset}
