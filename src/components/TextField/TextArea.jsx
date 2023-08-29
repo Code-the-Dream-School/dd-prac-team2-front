@@ -150,5 +150,4 @@ FormTextField.propTypes = {
   onHandleError: PropTypes.func,
   errorMessage: PropTypes.string,
   reset: PropTypes.bool.isRequired,
-  minRows: PropTypes.number.isRequired
 };
