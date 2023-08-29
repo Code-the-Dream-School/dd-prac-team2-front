@@ -20,6 +20,7 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types"
 
 /*
       ==========================
@@ -416,3 +417,9 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
 };
 
 export default AddCohort;
+
+AddCohort.propTypes = {
+    open: PropTypes.bool.isRequired,
+    handleOpen: PropTypes.func.isRequired,
+    onRegisterCohort: PropTypes.func.isRequired
+}
