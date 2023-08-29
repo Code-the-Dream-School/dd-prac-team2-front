@@ -14,6 +14,7 @@ import FormTextField from "../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../components/FormControl/AuthFormControl";
 import styles from "../Student.module.css";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
+import TextArea from "../../../components/TextField/TextArea"
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -126,7 +127,7 @@ const Review = ({ sessionId }) => {
               <div className={styles.formContainer}>
                 <AuthFormControl width="75%">
                   <SchoolRounded fontSize="large"></SchoolRounded>
-                  <FormTextField
+                  <TextArea
                     required
                     value={review}
                     type="text"
@@ -138,7 +139,7 @@ const Review = ({ sessionId }) => {
                     onHandleError={handleReviewError}
                     errorMessage={"Please enter a valid review"}
                     reset={reset}
-                  ></FormTextField>
+                  ></TextArea>
                 </AuthFormControl>
               </div>
             </DialogContent>
