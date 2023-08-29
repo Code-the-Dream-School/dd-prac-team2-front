@@ -440,14 +440,13 @@ const RegisterUsers = () => {
               <FormTextField
                 required
                 type="text"
-                label="Full name:"
+                label="Name:"
                 name="userName"
                 isFocused={true}
                 width="100%"
                 variant="light"
-                regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/}
                 onHandleError={handleUserNameError}
-                errorMessage={"Please enter a valid name"}
+                errorMessage={"Please enter a name"}
                 reset={reset}
               ></FormTextField>
               <Box

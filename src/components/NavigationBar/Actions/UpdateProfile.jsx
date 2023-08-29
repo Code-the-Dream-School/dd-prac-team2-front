@@ -304,12 +304,11 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
                   required
                   value={auth.userName}
                   type="text"
-                  label="Full name:"
+                  label="Name:"
                   name="userName"
                   isFocused={true}
                   width="100%"
                   variant="dark"
-                  regex={/^[a-zA-z]+([\s][a-zA-Z]+)*$/}
                   onHandleError={handleUserNameError}
                   errorMessage={"Please enter a valid name"}
                   reset={reset}
