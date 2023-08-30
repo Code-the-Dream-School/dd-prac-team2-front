@@ -68,16 +68,17 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
+const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort, slackChannelData}) => {
   /*
       ==========================
       =         STATES         =
       ==========================
     */
   const [reset, setReset] = useState(false);
-  const [className, setClassName] = useState("");
-  const [startDate, setStartDate] = useState(dayjs());
-  const [endDate, setEndDate] = useState(dayjs());
+  const [cohortName, setCohortName] = useState(slackChannelData.name ?? "");
+  const [className, setClassName] = useState(slackChannelData.type ?? "");
+  const [startDate, setStartDate] = useState(dayjs(slackChannelData.startDate) ?? dayjs());
+  const [endDate, setEndDate] = useState(dayjs(slackChannelData.startDate) ?? dayjs());
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -85,7 +86,7 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
       errorMessage: "Please enter a valid name",
     },
     classNameError: {
-      error: true, //Initial value is blank, this is why I set the error to true.
+      error: typeof slackChannelData !== null ? false:true, //Initial value is blank, this is why I set the error to true.
       errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
@@ -204,6 +205,7 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
     console.log("I entered");
     event.preventDefault();
     const newCohort = {
+      slackId: slackChannelData.slackId ?? null,
       name: event.target.cohort.value.trim(),
       start: startDate.format(),
       end: endDate.format(),
@@ -227,6 +229,9 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
               endDate: new Date(response.data.cohort.end),
             },
           ]);
+          if(typeof slackChannelData !==null){
+            onRegisterSlackChannel((prevSlackChannels)=>prevSlackChannels.filter((slackChannel)=>slackChannel.slackId !== slackChannelData.slackId))
+          }
           handleOpen(false);
         }
       } else {
@@ -238,6 +243,7 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
       console.error(error);
     } finally {
       setReset(true);
+      setCohortName("");
       setClassName("");
       setStartDate(dayjs());
       setEndDate(dayjs());
@@ -328,6 +334,7 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
                     </Box>
                     <FormTextField
                       required
+                      value={cohortName}
                       type="text"
                       label="Cohort:"
                       name="cohort"

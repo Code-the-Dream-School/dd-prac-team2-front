@@ -97,7 +97,7 @@ const Cohorts = () => {
   ];
   // Dialog states
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
-  const [openNewCohorSlackDialog, setOpenNewCohorSlackDialog] = useState(false);
+  const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] = useState(false);
 
   /*
     ==========================
@@ -205,7 +205,7 @@ const Cohorts = () => {
               text={"Add cohort from Slack"}
               type="button"
               width="100%"
-              handlerFunction={() => setOpenNewCohorSlackDialog(true)}
+              handlerFunction={() => setOpenNewCohortSlackDialog(true)}
             >
               <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
             </AppButton>
@@ -227,6 +227,7 @@ const Cohorts = () => {
             rows={cohorts}
             fieldToBeSorted={"class"}
             sortType={"asc"}
+            variant="light"
           />
         )}
         {openNewCohortDialog ? (
@@ -236,7 +237,7 @@ const Cohorts = () => {
             onRegisterCohort={setCohorts}
           ></AddCohort>
         ) : null}
-        {openNewCohorSlackDialog ? <AddCohortSlack open={openNewCohorSlackDialog} handleOpen={setOpenNewCohorSlackDialog} onRegisterCohort={setCohorts}></AddCohortSlack> : null}
+        {openNewCohortSlackDialog ? <AddCohortSlack open={openNewCohortSlackDialog} handleOpen={setOpenNewCohortSlackDialog} onRegisterCohort={setCohorts}></AddCohortSlack> : null}
       </Paper>
     </Container>
   );
