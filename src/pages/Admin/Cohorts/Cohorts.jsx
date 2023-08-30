@@ -36,6 +36,7 @@ import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import CohortsActions from "./Actions/CohortsActions";
 import Loader from "../../../components/Loader/Loader";
 import AddCohort from "./Actions/AddCohort";
+import AddCohortSlack from "./Actions/AddCohortSlack";
 
 const Cohorts = () => {
   /*
@@ -47,6 +48,7 @@ const Cohorts = () => {
   const [loading, setLoading] = useState(false);
   const columns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
+    { field: "slackId", headerName: "Slack ID", minWidth: 120, maxWidth: 250, flex: 1 },
     {
       field: "cohort",
       headerName: "Cohort",
@@ -95,6 +97,8 @@ const Cohorts = () => {
   ];
   // Dialog states
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
+  const [openNewCohorSlackDialog, setOpenNewCohorSlackDialog] = useState(false);
+
   /*
     ==========================
     =         HOOKS          =
@@ -118,6 +122,7 @@ const Cohorts = () => {
         const formattedCohorts = response.data.cohorts.map((cohort) => {
           return {
             id: cohort._id,
+            slackId: cohort.slackId,
             cohort: cohort.name,
             class: cohort.type,
             startDate: new Date(cohort.start),
@@ -200,7 +205,7 @@ const Cohorts = () => {
               text={"Add cohort from Slack"}
               type="button"
               width="100%"
-              handlerFunction={() => {}}
+              handlerFunction={() => setOpenNewCohorSlackDialog(true)}
             >
               <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
             </AppButton>
@@ -231,6 +236,7 @@ const Cohorts = () => {
             onRegisterCohort={setCohorts}
           ></AddCohort>
         ) : null}
+        {openNewCohorSlackDialog ? <AddCohortSlack open={openNewCohorSlackDialog} handleOpen={setOpenNewCohorSlackDialog} onRegisterCohort={setCohorts}></AddCohortSlack> : null}
       </Paper>
     </Container>
   );
