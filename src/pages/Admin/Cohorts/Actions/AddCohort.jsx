@@ -69,16 +69,17 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort, slackChannelData}) => {
+  console.log(slackChannelData);
   /*
       ==========================
       =         STATES         =
       ==========================
     */
   const [reset, setReset] = useState(false);
-  const [cohortName, setCohortName] = useState(slackChannelData.name ?? "");
-  const [className, setClassName] = useState(slackChannelData.type ?? "");
-  const [startDate, setStartDate] = useState(dayjs(slackChannelData.startDate) ?? dayjs());
-  const [endDate, setEndDate] = useState(dayjs(slackChannelData.startDate) ?? dayjs());
+  const [cohortName, setCohortName] = useState(slackChannelData?.name ?? "");
+  const [className, setClassName] = useState(slackChannelData?.type ?? "");
+  const [startDate, setStartDate] = useState(dayjs(slackChannelData?.startDate) ?? dayjs());
+  const [endDate, setEndDate] = useState(dayjs(slackChannelData?.startDate) ?? dayjs());
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -205,7 +206,7 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
     console.log("I entered");
     event.preventDefault();
     const newCohort = {
-      slackId: slackChannelData.slackId ?? null,
+      slackId: slackChannelData?.slackId ?? null,
       name: event.target.cohort.value.trim(),
       start: startDate.format(),
       end: endDate.format(),
@@ -225,11 +226,13 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
               id: response.data.cohort._id,
               cohort: response.data.cohort.name,
               class: response.data.cohort.type,
+              members: response.data.cohort.participants.length,
               startDate: new Date(response.data.cohort.start),
               endDate: new Date(response.data.cohort.end),
             },
           ]);
-          if(typeof slackChannelData !==null){
+          if(slackChannelData !== undefined){
+            console.log("why");
             onRegisterSlackChannel((prevSlackChannels)=>prevSlackChannels.filter((slackChannel)=>slackChannel.slackId !== slackChannelData.slackId))
           }
           handleOpen(false);

@@ -37,6 +37,7 @@ import CohortsActions from "./Actions/CohortsActions";
 import Loader from "../../../components/Loader/Loader";
 import AddCohort from "./Actions/AddCohort";
 import AddCohortSlack from "./Actions/AddCohortSlack";
+import Slack from "./TableRender/Slack";
 
 const Cohorts = () => {
   /*
@@ -50,17 +51,33 @@ const Cohorts = () => {
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     { field: "slackId", headerName: "Slack ID", minWidth: 120, maxWidth: 250, flex: 1 },
     {
+      field: "slack",
+      headerName: "Created on:",
+      minWidth: 100,
+      maxWidth: 100,
+      flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => <Slack params={params}></Slack>,
+    },
+    {
       field: "cohort",
       headerName: "Cohort",
-      minWidth: 200,
-      maxWidth: 200,
+      minWidth: 150,
+      maxWidth: 150,
       flex: 1,
     },
     {
       field: "class",
       headerName: "Class",
-      minWidth: 200,
-      maxWidth: 200,
+      minWidth: 175,
+      maxWidth: 175,
+      flex: 1,
+    },
+    {
+      field: "members",
+      headerName: "Members",
+      minWidth: 70,
+      maxWidth: 70,
       flex: 1,
     },
     {
@@ -84,8 +101,8 @@ const Cohorts = () => {
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
-      minWidth: 400,
-      maxWidth: 400,
+      minWidth: 325,
+      maxWidth: 325,
       valueGetter: (params) => params,
       renderCell: (params) => (
         <CohortsActions
@@ -125,6 +142,7 @@ const Cohorts = () => {
             slackId: cohort.slackId,
             cohort: cohort.name,
             class: cohort.type,
+            members: cohort.participants.length,
             startDate: new Date(cohort.start),
             endDate: new Date(cohort.end),
           };
@@ -225,6 +243,7 @@ const Cohorts = () => {
           <AppDataGrid
             columns={columns}
             rows={cohorts}
+            pageSize={10}
             fieldToBeSorted={"class"}
             sortType={"asc"}
             variant="light"

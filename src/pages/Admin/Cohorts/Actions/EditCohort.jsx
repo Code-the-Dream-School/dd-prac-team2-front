@@ -15,6 +15,8 @@ import {
 import {
   CalendarMonthRounded,
   Close,
+  DeleteRounded,
+  EditRounded,
   LaptopRounded,
   SchoolRounded,
 } from "@mui/icons-material";
@@ -260,6 +262,44 @@ const EditCohort = ({
     }
   };
 
+  const handleDeleteCohort = async () => {
+    try {
+      setLoading(true);
+      const response = await axiosPrivate.delete(
+        `/cohort/${cohortInfo.row.id}`,
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        onHandleCohorts((prevCohorts) => {
+          return prevCohorts.filter(
+            (cohort) => cohort.id !== cohortInfo.row.id
+          );
+        });
+      }
+    } catch (error) {
+      if (error.response.status === 403) {
+        //User is required to validate auth again
+        console.error(error);
+        navigate("/login", { state: { from: location }, replace: true });
+        setAuth({
+          userId: "",
+          userName: "",
+          userEmail: "",
+          role: [],
+          loggedIn: false,
+          avatarUrl: "",
+          isActive: undefined,
+          accessToken: "",
+        });
+      } else {
+        console.error(error);
+      }
+    }
+    setLoading(false);
+  };
+
   return (
     <Dialog
       open={openDialog}
@@ -394,13 +434,34 @@ const EditCohort = ({
             </AuthFormControl>
           </div>
         </DialogContent>
-        <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+        <DialogActions
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "75%",
+          }}
+        >
           <AppButton
             text={"Edit cohort"}
             type="submit"
-            width="100%"
+            width="50%"
             handlerFunction={() => {}}
-          />
+          >
+            <EditRounded></EditRounded>
+          </AppButton>
+          {cohortInfo.row.members === 0 ? (
+            <AppButton
+              text={"Delete"}
+              type="button"
+              width="50%"
+              color="#CD1818"
+              handlerFunction={() => handleDeleteCohort()}
+            >
+              <DeleteRounded></DeleteRounded>
+            </AppButton>
+          ) : null}
         </DialogActions>
       </Box>
     </Dialog>
