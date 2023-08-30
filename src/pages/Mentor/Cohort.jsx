@@ -10,11 +10,12 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 
 const Cohort = () => {
   const [currentWeek, setCurrentWeek] = useState();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const [cohort] = useOutletContext();
@@ -27,6 +28,9 @@ const Cohort = () => {
       setCurrentWeek(res.data.currentWeek);
       setLoading(false);
     };
+    if (!cohort) {
+      navigate("/mentor");
+    }
     getCurrentWeek();
   }, []);
 
@@ -51,7 +55,7 @@ const Cohort = () => {
             fontSize: 25,
           }}
         >
-          {/* {cohort.name} */}
+          {cohort?.name}
         </Typography>
       </Box>
       <Typography
@@ -92,7 +96,10 @@ const Cohort = () => {
               >
                 <Box>
                   <CardContent>
-                    <Typography variant="h5">{`${session.type} session`}</Typography>
+                    <Link to={`/mentor/session/${session._id}`}>
+                      {" "}
+                      {`${session.type} session`}
+                    </Link>
                     <Typography variant="subtitle1">
                       {new Date(session.start).toLocaleDateString()}
                     </Typography>

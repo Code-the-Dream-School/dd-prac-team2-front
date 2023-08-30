@@ -12,12 +12,13 @@ const MentorHome = () => {
   useEffect(() => {
     const fetchCohorts = async () => {
       try {
-        const res = await axiosPrivate.get("/users/cohorts", {});
-        if (res.data.cohorts.length === 1) {
-          const cohort = res.data.cohorts[0];
+        const res = await axiosPrivate.get("/profile");
+        if (res.data.profile.cohorts.length === 1) {
+          const cohort = res.data.profile.cohorts[0];
+          setSelectedCohort(cohort);
           navigate(`/cohort/${cohort._id}`, { state: cohort });
         }
-        setCohorts(res.data.cohorts);
+        setCohorts(res.data.profile.cohorts);
       } catch (err) {
         console.log(err);
       }
