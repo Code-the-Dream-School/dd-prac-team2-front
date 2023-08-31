@@ -13,7 +13,7 @@ import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
 
-const MentorSession = () => {
+const MentorSessionDetails = () => {
   const { sessionId } = useParams();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
@@ -252,4 +252,4 @@ const MentorSession = () => {
   );
 };
 
-export default MentorSession;
+export default MentorSessionDetails;

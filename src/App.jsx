@@ -38,7 +38,7 @@ import MentorSessions from "./pages/Mentor/MentorSession/MentorSessions";
 import MentorContext from "./pages/Mentor/MentorContext";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
-import MentorSession from "./pages/Mentor/SessionDetails";
+import MentorSessionDetails from "./pages/Mentor/MentorSessionDetails";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -199,7 +199,7 @@ const App = () => {
                 ></Route>
                 <Route
                   path="mentor/session/:sessionId"
-                  element={<MentorSession />}
+                  element={<MentorSessionDetails />}
                 ></Route>
               </Route>
             </Route>
