@@ -1,23 +1,9 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import {
-  Box,
-  Button,
-  Paper,
-  Table,
-  TableRow,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import CreateSession from "../CreateSession";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
-import AppButton from "../../../components/Button/AppButton";
-import { Details, EditRounded } from "@mui/icons-material";
-import SessionDetailsRender from "./TableRenders/SessionDetailsRender";
+import MentorSessionsTableActions from "./Actions/MentorSessionsActions";
 
 function MentorSessions() {
   const axiosPrivate = useAxiosPrivate();
@@ -35,14 +21,20 @@ function MentorSessions() {
   const mapSessionToDataGrid = (session) => {
     return {
       id: session._id,
-      date: getFormattedDate(session.start),
+      date: session.start,
     };
   };
 
   const updateSessions = (session) => {
-    const newSessions = [...sessions, session];
+    const dataGridSession = mapSessionToDataGrid(session);
+    const newSessions = [...sessions, dataGridSession];
     newSessions.sort((a, b) => (a.start > b.start ? 1 : -1));
-    setSessions(newSessions.slice(0, 6));
+    setSessions(newSessions);
+  };
+
+  const removeSession = (sessionId) => {
+    const newSessions = sessions.filter((s) => s.id !== sessionId);
+    setSessions(newSessions);
   };
 
   const getFormattedDate = (date) => {
@@ -62,13 +54,22 @@ function MentorSessions() {
   };
 
   const columns = [
-    { field: "date", headerName: "DATE", flex: 1 },
+    {
+      field: "date",
+      headerName: "DATE",
+      flex: 4,
+      valueFormatter: (params) => getFormattedDate(params.value),
+    },
     {
       field: "actions",
       headerName: "ACTIONS",
       sortable: false,
+      flex: 1,
       renderCell: (row) => (
-        <SessionDetailsRender id={row.id}></SessionDetailsRender>
+        <MentorSessionsTableActions
+          id={row.id}
+          removeSession={removeSession}
+        ></MentorSessionsTableActions>
       ),
     },
   ];
@@ -77,53 +78,15 @@ function MentorSessions() {
     <Container maxWidth="lg">
       <Box
         sx={{
-          backgroundColor: "#fefefe",
           padding: 4,
           marginBlockEnd: 2,
-          bgcolor: "#1A1A2E",
+          backgroundColor: "#1A1A2E",
           color: "#FFFFFF",
         }}
       >
         <Typography component="h1" sx={{ fontSize: "2rem" }}>
           Upcoming Sessions
         </Typography>
-        {/* {sessions.length > 0 ? (
-          sessions.map((session) => (
-            <Box key={session._id}>
-              <p>{convertDate(session.start)}</p>
-            </Box>
-          ))
-        ) : (
-          <p>No sessions awaiting</p>
-        )} */}
-        {/* <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Date</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {sessions.map((session) => (
-                <TableRow key={session._id}>
-                  <TableCell>{getFormattedDate(session.start)}</TableCell>
-                  <TableCell>
-                    <AppButton
-                      text="Details"
-                      type="button"
-                      width="auto"
-                      color="#609966"
-                      handlerFunction={handleDetails}
-                    >
-                      <Details />
-                    </AppButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer> */}
         <AppDataGrid
           columns={columns}
           rows={sessions}
@@ -131,7 +94,6 @@ function MentorSessions() {
           sortType="asc"
         />
       </Box>
-
       <CreateSession updateSessions={updateSessions} />
     </Container>
   );
