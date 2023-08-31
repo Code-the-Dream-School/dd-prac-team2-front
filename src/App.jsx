@@ -34,7 +34,7 @@ import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCoh
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import AccountConfirmation from "./pages/AccountConfirmation/AccountConfirmation";
 import Cohort from "./pages/Mentor/Cohort";
-import MentorSessions from "./pages/Mentor/MentorSessions";
+import MentorSessions from "./pages/Mentor/MentorSession/MentorSessions";
 import MentorContext from "./pages/Mentor/MentorContext";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
