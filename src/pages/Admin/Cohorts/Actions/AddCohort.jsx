@@ -220,6 +220,8 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
         console.log(response);
         if (response.status === 201) {
           setLoading(false); // Stop loading in case of error
+          const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
+          const dateTimeFormat = new Intl.DateTimeFormat('en', options);
           onRegisterCohort((prevCohorts) => [
             ...prevCohorts,
             {
@@ -227,8 +229,7 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
               cohort: response.data.cohort.name,
               class: response.data.cohort.type,
               members: response.data.cohort.participants.length,
-              startDate: new Date(response.data.cohort.start),
-              endDate: new Date(response.data.cohort.end),
+              startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
             },
           ]);
           if(slackChannelData !== undefined){

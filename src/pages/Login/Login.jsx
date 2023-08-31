@@ -41,7 +41,7 @@ const Login = () => {
         =        CONTEXT         =
         ==========================
     */
-  const { setAuth } = useAuth();
+  const {auth, setAuth } = useAuth();
   /*
         ==========================
         =         STATES         =
@@ -88,22 +88,16 @@ const Login = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(response.data);
-        const userId = response.data.user.userId;
-        const userName = response.data.user.name;
-        const accessToken = response.data.token;
-        const role = response.data.user.role;
-        console.log("Welcome: ", userName, userId);
-        console.log("Access token: ", accessToken);
         setAuth({
-          userId,
-          userName,
-          userEmail: loggedUser.email,
-          role,
+          userId: response.data.user.id,
+          slackId: response.data.user.slackId ?? "",
+          userName: response.data.user.name,
+          userEmail: response.data.user.email,
+          role: response.data.user.roles,
           loggedIn: true,
-          avatarUrl: "",
-          isActive: true,
-          accessToken,
+          avatarUrl: response.data.user.avatarUrl ?? "",
+          isActive: response.data.user.isActivated,
+          accessToken: response.data.token,
         });
         setReset(true);
         navigate(from, { replace: true });

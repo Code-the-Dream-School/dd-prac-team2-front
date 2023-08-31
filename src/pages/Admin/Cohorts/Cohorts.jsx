@@ -38,6 +38,8 @@ import Loader from "../../../components/Loader/Loader";
 import AddCohort from "./Actions/AddCohort";
 import AddCohortSlack from "./Actions/AddCohortSlack";
 import Slack from "./TableRender/Slack";
+import Members from "./TableRender/Members";
+import Lessons from "./TableRender/Lessons";
 
 const Cohorts = () => {
   /*
@@ -53,8 +55,8 @@ const Cohorts = () => {
     {
       field: "slack",
       headerName: "Created on:",
-      minWidth: 100,
-      maxWidth: 100,
+      minWidth: 90,
+      maxWidth: 90,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Slack params={params}></Slack>,
@@ -62,47 +64,59 @@ const Cohorts = () => {
     {
       field: "cohort",
       headerName: "Cohort",
-      minWidth: 150,
-      maxWidth: 150,
+      minWidth: 120,
+      maxWidth: 120,
       flex: 1,
     },
     {
       field: "class",
       headerName: "Class",
-      minWidth: 175,
-      maxWidth: 175,
+      minWidth: 160,
+      maxWidth: 160,
+      flex: 1,
+    },
+    {
+      field: "startEndDate",
+      headerName: "Date range",
+      type: "dateRange",
+      minWidth: 150,
+      maxWidth: 150,
       flex: 1,
     },
     {
       field: "members",
       headerName: "Members",
-      minWidth: 70,
-      maxWidth: 70,
+      minWidth: 75,
+      maxWidth: 75,
       flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => (
+        <Members
+          params={params}
+        ></Members>
+      )
     },
     {
-      field: "startDate",
-      headerName: "Start date",
-      type: "date",
-      minWidth: 150,
-      maxWidth: 150,
+      field: "lessons",
+      headerName: "Lessons",
+      minWidth: 125,
+      maxWidth: 125,
       flex: 1,
-    },
-    {
-      field: "endDate",
-      headerName: "End date",
-      type: "date",
-      minWidth: 150,
-      maxWidth: 150,
-    },
+      valueGetter: (params) => params,
+      renderCell: (params) => (
+        <Lessons
+          params={params}
+        ></Lessons>
+      )
+    },    
     {
       field: "actions",
       headerName: "Actions",
       sortable: false,
       disableColumnMenu: true,
       flex: 1,
-      minWidth: 325,
-      maxWidth: 325,
+      minWidth: 100,
+      maxWidth: 100,
       valueGetter: (params) => params,
       renderCell: (params) => (
         <CohortsActions
@@ -136,6 +150,8 @@ const Cohorts = () => {
           signal: controller.signal,
         });
         console.log(response);
+        const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
+        const dateTimeFormat = new Intl.DateTimeFormat('en', options);
         const formattedCohorts = response.data.cohorts.map((cohort) => {
           return {
             id: cohort._id,
@@ -143,8 +159,7 @@ const Cohorts = () => {
             cohort: cohort.name,
             class: cohort.type,
             members: cohort.participants.length,
-            startDate: new Date(cohort.start),
-            endDate: new Date(cohort.end),
+            startEndDate: dateTimeFormat.formatRange(new Date(cohort.start), new Date(cohort.end)),
           };
         });
         console.log(formattedCohorts);
@@ -179,7 +194,7 @@ const Cohorts = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="md">
       <Paper
         elevation={3}
         sx={{

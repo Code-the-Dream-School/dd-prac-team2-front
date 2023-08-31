@@ -228,16 +228,18 @@ const EditCohort = ({
     try {
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
+        console.log(response);
+        const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
+        const dateTimeFormat = new Intl.DateTimeFormat('en', options);
         if (response.status === 201) {
           onHandleCohorts((prevCohorts) =>
             prevCohorts.map((prevCohort) => {
               if (prevCohort.id === cohortToBeUpdated) {
                 return {
                   ...prevCohort,
-                  cohort: editedCohort.name,
-                  class: editedCohort.type,
-                  startDate: new Date(editedCohort.start), //Date needs to be received as new Date()
-                  endDate: new Date(editedCohort.end), //Date needs to be received as new Date()
+                  cohort: response.data.cohort.name,
+                  class: response.data.cohort.type,
+                  startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
                 };
               } else {
                 return prevCohort;

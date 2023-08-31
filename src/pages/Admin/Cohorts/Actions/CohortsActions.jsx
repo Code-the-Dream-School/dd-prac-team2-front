@@ -76,28 +76,6 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           paddingLeft: 0,
         }}
       >
-        <Link to={`${params.row.id}`}>
-          <AppButton
-            text={"Lessons"}
-            type="button"
-            width="auto"
-            color="#609966"
-            handlerFunction={() => {}}
-          >
-            <ChecklistRounded></ChecklistRounded>
-          </AppButton>
-        </Link>
-        <Link to={`register/${params.row.id}`}>
-          <AppButton
-            text={"Users"}
-            type="button"
-            width="auto"
-            color="#609966"
-            handlerFunction={() => {}}
-          >
-            <PeopleAltRounded></PeopleAltRounded>
-          </AppButton>
-        </Link>
         <AppButton
           text={"Edit"}
           type="button"
