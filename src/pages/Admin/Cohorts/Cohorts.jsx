@@ -40,6 +40,7 @@ import AddCohortSlack from "./Actions/AddCohortSlack";
 import Slack from "./TableRender/Slack";
 import Members from "./TableRender/Members";
 import Lessons from "./TableRender/Lessons";
+import ClassType from "./TableRender/ClassType";
 
 const Cohorts = () => {
   /*
@@ -48,7 +49,7 @@ const Cohorts = () => {
     ==========================
   */
   const [cohorts, setCohorts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const columns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     { field: "slackId", headerName: "Slack ID", minWidth: 120, maxWidth: 250, flex: 1 },
@@ -64,23 +65,26 @@ const Cohorts = () => {
     {
       field: "cohort",
       headerName: "Cohort",
-      minWidth: 120,
-      maxWidth: 120,
+      minWidth: 140,
+      maxWidth: 140,
       flex: 1,
     },
     {
       field: "class",
       headerName: "Class",
-      minWidth: 160,
-      maxWidth: 160,
+      minWidth: 100,
+      maxWidth: 100,
       flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => <ClassType params={params}></ClassType>,
+      sortComparator: (v1, v2) => v1.value.localeCompare(v2.value)
     },
     {
       field: "startEndDate",
       headerName: "Date range",
       type: "dateRange",
-      minWidth: 150,
-      maxWidth: 150,
+      minWidth: 170,
+      maxWidth: 170,
       flex: 1,
     },
     {
@@ -164,8 +168,10 @@ const Cohorts = () => {
         });
         console.log(formattedCohorts);
         isMounted && setCohorts(formattedCohorts);
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
         if (error.response.status === 403) {
           //User is required to validate auth again
           navigate("/login", { state: { from: location }, replace: true });
@@ -180,6 +186,7 @@ const Cohorts = () => {
             accessToken: "",
           });
         } else {
+          setLoading(false);
           console.error(error);
         }
       }
