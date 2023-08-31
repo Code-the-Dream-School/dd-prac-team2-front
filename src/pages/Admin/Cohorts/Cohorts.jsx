@@ -225,7 +225,7 @@ const Cohorts = () => {
           COHORTS MANAGEMENT{" "}
         </Typography>
         <div className={styles.formContainer}>
-          <AuthFormControl width="50%">
+          <AuthFormControl width="70%">
             <AppButton
               text={"Add new cohort"}
               type="button"
@@ -235,7 +235,7 @@ const Cohorts = () => {
               <Class fontSize="large"></Class>
             </AppButton>
             <AppButton
-              text={"Add cohort from Slack"}
+              text={"Add from Slack"}
               type="button"
               width="100%"
               handlerFunction={() => setOpenNewCohortSlackDialog(true)}

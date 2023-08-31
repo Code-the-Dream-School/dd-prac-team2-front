@@ -90,10 +90,11 @@ const EditCohort = ({
         =         STATES         =
         ==========================
     */
+  const [startString, endString] = cohortInfo.row.startEndDate.split("–");
   const [cohortName, setCohortName] = useState(cohortInfo.row.cohort);
   const [className, setClassName] = useState(cohortInfo.row.class);
-  const [startDate, setStartDate] = useState(dayjs(cohortInfo.row.startDate));
-  const [endDate, setEndDate] = useState(dayjs(cohortInfo.row.endDate));
+  const [startDate, setStartDate] = useState(dayjs(startString.trim()));
+  const [endDate, setEndDate] = useState(dayjs((endString === undefined ? (startString.trim()):(endString.trim()))));
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -103,14 +104,6 @@ const EditCohort = ({
     classNameError: {
       error: false, //Initial value will always be filled, this is why I set the error to false.
       errorMessage: "Please select a class for this cohort",
-    },
-    startDateError: {
-      error: false,
-      errorMessage: "Please select a start date for this cohort",
-    },
-    endDateError: {
-      error: false,
-      errorMessage: "Please select an end date for this cohort",
     },
   });
   const [reset, setReset] = useState(false);
@@ -188,32 +181,7 @@ const EditCohort = ({
       },
     }));
   };
-  //3. Start date handler
-  const handleStartDateChange = (newStartDate) => {
-    setStartDate(newStartDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      endDateError: {
-        ...prevState.endDateError,
-        error: endDate < newStartDate ? true : false,
-      },
-    }));
-  };
-  //4. End date handler
-  const handleEndDateChange = (newEndDate) => {
-    setEndDate(newEndDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      startDateError: {
-        ...prevState.startDateError,
-        error: newEndDate < startDate ? true : false,
-      },
-      endDateError: {
-        ...prevState.endDateError,
-        error: newEndDate < startDate ? true : false,
-      },
-    }));
-  };
+  
   //5. onSubmit event
   const handleEditCohortSubmit = async (event) => {
     event.preventDefault();
@@ -404,35 +372,6 @@ const EditCohort = ({
                   error={formError.classNameError}
                 ></FormSelect>
               </AuthFormControl>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <CalendarMonthRounded fontSize="large" />
-                <br></br>
-              </Box>
-              <AppDatePicker
-                id={"startDate"}
-                name={"startDate"}
-                label={"Start date:"}
-                dateValue={startDate}
-                onDateValueChange={handleStartDateChange}
-                variant={"dark"}
-              ></AppDatePicker>
-              <AppDatePicker
-                id={"endDate"}
-                name={"endDate"}
-                label={"End date:"}
-                dateValue={endDate}
-                onDateValueChange={handleEndDateChange}
-                minDate={startDate}
-                variant={"dark"}
-              ></AppDatePicker>
             </AuthFormControl>
           </div>
         </DialogContent>
