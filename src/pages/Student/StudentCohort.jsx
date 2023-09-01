@@ -253,10 +253,6 @@ const StudentCohort = () => {
             marginBottom: 1,
             p: 0.5,
             fontSize: 22,
-            "&:hover": {
-              transform: "scale(1.02)",
-              transition: "all 0.2s ease-in-out",
-            },
           }}
         >
           {currentWeek?.name}
