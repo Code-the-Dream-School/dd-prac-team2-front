@@ -154,6 +154,8 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
             ...prevState,
             ...response.data.users.map((user) => ({
               id: user._id,
+              slackId: user.slackId,
+              userAvatar: user.avatarUrl,
               userName: user.name,
               userEmail: user.email,
               userRole: user.role,

@@ -52,7 +52,13 @@ const Cohorts = () => {
   const [loading, setLoading] = useState(true);
   const columns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
-    { field: "slackId", headerName: "Slack ID", minWidth: 120, maxWidth: 250, flex: 1 },
+    {
+      field: "slackId",
+      headerName: "Slack ID",
+      minWidth: 120,
+      maxWidth: 250,
+      flex: 1,
+    },
     {
       field: "slack",
       headerName: "Created on:",
@@ -61,6 +67,12 @@ const Cohorts = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Slack params={params}></Slack>,
+      sortComparator: (v1, v2) => {
+        v1.value = v1.row.slackId === null ? "0" : "1";
+        v2.value = v2.row.slackId === null ? "0" : "1";
+        console.log(v1, v2);
+        return v1.value.localeCompare(v2.value);
+      },
     },
     {
       field: "cohort",
@@ -77,7 +89,7 @@ const Cohorts = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <ClassType params={params}></ClassType>,
-      sortComparator: (v1, v2) => v1.value.localeCompare(v2.value)
+      sortComparator: (v1, v2) => v1.value.localeCompare(v2.value),
     },
     {
       field: "startEndDate",
@@ -94,11 +106,7 @@ const Cohorts = () => {
       maxWidth: 75,
       flex: 1,
       valueGetter: (params) => params,
-      renderCell: (params) => (
-        <Members
-          params={params}
-        ></Members>
-      )
+      renderCell: (params) => <Members params={params}></Members>,
     },
     {
       field: "lessons",
@@ -107,12 +115,8 @@ const Cohorts = () => {
       maxWidth: 125,
       flex: 1,
       valueGetter: (params) => params,
-      renderCell: (params) => (
-        <Lessons
-          params={params}
-        ></Lessons>
-      )
-    },    
+      renderCell: (params) => <Lessons params={params}></Lessons>,
+    },
     {
       field: "actions",
       headerName: "Actions",
@@ -132,7 +136,8 @@ const Cohorts = () => {
   ];
   // Dialog states
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
-  const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] = useState(false);
+  const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] =
+    useState(false);
 
   /*
     ==========================
@@ -154,8 +159,8 @@ const Cohorts = () => {
           signal: controller.signal,
         });
         console.log(response);
-        const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
-        const dateTimeFormat = new Intl.DateTimeFormat('en', options);
+        const options = { year: "2-digit", month: "numeric", day: "numeric" };
+        const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         const formattedCohorts = response.data.cohorts.map((cohort) => {
           return {
             id: cohort._id,
@@ -163,7 +168,10 @@ const Cohorts = () => {
             cohort: cohort.name,
             class: cohort.type,
             members: cohort.participants.length,
-            startEndDate: dateTimeFormat.formatRange(new Date(cohort.start), new Date(cohort.end)),
+            startEndDate: dateTimeFormat.formatRange(
+              new Date(cohort.start),
+              new Date(cohort.end)
+            ),
           };
         });
         console.log(formattedCohorts);
@@ -278,7 +286,13 @@ const Cohorts = () => {
             onRegisterCohort={setCohorts}
           ></AddCohort>
         ) : null}
-        {openNewCohortSlackDialog ? <AddCohortSlack open={openNewCohortSlackDialog} handleOpen={setOpenNewCohortSlackDialog} onRegisterCohort={setCohorts}></AddCohortSlack> : null}
+        {openNewCohortSlackDialog ? (
+          <AddCohortSlack
+            open={openNewCohortSlackDialog}
+            handleOpen={setOpenNewCohortSlackDialog}
+            onRegisterCohort={setCohorts}
+          ></AddCohortSlack>
+        ) : null}
       </Paper>
     </Container>
   );

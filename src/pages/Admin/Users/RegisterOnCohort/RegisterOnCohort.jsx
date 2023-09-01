@@ -46,6 +46,7 @@ import RegisterOnCohortActions from "./Actions/RegisterOnCohortActions";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import RegisterCohortUser from "./Actions/RegisterCohortUser";
 import RegisterExistingUser from "./Actions/RegisterExistingUser";
+import RegisterSlackUser from "./Actions/RegisterSlackUser";
 
 const RegisterOnCohort = () => {
   /*
@@ -70,6 +71,7 @@ const RegisterOnCohort = () => {
   // Dialog states
   const [openNewUserDialog, setOpenNewUserDialog] = useState(false);
   const [openExistingUserDialog, setOpenExistingUserDialog] = useState(false);
+  const [openNewSlackUserDialog, setOpenNewSlackUserDialog] = useState(false);
 
   /*
     ==========================
@@ -144,9 +146,12 @@ const RegisterOnCohort = () => {
       console.log(response);
       if (response.status === 200) {
         const participants = response.data.cohort[0].participants;
+        console.log(participants);
         const formattedUsers = participants.map((participant) => {
           return {
             id: participant._id,
+            slackId: participant.slackId,
+            userAvatar: participant.avatarUrl,
             userName: participant.name,
             userEmail: participant.email,
             userRole: participant.role,
@@ -155,6 +160,7 @@ const RegisterOnCohort = () => {
         });
         const formattedCohortData = {
           cohortId: cohortId,
+          cohortSlackId: response.data.cohort[0].slackId,
           cohortName: response.data.cohort[0].name,
         };
         console.log(formattedUsers);
@@ -257,7 +263,7 @@ const RegisterOnCohort = () => {
               text={"Add users from Slack"}
               type="button"
               width="100%"
-              handlerFunction={() => {}}
+              handlerFunction={() => setOpenNewSlackUserDialog(true)}
             >
               <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
             </AppButton>
@@ -280,8 +286,28 @@ const RegisterOnCohort = () => {
             }}
           ></AppButton>
         </div>
-        {openNewUserDialog ? <RegisterCohortUser open={openNewUserDialog} handleOpen={setOpenNewUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterCohortUser> : null}
-        {openExistingUserDialog ? <RegisterExistingUser open={openExistingUserDialog} handleOpen={setOpenExistingUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterExistingUser> : null}
+        {openNewUserDialog ? (
+          <RegisterCohortUser
+            open={openNewUserDialog}
+            handleOpen={setOpenNewUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          ></RegisterCohortUser>
+        ) : null}
+        {openExistingUserDialog ? (
+          <RegisterExistingUser
+            open={openExistingUserDialog}
+            handleOpen={setOpenExistingUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          ></RegisterExistingUser>
+        ) : null}
+        {openNewSlackUserDialog ? (
+          <RegisterSlackUser
+            open={openNewSlackUserDialog}
+            cohortData={cohortData}
+            handleOpen={setOpenNewSlackUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          />
+        ) : null}
       </Paper>
     </Container>
   );

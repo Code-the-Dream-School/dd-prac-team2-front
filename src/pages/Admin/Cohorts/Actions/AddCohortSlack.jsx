@@ -39,7 +39,6 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
   const [slackChannels, setSlackChannels] = useState([]);
   const [loading, setLoading] = useState(false);
   const columns = [
-    { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
       field: "slackId",
       headerName: "Slack ID",

@@ -148,11 +148,14 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           "auth/register",
           formattedUserRegistration
         );
+        console.log(response);
         if (response.data.users.length > 0) {
           onRegisterCohortSubmit((prevState) => [
             ...prevState,
             {
               id: response.data.users[0]._id,
+              slackId: response.data.users[0].slackId,
+              userAvatar: response.data.users[0].avatarUrl,
               userName: response.data.users[0].name,
               userEmail: response.data.users[0].email,
               userRole: response.data.users[0].role,
