@@ -41,7 +41,7 @@ const Login = () => {
         =        CONTEXT         =
         ==========================
     */
-  const {auth, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   /*
         ==========================
         =         STATES         =
@@ -93,7 +93,7 @@ const Login = () => {
           slackId: response.data.user.slackId ?? "",
           userName: response.data.user.name,
           userEmail: response.data.user.email,
-          role: response.data.user.roles,
+          role: response.data.user.role,
           loggedIn: true,
           avatarUrl: response.data.user.avatarUrl ?? "",
           isActive: response.data.user.isActivated,
@@ -243,9 +243,7 @@ const Login = () => {
                   isFocused={false}
                   width="100%"
                   variant="light"
-                  errorMessage={
-                    "This field is required"
-                  }
+                  errorMessage={"This field is required"}
                   onHandleError={handlePasswordError}
                   reset={reset}
                 ></FormTextField>

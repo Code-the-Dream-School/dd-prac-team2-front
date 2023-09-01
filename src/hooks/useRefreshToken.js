@@ -36,7 +36,7 @@ const useRefreshToken = () => {
         slackId: response.data.user.slackId ?? "",
         userName: response.data.user.name,
         userEmail: response.data.user.email,
-        role: response.data.user.roles,
+        role: response.data.user.role,
         loggedIn: true,
         avatarUrl: response.data.user.avatarUrl ?? "",
         isActive: response.data.user.isActivated,
