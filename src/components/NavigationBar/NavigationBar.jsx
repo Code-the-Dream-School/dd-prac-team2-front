@@ -399,9 +399,23 @@ const NavigationBar = ({ onExpireAuth }) => {
                     </Link>
                   );
                 })
-              : auth.role === "mentor"
-              ? null
-              : auth.role === "student"
+              : auth.role.includes("mentor")
+              ? mentorPages.map((page) => {
+                  return (
+                    <Link key={page.title} to={page.link}>
+                      <ListItem key={page.title} disablePadding>
+                        <ListItemButton>
+                          <ListItemIcon>{page.icon}</ListItemIcon>
+                          <ListItemText
+                            sx={{ color: "#FFFFFF" }}
+                            primary={page.title}
+                          />
+                        </ListItemButton>
+                      </ListItem>
+                    </Link>
+                  );
+                })
+              : auth.role.includes("student")
               ? studentPages.map((page) => {
                   return (
                     <Link key={page.title} to={page.link}>
