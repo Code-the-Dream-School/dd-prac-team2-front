@@ -381,178 +381,184 @@ const RegisterUsers = () => {
   }, [userRoles]);
 
   return (
-    <Container maxWidth="xl">
-      <Paper
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "#1A1A2E",
-          color: "#FFFFFF",
-          borderRadius: "10px",
-          padding: 2,
-          height: "auto",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {" "}
-          Users Management{" "}
-        </Typography>
-        <Box
-          component={"form"}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-          autoComplete="off"
-          onSubmit={handleRegisterOnCohortSubmit}
-        >
-          <div className={styles.formContainer}>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <BadgeRounded fontSize="large"></BadgeRounded>
-                <br></br>
-                <br></br>
-              </Box>
-              <FormTextField
-                required
-                type="text"
-                label="Name:"
-                name="userName"
-                isFocused={true}
-                width="100%"
-                variant="light"
-                regex={/^(?!\s)(.{3,})(?<!\s)$/}
-                onHandleError={handleUserNameError}
-                errorMessage={"Please enter a valid name"}
-                reset={reset}
-              ></FormTextField>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <Email fontSize="large"></Email>
-                <br></br>
-                <br></br>
-              </Box>
-              <FormTextField
-                required
-                type="text"
-                label="E-mail:"
-                name="userEmail"
-                isFocused={false}
-                width="100%"
-                variant="light"
-                regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
-                onHandleError={handleUserEmailError}
-                errorMessage={"Please enter a valid e-mail address"}
-                reset={reset}
-              ></FormTextField>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <School fontSize="large" />
-                <br></br>
-                <br></br>
-              </Box>
-              <AuthFormControl width="100%" isNested={true}>
-                <FormAutocomplete
-                  multiple={false}
-                  value={cohortsValueSelected}
-                  computedIdProperty={"id"}
-                  computedProperty={"cohort"}
-                  onHandleSelectedValueChange={handleValueSelectedChange}
-                  inputValue={cohortsInputValueSelected}
-                  onHandleInputValueChange={setCohortsInputValueSelected}
-                  options={cohorts}
-                  error={formError.userCohortError}
-                  variant={"light"}
-                ></FormAutocomplete>
-              </AuthFormControl>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <AdminPanelSettingsRounded fontSize="large" />
-                <br></br>
-              </Box>
-              <AuthFormControl
-                width="100%"
-                isNested={true}
-                error={formError.userRolesError.error}
-              >
-                <FormSelect
-                  id={"userRoles"}
-                  name={"userRoles"}
-                  label={"Roles:"}
-                  selectValue={userRoles}
-                  onSelectValue={handleOnSelectRole}
-                  list={rolesList}
-                  variant={"light"}
-                  multiple={true}
-                  error={formError.userRolesError}
-                ></FormSelect>
-              </AuthFormControl>
-            </AuthFormControl>
-            <AppButton
-              text={"Add new user"}
-              type="submit"
-              width="25%"
-              handlerFunction={() => {}}
-            />
-          </div>
-        </Box>
-        {loading ? (
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container maxWidth="xl">
+          <Paper
+            elevation={3}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "#1A1A2E",
+              color: "#FFFFFF",
+              borderRadius: "10px",
+              padding: 2,
+              height: "auto",
+            }}
+          >
+            <Typography
+              component={"h1"}
+              sx={{
+                backgroundColor: "#C84B31",
+                borderRadius: 2,
+                padding: 1,
+                margin: 1,
+                textAlign: "center",
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                fontSize: 25,
+              }}
+            >
+              {" "}
+              Users Management{" "}
+            </Typography>
+            <Box
+              component={"form"}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+              autoComplete="off"
+              onSubmit={handleRegisterOnCohortSubmit}
+            >
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <BadgeRounded fontSize="large"></BadgeRounded>
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <FormTextField
+                    required
+                    type="text"
+                    label="Name:"
+                    name="userName"
+                    isFocused={true}
+                    width="100%"
+                    variant="light"
+                    regex={/^(?!\s)(.{3,})(?<!\s)$/}
+                    onHandleError={handleUserNameError}
+                    errorMessage={"Please enter a valid name"}
+                    reset={reset}
+                  ></FormTextField>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Email fontSize="large"></Email>
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <FormTextField
+                    required
+                    type="text"
+                    label="E-mail:"
+                    name="userEmail"
+                    isFocused={false}
+                    width="100%"
+                    variant="light"
+                    regex={/^[^\s@]+@[^\s@]+\.[^\s@]+$/}
+                    onHandleError={handleUserEmailError}
+                    errorMessage={"Please enter a valid e-mail address"}
+                    reset={reset}
+                  ></FormTextField>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <School fontSize="large" />
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <AuthFormControl width="100%" isNested={true}>
+                    <FormAutocomplete
+                      multiple={false}
+                      value={cohortsValueSelected}
+                      computedIdProperty={"id"}
+                      computedProperty={"cohort"}
+                      onHandleSelectedValueChange={handleValueSelectedChange}
+                      inputValue={cohortsInputValueSelected}
+                      onHandleInputValueChange={setCohortsInputValueSelected}
+                      options={cohorts}
+                      error={formError.userCohortError}
+                      variant={"light"}
+                    ></FormAutocomplete>
+                  </AuthFormControl>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <AdminPanelSettingsRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AuthFormControl
+                    width="100%"
+                    isNested={true}
+                    error={formError.userRolesError.error}
+                  >
+                    <FormSelect
+                      id={"userRoles"}
+                      name={"userRoles"}
+                      label={"Roles:"}
+                      selectValue={userRoles}
+                      onSelectValue={handleOnSelectRole}
+                      list={rolesList}
+                      variant={"light"}
+                      multiple={true}
+                      error={formError.userRolesError}
+                    ></FormSelect>
+                  </AuthFormControl>
+                </AuthFormControl>
+                <AppButton
+                  text={"Add new user"}
+                  type="submit"
+                  width="25%"
+                  handlerFunction={() => {}}
+                />
+              </div>
+            </Box>
+            {/* {loading ? (
           <Loader />
-        ) : (
-          // null}
-          <AppDataGrid
-            columns={columns}
-            rows={users}
-            pageSize={10}
-            fieldToBeSorted={"userName"}
-            sortType={"asc"}
-          />
-        )}
-      </Paper>
-    </Container>
+        ) : ( */}
+            <AppDataGrid
+              columns={columns}
+              rows={users}
+              pageSize={10}
+              fieldToBeSorted={"userName"}
+              sortType={"asc"}
+            />
+            {/* )} */}
+          </Paper>
+        </Container>
+      )}
+      ;
+    </>
   );
 };
 

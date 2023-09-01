@@ -20,7 +20,7 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 /*
       ==========================
@@ -52,6 +52,8 @@ import AuthFormControl from "../../../../components/FormControl/AuthFormControl"
 import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
+import { AxiosError } from "axios";
 /*
       ==========================
       =     AUX VARIABLES      =
@@ -68,7 +70,13 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort, slackChannelData}) => {
+const AddCohort = ({
+  open,
+  handleOpen,
+  onRegisterSlackChannel,
+  onRegisterCohort,
+  slackChannelData,
+}) => {
   console.log(slackChannelData);
   /*
       ==========================
@@ -78,7 +86,9 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
   const [reset, setReset] = useState(false);
   const [cohortName, setCohortName] = useState(slackChannelData?.name ?? "");
   const [className, setClassName] = useState(slackChannelData?.type ?? "");
-  const [startDate, setStartDate] = useState(dayjs(slackChannelData?.startDate) ?? dayjs());
+  const [startDate, setStartDate] = useState(
+    dayjs(slackChannelData?.startDate) ?? dayjs()
+  );
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -86,14 +96,19 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
       errorMessage: "Please enter a valid name",
     },
     classNameError: {
-      error: slackChannelData === undefined ? true:false, //Initial value is blank, this is why I set the error to true.
+      error: slackChannelData === undefined ? true : false, //Initial value is blank, this is why I set the error to true.
       errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
       error: false,
       errorMessage: "Please select a start date for this cohort",
-    }
+    },
   });
+  const [error, setError] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
   /*
       ==========================
       =         HOOKS          =
@@ -193,8 +208,8 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
         console.log(response);
         if (response.status === 201) {
           setLoading(false); // Stop loading in case of error
-          const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
-          const dateTimeFormat = new Intl.DateTimeFormat('en', options);
+          const options = { year: "2-digit", month: "numeric", day: "numeric" };
+          const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
             ...prevCohorts,
             {
@@ -203,11 +218,19 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
               cohort: response.data.cohort.name,
               class: response.data.cohort.type,
               members: response.data.cohort.participants.length,
-              startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
+              startEndDate: dateTimeFormat.formatRange(
+                new Date(response.data.cohort.start),
+                new Date(response.data.cohort.end)
+              ),
             },
           ]);
-          if(slackChannelData !== undefined){
-            onRegisterSlackChannel((prevSlackChannels)=>prevSlackChannels.filter((slackChannel)=>slackChannel.slackId !== slackChannelData.slackId))
+          if (slackChannelData !== undefined) {
+            onRegisterSlackChannel((prevSlackChannels) =>
+              prevSlackChannels.filter(
+                (slackChannel) =>
+                  slackChannel.slackId !== slackChannelData.slackId
+              )
+            );
           }
           handleOpen(false);
         }
@@ -217,7 +240,7 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
       }
     } catch (error) {
       setLoading(false);
-      console.error(error);
+      console.log(error);
     } finally {
       setReset(true);
       setCohortName("");
@@ -225,167 +248,223 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
       setStartDate(dayjs());
     }
   };
+  //-----------------toastMessage-----------------
+  // const [open, setOpen] = useState(false);
+
+  // const handleClick = () => {
+  //   setOpen(true);
+  //   handlerFunction={() => handleClick(false)}
+
+  // };
+
+  // const handleClose = (event, reason) => {
+  //   if (reason === "clickaway") {
+  //   return;
+  // }
+
+  // setOpen(false);
 
   return (
     <>
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        onClose={() => handleOpen(false)}
-        fullWidth
-        maxWidth="md"
-      >
-        <DialogTitle
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          gap={"5px"}
-          component={"div"}
+      {loading ? (
+        <Loader />
+      ) : (
+        <Dialog
+          open={open}
+          TransitionComponent={Transition}
+          onClose={() => handleOpen(false)}
+          fullWidth
+          maxWidth="md"
         >
-          <Typography
-            variant="h1"
-            textAlign={"center"}
-            fontSize={"30px"}
-            fontWeight={"bold"}
+          <DialogTitle
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            gap={"5px"}
+            component={"div"}
           >
-            Add a new cohort:
-          </Typography>
-          <AppButton
-            text={""}
-            type="button"
-            width="10%"
-            handlerFunction={() => handleOpen(false)}
-          >
-            <Close></Close>
-          </AppButton>
-        </DialogTitle>
-        <Box
-          component={"form"}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#C84B31",
-          }}
-          autoComplete="off"
-          onSubmit={handleCohortSubmit}
-        >
-          {loading ? (
-            <DialogContent
-              sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
-              dividers
+            <Typography
+              variant="h1"
+              textAlign={"center"}
+              fontSize={"30px"}
+              fontWeight={"bold"}
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100px",
-                }}
-              >
-                <Loader />
-              </Box>
-            </DialogContent>
-          ) : (
-            <>
-              <DialogContent
-                sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
-                dividers
-              >
-                <div className={styles.formContainer}>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <SchoolRounded fontSize="large"></SchoolRounded>
-                      <br></br>
-                      <br></br>
-                    </Box>
-                    <FormTextField
-                      required
-                      value={cohortName}
-                      type="text"
-                      label="Cohort:"
-                      name="cohort"
-                      isFocused={true}
-                      width="100%"
-                      variant="dark"
-                      regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                      onHandleError={handleCohortNameError}
-                      errorMessage={"Please enter a valid name"}
-                      reset={reset}
-                    ></FormTextField>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <LaptopRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AuthFormControl
-                      width="100%"
-                      isNested={true}
-                      error={formError.classNameError.error}
-                    >
-                      <FormSelect
-                        id={"class"}
-                        name={"class"}
-                        label={"Class:"}
-                        selectValue={className}
-                        onSelectValue={handleClassNameChange}
-                        list={classList}
-                        variant={"dark"}
-                        multiple={false}
-                        error={formError.classNameError}
-                      ></FormSelect>
+              Add a new cohort:
+            </Typography>
+            <AppButton
+              text={""}
+              type="button"
+              width="10%"
+              handlerFunction={() => handleOpen(false)}
+            >
+              <Close></Close>
+            </AppButton>
+          </DialogTitle>
+          <Box
+            component={"form"}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "#C84B31",
+            }}
+            autoComplete="off"
+            onSubmit={handleCohortSubmit}
+          >
+            {loading ? (
+              // <DialogContent
+              //   sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+              //   dividers
+              // >
+              //   <Box
+              //     sx={{
+              //       display: "flex",
+              //       flexDirection: "column",
+              //       justifyContent: "center",
+              //       alignItems: "center",
+              //       width: "100%",
+              //       height: "100px",
+              //     }}
+              //   >
+              <Loader />
+            ) : (
+              //   </Box>
+              // </DialogContent>
+              <>
+                <DialogContent
+                  sx={{
+                    width: "100%",
+                    height: "auto",
+                    paddingX: 0,
+                    paddingY: 1,
+                  }}
+                  dividers
+                >
+                  <div className={styles.formContainer}>
+                    <AuthFormControl width="75%">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <SchoolRounded fontSize="large"></SchoolRounded>
+                        <br></br>
+                        <br></br>
+                      </Box>
+                      <FormTextField
+                        required
+                        value={cohortName}
+                        type="text"
+                        label="Cohort:"
+                        name="cohort"
+                        isFocused={true}
+                        width="100%"
+                        variant="dark"
+                        regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                        onHandleError={handleCohortNameError}
+                        errorMessage={"Please enter a valid name"}
+                        reset={reset}
+                      ></FormTextField>
                     </AuthFormControl>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <CalendarMonthRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AppDatePicker
-                      id={"startDate"}
-                      name={"startDate"}
-                      label={"Start date:"}
-                      dateValue={startDate}
-                      onDateValueChange={handleStartDateChange}
-                      variant={"dark"}
-                    ></AppDatePicker>
-                  </AuthFormControl>
-                </div>
-              </DialogContent>
-              <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-                <AppButton
-                  text={"Add cohort"}
-                  type="submit"
-                  width="auto"
-                  handlerFunction={() => {}}
-                ></AppButton>
-              </DialogActions>
-            </>
-          )}
-        </Box>
-      </Dialog>
+                    <AuthFormControl width="75%">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <LaptopRounded fontSize="large" />
+                        <br></br>
+                      </Box>
+                      <AuthFormControl
+                        width="100%"
+                        isNested={true}
+                        error={formError.classNameError.error}
+                      >
+                        <FormSelect
+                          id={"class"}
+                          name={"class"}
+                          label={"Class:"}
+                          selectValue={className}
+                          onSelectValue={handleClassNameChange}
+                          list={classList}
+                          variant={"dark"}
+                          multiple={false}
+                          error={formError.classNameError}
+                        ></FormSelect>
+                      </AuthFormControl>
+                    </AuthFormControl>
+                    <AuthFormControl width="75%">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <CalendarMonthRounded fontSize="large" />
+                        <br></br>
+                      </Box>
+                      <AppDatePicker
+                        id={"startDate"}
+                        name={"startDate"}
+                        label={"Start date:"}
+                        dateValue={startDate}
+                        onDateValueChange={handleStartDateChange}
+                        variant={"dark"}
+                      ></AppDatePicker>
+                    </AuthFormControl>
+                  </div>
+                </DialogContent>
+                <DialogActions
+                  sx={{ display: "flex", justifyContent: "center" }}
+                >
+                  <AppButton
+                    text={"Add cohort"}
+                    type="submit"
+                    width="auto"
+                    handlerFunction={() => {
+                      if (error === true) {
+                        setOpenErrorToast(true);
+                        setErrorMessage(errorMessage);
+                      } else {
+                        setOpenSuccessToast(true);
+                        setSuccessMessage(successMessage);
+                      }
+                    }}
+                  ></AppButton>
+                  <ToastMessage
+                    open={openSuccessToast}
+                    variant="success"
+                    // autoHideDuration={3000}
+                    onClose={() => setOpenSuccessToast(false)}
+                    dismissible
+                    // background="#CD1818"
+                    // color="white"
+                    message={successMessage}
+                  >
+                    {successMessage}
+                  </ToastMessage>
+                  <ToastMessage
+                    open={openErrorToast}
+                    variant="danger"
+                    onClose={() => setOpenErrorToast(false)}
+                    dismissible
+                    background="#cd1818"
+                    color="white"
+                  >
+                    {errorMessage}
+                  </ToastMessage>
+                </DialogActions>
+              </>
+            )}
+          </Box>
+        </Dialog>
+      )}
     </>
   );
 };
@@ -393,7 +472,7 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
 export default AddCohort;
 
 AddCohort.propTypes = {
-    open: PropTypes.bool.isRequired,
-    handleOpen: PropTypes.func.isRequired,
-    onRegisterCohort: PropTypes.func.isRequired
-}
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterCohort: PropTypes.func.isRequired,
+};
