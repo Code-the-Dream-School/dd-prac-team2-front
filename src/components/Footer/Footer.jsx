@@ -35,11 +35,6 @@ const contributors = [
     url: "https://github.com/secch97",
   },
   {
-    name: "Selam Yihew",
-    picture: "https://avatars.githubusercontent.com/u/99606714?v=4",
-    url: "https://github.com/sel4m",
-  },
-  {
     name: "Tam Pham",
     picture: "https://avatars.githubusercontent.com/u/109603295?v=4",
     url: "https://github.com/Miminiverse",
@@ -53,6 +48,21 @@ const contributors = [
     name: "Aleksey K",
     picture: undefined,
     url: "https://github.com/akabishau",
+  },
+  {
+    name: "Mohamed Mbareck",
+    picture: "https://avatars.githubusercontent.com/u/93048977?v=4",
+    url: "https://github.com/Mbareck21",
+  },
+  {
+    name: "Dior Shelton",
+    picture: "https://avatars.githubusercontent.com/u/63883205?v=4",
+    url: "https://github.com/diorshelton",
+  },
+  {
+    name: "Liubov Rodin",
+    picture: "https://avatars.githubusercontent.com/u/112579936?v=4",
+    url: "https://github.com/LiubovCass",
   },
 ];
 
@@ -71,7 +81,11 @@ const Footer = () => {
         justifyContent="center"
         alignItems="center"
         flexDirection="column"
-        sx={{ color: "#FFFFFF", padding: "5px", textAlign: "center" }}
+        sx={{
+          color: "#FFFFFF",
+          padding: "5px",
+          textAlign: "center",
+        }}
       >
         {` COPYRIGHT ${getCurrentYear()} © MENTORUP`}
       </Typography>
