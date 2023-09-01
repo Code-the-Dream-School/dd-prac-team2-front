@@ -55,38 +55,6 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
         =         HANDLERS       =
         ==========================
     */
-  const handleDeleteCohort = async () => {
-    try {
-      setLoading(true);
-      const response = await axiosPrivate.delete(`/cohort/${params.row.id}`, {
-        withCredentials: true,
-      });
-      if (response.status === 200) {
-        onHandleCohorts((prevCohorts) => {
-          return prevCohorts.filter((cohort) => cohort.id !== params.row.id);
-        });
-      }
-    } catch (error) {
-      if (error.response.status === 403) {
-        //User is required to validate auth again
-        console.error(error);
-        navigate("/login", { state: { from: location }, replace: true });
-        setAuth({
-          userId: "",
-          userName: "",
-          userEmail: "",
-          role: [],
-          loggedIn: false,
-          avatarUrl: "",
-          isActive: undefined,
-          accessToken: "",
-        });
-      } else {
-        console.error(error);
-      }
-    }
-    setLoading(false);
-  };
 
   const handleOpenEditCohort = () => {
     setOpenEditDialog(true);
@@ -108,28 +76,6 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           paddingLeft: 0,
         }}
       >
-        <Link to={`${params.row.id}`}>
-          <AppButton
-            text={"Lessons"}
-            type="button"
-            width="auto"
-            color="#609966"
-            handlerFunction={() => {}}
-          >
-            <ChecklistRounded></ChecklistRounded>
-          </AppButton>
-        </Link>
-        <Link to={`register/${params.row.id}`}>
-          <AppButton
-            text={"Users"}
-            type="button"
-            width="auto"
-            color="#609966"
-            handlerFunction={() => {}}
-          >
-            <PeopleAltRounded></PeopleAltRounded>
-          </AppButton>
-        </Link>
         <AppButton
           text={"Edit"}
           type="button"
@@ -140,15 +86,6 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           }}
         >
           <EditRounded></EditRounded>
-        </AppButton>
-        <AppButton
-          text={"Delete"}
-          type="button"
-          width="auto"
-          color="#CD1818"
-          handlerFunction={() => handleDeleteCohort()}
-        >
-          <DeleteRounded></DeleteRounded>
         </AppButton>
       </Container>
       {openEditDialog ? (

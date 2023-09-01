@@ -14,6 +14,7 @@ import React, { memo, useEffect, useState } from "react";
 
 const FormTextField = ({
   required,
+  disabled,
   value,
   type,
   label,
@@ -72,6 +73,7 @@ const FormTextField = ({
 
   return (
     <TextField
+      disabled={disabled ? true:false}
       error={error}
       autoComplete="off"
       helperText={error ? errorMessage : " "}

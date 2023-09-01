@@ -15,78 +15,8 @@ import React from "react";
 import { BusAlert } from "@mui/icons-material";
 import GridOverlay from "../GridOverlay/GridOverlay";
 
-const StyledDataGrid = styled(DataGrid)(() => ({
-  borderTop: "5px solid #C84B31",
-  borderBottom: "5px solid #C84B31",
-  borderLeft: "0px",
-  borderRight: "0px",
-  color: "white",
-  letterSpacing: "normal",
-  width: "100%",
-  "& .MuiDataGrid-iconSeparator": {
-    display: "none",
-  },
-  "& .MuiDataGrid-sortIcon": {
-    color: "white",
-    opacity: "inherit !important",
-  },
-  "& .MuiDataGrid-menuIconButton": {
-    opacity: 1,
-    color: "white",
-  },
-  "& .MuiTouchRipple-root": {
-    color: "#C84B31",
-  },
-  "& .MuiDataGrid-columnHeaders": {
-    borderBottom: "3px solid #C84B31",
-  },
-  "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
-    color: "white",
-    borderRight: "0px solid #C84B31",
-  },
-  "& .MuiDataGrid-columnHeader:focus": {
-    outline: "0px",
-  },
-  "& .MuiDataGrid-row": {
-    backgroundColor: "white",
-  },
-  "& .MuiDataGrid-row.Mui-selected": {
-    backgroundColor: "#C84B31",
-    "& .MuiDataGrid-cell": {
-      borderBottom: "1px solid #1A1A2E",
-      color: "white",
-    },
-  },
-  "& .MuiDataGrid-row:hover, & .MuiDataGrid-row.Mui-selected:hover": {
-    backgroundColor: "#C84B31",
-    "& .MuiDataGrid-cell": {
-      borderBottom: "1px solid #1A1A2E",
-      color: "white",
-    },
-  },
-  "& .MuiDataGrid-cell": {
-    color: "black",
-    fontWeight: "bold",
-  },
-  "& .MuiDataGrid-cell.MuiDataGrid-withBorderColor": {
-    outline: "0px",
-  },
-  "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
-    borderBottom: "1px solid #C84B31",
-  },
-  "& .MuiDataGrid-footerContainer": {
-    borderTop: "3px solid #C84B31",
-    "& .MuiTablePagination-root": {
-      color: "white",
-      "& .MuiSelect-icon, & .MuiTablePagination-actions > .MuiButtonBase-root":
-        {
-          color: "white",
-        },
-    },
-  },
-}));
 const MyCustomNoRowsOverlay = () => {
-  <GridOverlay />;
+  return <GridOverlay />;
 };
 
 const AppDataGrid = ({
@@ -95,9 +25,80 @@ const AppDataGrid = ({
   pageSize,
   fieldToBeSorted,
   sortType,
+  variant="light",
 }) => {
   return (
-    <StyledDataGrid
+    <DataGrid
+      sx={{
+        borderTop: "5px solid #C84B31",
+        borderBottom: "5px solid #C84B31",
+        borderLeft: "0px",
+        borderRight: "0px",
+        color: variant === "light" ? "white" : "#16213E",
+        letterSpacing: "normal",
+        width: "100%",
+        "& .MuiDataGrid-iconSeparator": {
+          display: "none",
+        },
+        "& .MuiDataGrid-sortIcon": {
+          color: variant === "light" ? "white" : "#16213E",
+          opacity: "inherit !important",
+        },
+        "& .MuiDataGrid-menuIconButton": {
+          opacity: 1,
+          color: variant === "light" ? "white" : "#16213E",
+        },
+        "& .MuiTouchRipple-root": {
+          color: "#C84B31",
+        },
+        "& .MuiDataGrid-columnHeaders": {
+          borderBottom: "3px solid #C84B31",
+        },
+        "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
+          color: variant === "light" ? "white" : "#16213E",
+          borderRight: "0px solid #C84B31",
+        },
+        "& .MuiDataGrid-columnHeader:focus": {
+          outline: "0px",
+        },
+        "& .MuiDataGrid-row": {
+          backgroundColor: "white",
+        },
+        "& .MuiDataGrid-row.Mui-selected": {
+          backgroundColor: "#C84B31",
+          "& .MuiDataGrid-cell": {
+            borderBottom: "1px solid #1A1A2E",
+            color: "white",
+          },
+        },
+        "& .MuiDataGrid-row:hover, & .MuiDataGrid-row.Mui-selected:hover": {
+          backgroundColor: "#C84B31",
+          "& .MuiDataGrid-cell": {
+            borderBottom: "1px solid #1A1A2E",
+            color: "white",
+          },
+        },
+        "& .MuiDataGrid-cell": {
+          color: "black",
+          fontWeight: "bold",
+        },
+        "& .MuiDataGrid-cell.MuiDataGrid-withBorderColor": {
+          outline: "0px",
+        },
+        "& .MuiDataGrid-columnsContainer, .MuiDataGrid-cell": {
+          borderBottom: "1px solid #C84B31",
+        },
+        "& .MuiDataGrid-footerContainer": {
+          borderTop: "3px solid #C84B31",
+          "& .MuiTablePagination-root": {
+            color: variant === "light" ? "white" : "#16213E",
+            "& .MuiSelect-icon, & .MuiTablePagination-actions > .MuiButtonBase-root":
+              {
+                color: variant === "light" ? "white" : "#16213E",
+              },
+          },
+        },
+      }}
       rows={rows}
       columns={columns}
       initialState={{
@@ -139,6 +140,7 @@ const AppDataGrid = ({
       }}
       columnVisibilityModel={{
         id: false,
+        slackId: false
       }}
       autoHeight={true}
     />
