@@ -4,8 +4,19 @@ import {
   Typography,
   List,
   Card,
+  Chip,
+  Stack,
+  ListItemText,
+  ListItemAvatar,
+  Avatar,
+  Divider,
+  ListItem,
   CardContent,
+  Button,
 } from "@mui/material";
+import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
+import { blue } from "@mui/material/colors";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
@@ -51,7 +62,6 @@ const StudentSession = () => {
     const { data } = await axiosPrivate.get(
       `/session/${sessionId}/student/status`
     );
-    console.log(data);
     if (data) {
       setUserStatus("Confirm");
     } else {
@@ -71,11 +81,24 @@ const StudentSession = () => {
     console.log(data);
     setComment("");
   };
-
+  const getSessionTime = (val) => {
+    const utcTime = new Date(val);
+    let hour = utcTime.getHours() % 12;
+    if (hour === 0) {
+      hour = 12;
+    }
+    let minute = utcTime.getMinutes();
+    if (minute < 10) {
+      minute = "0" + minute;
+    }
+    const ampm = utcTime.getHours() < 12 ? "AM" : "PM";
+    const localTime = `${hour}:${minute} ${ampm}`;
+    return localTime;
+  };
   const getComment = async () => {
     setLoading(true);
     const { data } = await axiosPrivate.get("/session/comment");
-    console.log(data);
+    // console.log(data);
     // setComment((prev)=>[...prev, data]);
     setLoading(false);
   };
@@ -103,126 +126,134 @@ const StudentSession = () => {
           display: "flex",
           justifyContent: "center",
           bgcolor: "transparent",
+          padding: 1,
+          gap: 2,
+          fontSize: 25,
         }}
       >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 2,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
+        <Button variant="contained" sx={{ fontSize: 25, bgcolor: "#c84b31" }}>
           {currentSession?.type} Session
-        </Typography>
-        <Typography
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 2,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
+        </Button>
+        <Button variant="contained" sx={{ fontSize: 25 }}>
           {currentSession?.creator.name}
-        </Typography>
-        <Typography
-          sx={{
-            backgroundColor: "#055c1c",
-            borderRadius: 2,
-            padding: 2,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
+        </Button>
+        <Button
+          variant="contained"
+          color={userStatus === "Confirm" ? "success" : "error"}
+          sx={{ fontSize: 25 }}
         >
-          My Current Status: {userStatus}
-        </Typography>
+          You're {userStatus === "Confirm" ? "Enrolled" : "Not Enrolled"}
+        </Button>
       </Box>
       <Typography
         sx={{
-          backgroundColor: "#ffffff",
           borderRadius: 2,
           padding: 1,
           margin: 1,
           textAlign: "center",
-          fontSize: 20,
         }}
       >
-        Start:{" "}
-        {currentSession?.start
-          ? formatDateAndTime(currentSession?.start)
-          : null}
-      </Typography>
-      <Typography
-        sx={{
-          backgroundColor: "#ffffff",
-          borderRadius: 2,
-          padding: 1,
-          margin: 1,
-          textAlign: "center",
-          fontSize: 20,
-        }}
-      >
-        End:{" "}
-        {currentSession?.end ? formatDateAndTime(currentSession?.end) : null}
-      </Typography>
-      <Review sessionId={sessionId} />
-      <List>
-        {currentSession?.participant?.length > 0 ? (
-          currentSession?.participant.map((p) => (
-            <Card
-              key={p._id}
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Box>
-                <CardContent>
-                  <Typography variant="h5">{`${p.name}`}</Typography>
-                </CardContent>
-              </Box>
-            </Card>
-          ))
-        ) : (
-          <Typography
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 2, md: 4 }}
+          alignItems="center"
+          justifyContent="center"
+          fontWeight="bold"
+        >
+          <Chip
+            label={`From - ${
+              currentSession?.start
+                ? getSessionTime(currentSession?.start)
+                : null
+            }`}
             sx={{
-              backgroundColor: "#f2f2f2",
-              padding: 2,
-              borderRadius: 2,
-              textAlign: "center",
+              backgroundColor: "#112f57",
+              color: "white",
+              fontSize: 25,
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
             }}
-          >
-            No students in this session
-          </Typography>
-        )}
-      </List>
-      <br />
-      <br />
+          ></Chip>
+          <Chip
+            label={`To - ${
+              currentSession?.end ? getSessionTime(currentSession?.end) : null
+            }`}
+            sx={{
+              backgroundColor: "#112f57",
+              color: "white",
+              fontSize: 25,
+
+              "&:hover": {
+                transform: "scale(1.05)",
+                transition: "all 0.2s ease-in-out",
+              },
+            }}
+          ></Chip>
+        </Stack>
+      </Typography>
 
       <Typography
-        component={"h1"}
         sx={{
-          backgroundColor: "#C84B31",
+          backgroundColor: "#055c1c",
           borderRadius: 2,
-          padding: 2,
+          padding: 1,
           margin: 1,
           textAlign: "center",
           fontWeight: "bold",
           fontSize: 25,
         }}
       >
-        Discussion
+        Enrolled Students
+        <List
+          sx={{
+            width: "100%",
+            bgcolor: "#F8F0E5",
+            borderRadius: 1,
+            fontSize: 16,
+          }}
+        >
+          {currentSession?.participant?.length > 0 ? (
+            currentSession?.participant.map((p) => (
+              <>
+                <ListItem
+                  key={p._id}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                      <SchoolOutlinedIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary=<Typography variant="body1">{`${p.name}`}</Typography>
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </>
+            ))
+          ) : (
+            <Typography
+              sx={{
+                backgroundColor: "#f2f2f2",
+                padding: 2,
+                borderRadius: 2,
+                textAlign: "center",
+              }}
+            >
+              No students in this session
+            </Typography>
+          )}
+        </List>
       </Typography>
+
+      <br />
+      <br />
 
       <Box
         component={"form"}
@@ -268,42 +299,71 @@ const StudentSession = () => {
           />
         </div>
       </Box>
-      <List>
-        {currentSession?.discussion?.length > 0 ? (
-          currentSession?.discussion.map((d) => (
-            <Card
-              key={d._id}
+
+      <Typography
+        sx={{
+          backgroundColor: "#FF9B50",
+          borderRadius: 2,
+          border: 2,
+          borderColor: "#C84B31",
+          padding: 1,
+          margin: 1,
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: 25,
+        }}
+      >
+        <Divider>Discussion</Divider>
+        <List
+          sx={{
+            width: "100%",
+            bgcolor: "#F8F0E5",
+            borderRadius: 1,
+          }}
+        >
+          {currentSession?.discussion?.length > 0 ? (
+            currentSession?.discussion.map((d) => (
+              <>
+                <ListItem alignItems="flex-start" key={d._id}>
+                  <ListItemAvatar>
+                    <Avatar>{`${d.name.name[0]}`}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary=<Typography
+                      // component="h1"
+                      variant="body2"
+                      color="text.primary"
+                      fontWeight="bold"
+                    >{`${d.name.name}`}</Typography>
+                    secondary=<Typography
+                      component="p"
+                      variant="body2"
+                    >{`${d.content}`}</Typography>
+                  />
+                </ListItem>
+                <Divider variant="inset" component="li" />
+              </>
+            ))
+          ) : (
+            <Typography
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
+                backgroundColor: "#f2f2f2",
+                padding: 2,
+                borderRadius: 2,
+                textAlign: "center",
               }}
             >
-              <Box>
-                <CardContent>
-                  <Typography variant="h5">{`${d.content}`}</Typography>
-                </CardContent>
-              </Box>
-              <Box>
-                <CardContent>
-                  <Typography>{`${d.name.name}`}</Typography>
-                </CardContent>
-              </Box>
-            </Card>
-          ))
-        ) : (
-          <Typography
-            sx={{
-              backgroundColor: "#f2f2f2",
-              padding: 2,
-              borderRadius: 2,
-              textAlign: "center",
-            }}
-          >
-            No discussions in this session
-          </Typography>
-        )}
-      </List>
+              No discussions in this session
+            </Typography>
+          )}
+        </List>
+      </Typography>
+      <Typography
+        color="initial"
+        sx={{ width: "40%", maxWidth: "50%", margin: "auto" }}
+      >
+        <Review sessionId={sessionId} />
+      </Typography>
     </Container>
   );
 };
