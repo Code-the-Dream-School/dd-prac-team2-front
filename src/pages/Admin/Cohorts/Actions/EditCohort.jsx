@@ -130,6 +130,7 @@ const EditCohort = ({
         `/cohort/${cohortId}`,
         editedCohort
       );
+      console.log(response);
       setLoading(false);
       return response;
     } catch (error) {
@@ -188,8 +189,6 @@ const EditCohort = ({
     const cohortToBeUpdated = cohortInfo.row.id;
     const editedCohort = {
       name: event.target.cohort.value.trim(),
-      start: startDate.format(), //Date needs to be sent with .format()
-      end: endDate.format(), //Date needs to be sent with .format()
       type: className,
     };
     const errors = Object.values(formError);

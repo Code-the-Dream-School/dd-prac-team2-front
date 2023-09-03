@@ -31,6 +31,7 @@ import EditCohortUser from "./EditCohortUser";
 const RegisterOnCohortActions = ({
   params,
   cohortData,
+  onLoading,
   onHandleCohortUsers,
 }) => {
   /*
@@ -55,6 +56,7 @@ const RegisterOnCohortActions = ({
         ==========================
     */
   const handleDeleteCohortUser = async () => {
+    onLoading(true);
     const cohortUserToBeDeleted = params.row.id;
     try {
       //Fetch the user information
@@ -83,8 +85,10 @@ const RegisterOnCohortActions = ({
           (user) => user.id !== cohortUserToBeDeleted
         );
       });
+      onLoading(false);
     } catch (error) {
       if (error.response.status === 403) {
+        onLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -99,6 +103,7 @@ const RegisterOnCohortActions = ({
           accessToken: "",
         });
       } else {
+        onLoading(false);
         console.error(error);
       }
     }
@@ -147,6 +152,7 @@ const RegisterOnCohortActions = ({
           openDialog={openEditDialog}
           cohortUserInfo={params}
           onCloseDialog={handleCloseEditCohortUserDialog}
+          onLoading={onLoading}
           onHandleCohortUsers={onHandleCohortUsers}
         ></EditCohortUser>
       ) : null}

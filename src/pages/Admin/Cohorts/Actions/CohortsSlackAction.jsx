@@ -4,7 +4,7 @@ import AppButton from "../../../../components/Button/AppButton";
 import { CloudDownloadRounded } from "@mui/icons-material";
 import AddCohort from "./AddCohort";
 
-const CohortsSlackAction = ({ params, onRegisterSlackChannel, onRegisterCohort }) => {
+const CohortsSlackAction = ({ params, onRegisterSlackChannel, onRegisterCohort}) => {
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
 
   const slackChannelData = params.row;

@@ -47,6 +47,7 @@ import AuthFormControl from "../../../../components/FormControl/AuthFormControl"
 import RegisterCohortUser from "./Actions/RegisterCohortUser";
 import RegisterExistingUser from "./Actions/RegisterExistingUser";
 import RegisterSlackUser from "./Actions/RegisterSlackUser";
+import Loader from "../../../../components/Loader/Loader";
 
 const RegisterOnCohort = () => {
   /*
@@ -65,8 +66,10 @@ const RegisterOnCohort = () => {
     =         STATES         =
     ==========================
   */
+  const [loading, setLoading] = useState(true);
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
+  console.log(cohortUsers);
   const [cohortData, setCohortData] = useState({});
   // Dialog states
   const [openNewUserDialog, setOpenNewUserDialog] = useState(false);
@@ -130,6 +133,7 @@ const RegisterOnCohort = () => {
         <RegisterOnCohortActions
           params={params}
           cohortData={cohortData}
+          onLoading={setLoading}
           onHandleCohortUsers={setCohortUsers}
         ></RegisterOnCohortActions>
       ),
@@ -154,7 +158,7 @@ const RegisterOnCohort = () => {
             userAvatar: participant.avatarUrl,
             userName: participant.name,
             userEmail: participant.email,
-            userRole: participant.role,
+            userRole: participant.role.sort(),
             userActivatedStatus: participant.isActivated,
           };
         });
@@ -163,14 +167,16 @@ const RegisterOnCohort = () => {
           cohortSlackId: response.data.cohort[0].slackId,
           cohortName: response.data.cohort[0].name,
         };
-        console.log(formattedUsers);
+        console.log(formattedCohortData);
         setCohortUsers(formattedUsers);
         setCohortData(formattedCohortData);
+        setLoading(false);
       } else {
         console.error("There was an error fetching the users of this cohort");
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -185,6 +191,7 @@ const RegisterOnCohort = () => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -259,23 +266,41 @@ const RegisterOnCohort = () => {
             >
               <PersonSearch fontSize="large"></PersonSearch>
             </AppButton>
-            <AppButton
-              text={"Add users from Slack"}
-              type="button"
-              width="100%"
-              handlerFunction={() => setOpenNewSlackUserDialog(true)}
-            >
-              <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
-            </AppButton>
+            {cohortData.cohortSlackId !== null ? (
+              <AppButton
+                text={"Add users from Slack"}
+                type="button"
+                width="100%"
+                handlerFunction={() => setOpenNewSlackUserDialog(true)}
+              >
+                <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
+              </AppButton>
+            ) : null}
           </AuthFormControl>
         </div>
-        <AppDataGrid
-          columns={columns}
-          rows={cohortUsers}
-          pageSize={15}
-          fieldToBeSorted={"userName"}
-          sortType={"asc"}
-        />
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100px",
+            }}
+          >
+            <Loader />
+          </Box>
+        ) : (
+          <AppDataGrid
+            columns={columns}
+            rows={cohortUsers}
+            pageSize={15}
+            fieldToBeSorted={"userName"}
+            sortType={"asc"}
+          />
+        )}
+
         <div className={styles.buttonContainer}>
           <AppButton
             text={"Go back"}

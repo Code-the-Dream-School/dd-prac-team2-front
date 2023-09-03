@@ -199,7 +199,7 @@ const RegisterUsers = () => {
               id: cohort._id,
               cohort: cohort.name,
             })),
-            userRole: user.roles,
+            userRole: user.roles.sort(),
             userActivatedStatus: user.isActivated,
           };
         });

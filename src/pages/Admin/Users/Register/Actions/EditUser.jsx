@@ -120,7 +120,7 @@ const EditUser = ({
     const formattedUpdatedUser = {
       id: userToBeUpdated,
       userCohort: cohortsValueSelected,
-      userRole: userRoles.map((role) => role.toLowerCase()),
+      userRole: userRoles.map((role) => role.toLowerCase()).sort(),
     };
     const body = {
       role: formattedUpdatedUser.userRole,

@@ -13,8 +13,10 @@ import PropTypes from "prop-types";
 */
 import React from "react";
 
-const UserCohortRender = ({ params }) => {
-  const userCohorts = params.row.userCohort;
+const UserCohortRender = ({ params, rowField="userCohort"}) => {
+  const userCohorts = params.row[rowField];
+  const cohortName = rowField==="userCohort" ? "cohort" : "name"
+  const cohortId = rowField === "userCohort" ? "userId" : "_id" 
   return (
     <Container
       sx={{
@@ -28,8 +30,8 @@ const UserCohortRender = ({ params }) => {
       <Stack direction={"row"} spacing={1}>
         {userCohorts.map((userCohort) => (
           <Chip
-            key={`${userCohort.cohort}-${params.row.userId}`}
-            label={userCohort.cohort}
+            key={`${userCohort[cohortName]}-${params.row[cohortId]}`}
+            label={userCohort[cohortName]}
             sx={{
               backgroundColor: "#0F3460",
               color: "white",

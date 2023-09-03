@@ -189,13 +189,13 @@ const AppDataGrid = ({
         slackId: false,
       }}
       getRowId={(row) => {
-        return row[rowId];
+        return (row[rowId]);
       }}
       checkboxSelection={checkBoxSelection}
       onRowSelectionModelChange={(newRowSelectionModel) => {
         onSelectBox((prevNewUsers) =>
           prevNewUsers.map((user) => {
-            if (newRowSelectionModel.includes(user.slackId)) {
+            if (newRowSelectionModel.includes(user.slackId) || newRowSelectionModel.includes(user.id)) {
               return {
                 ...user,
                 isSelected: true,

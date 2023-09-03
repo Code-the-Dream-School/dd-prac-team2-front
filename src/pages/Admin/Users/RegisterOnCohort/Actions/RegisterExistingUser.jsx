@@ -158,7 +158,7 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
               userAvatar: user.avatarUrl,
               userName: user.name,
               userEmail: user.email,
-              userRole: user.role,
+              userRole: user.role.sort(),
               userActivatedStatus: user.isActivated,
             })),
           ]);

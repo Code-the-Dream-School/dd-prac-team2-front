@@ -72,6 +72,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
     {
       field: "numberOfMembers",
       headerName: "Members",
+      type:"number",
       minWidth: 70,
       maxWidth: 70,
       flex: 1,

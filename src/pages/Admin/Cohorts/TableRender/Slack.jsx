@@ -2,7 +2,7 @@ import { Avatar } from "@mui/material";
 import React from "react";
 
 const Slack = ({ params }) => {
-  const isSlack = params.row.slackId === null ? false : true;
+  const isSlack = params.row.slackId === undefined || params.row.slackId === null ? false : true;
   return (
     <>
     {

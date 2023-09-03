@@ -158,7 +158,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
               userAvatar: response.data.users[0].avatarUrl,
               userName: response.data.users[0].name,
               userEmail: response.data.users[0].email,
-              userRole: response.data.users[0].role,
+              userRole: response.data.users[0].role.sort(),
               userActivatedStatus: response.data.users[0].isActivated,
             },
           ]);

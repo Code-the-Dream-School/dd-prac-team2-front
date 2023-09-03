@@ -299,7 +299,7 @@ const NavigationBar = ({ onExpireAuth }) => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         alt="User profile picture"
-                        src="/images/user.png"
+                        src={auth.avatarUrl ?? "/images/user.png"}
                       />
                     </IconButton>
                   </Tooltip>

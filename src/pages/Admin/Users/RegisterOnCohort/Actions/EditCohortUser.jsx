@@ -64,6 +64,7 @@ const EditCohortUser = ({
   openDialog,
   cohortUserInfo,
   onCloseDialog,
+  onLoading,
   onHandleCohortUsers,
 }) => {
   /*
@@ -134,6 +135,7 @@ const EditCohortUser = ({
     console.log(body);
     const errors = Object.values(formError);
     try {
+      onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.patch(
           `/users/${cohortUserToBeUpdated}`,
@@ -145,7 +147,7 @@ const EditCohortUser = ({
             if (prevCohortUser.id === cohortUserToBeUpdated) {
               return {
                 ...prevCohortUser,
-                userRole: userRoles.map((role) => role.toLowerCase()),
+                userRole: userRoles.map((role) => role.toLowerCase()).sort(),
               };
             } else {
               return prevCohortUser;
@@ -155,6 +157,7 @@ const EditCohortUser = ({
         setReset(true);
         setUserRoles([]);
         onCloseDialog();
+        onLoading(false);
       } else {
         console.error(
           "There is an error preventing the form submission: check that your entires are correctly validated"
@@ -162,6 +165,7 @@ const EditCohortUser = ({
       }
     } catch (error) {
       if (error.response.status === 403) {
+        onLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -176,6 +180,7 @@ const EditCohortUser = ({
           accessToken: "",
         });
       } else {
+        onLoading(false);
         console.error(error);
       }
     }

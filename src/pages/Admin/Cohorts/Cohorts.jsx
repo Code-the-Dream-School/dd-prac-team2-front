@@ -107,10 +107,15 @@ const Cohorts = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Members params={params}></Members>,
+      sortComparator: (v1, v2) => {
+        return Number(v1.value)-Number(v2.value);
+      },
     },
     {
       field: "lessons",
       headerName: "Lessons",
+      sortable: false,
+      disableColumnMenu: true,
       minWidth: 125,
       maxWidth: 125,
       flex: 1,
@@ -283,6 +288,7 @@ const Cohorts = () => {
           <AddCohort
             open={openNewCohortDialog}
             handleOpen={setOpenNewCohortDialog}
+            onLoading={setLoading}
             onRegisterCohort={setCohorts}
           ></AddCohort>
         ) : null}
@@ -290,6 +296,7 @@ const Cohorts = () => {
           <AddCohortSlack
             open={openNewCohortSlackDialog}
             handleOpen={setOpenNewCohortSlackDialog}
+            onLoading = {setLoading}
             onRegisterCohort={setCohorts}
           ></AddCohortSlack>
         ) : null}
