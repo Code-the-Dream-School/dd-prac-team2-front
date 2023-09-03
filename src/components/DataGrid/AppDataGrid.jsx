@@ -224,4 +224,8 @@ AppDataGrid.propTypes = {
   pageSize: PropTypes.number,
   fieldToBeSorted: PropTypes.string.isRequired,
   sortType: PropTypes.string.isRequired,
+  rowId: PropTypes.string,
+  checkBoxSelection: PropTypes.bool,
+  onSelectBox: PropTypes.func,
+  variant: PropTypes.string,
 };

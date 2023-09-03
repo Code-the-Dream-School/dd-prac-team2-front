@@ -75,6 +75,7 @@ const RegisterUsers = () => {
   */
   // Fetched data states:
   const [users, setUsers] = useState([]);
+  console.log(users);
   const [cohorts, setCohorts] = useState([]);
   // From states
   const [userRoles, setUserRoles] = useState([]);
@@ -189,6 +190,7 @@ const RegisterUsers = () => {
     try {
       setLoading(true); //Set loading before sending API request//
       const response = await axiosPrivate.get("/users");
+      console.log(response);
       if (response.status === 200) {
         const formattedUsers = response.data.users.map((user) => {
           return {

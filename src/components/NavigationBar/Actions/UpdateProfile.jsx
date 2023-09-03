@@ -21,6 +21,7 @@ import {
   Email,
 } from "@mui/icons-material";
 import useAxiosPrivate from "./../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -357,3 +358,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
 };
 
 export default UpdateProfile;
+
+UpdateProfile.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpenDialog: PropTypes.func.isRequired,
+};

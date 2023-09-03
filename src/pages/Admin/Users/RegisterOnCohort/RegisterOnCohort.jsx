@@ -70,7 +70,11 @@ const RegisterOnCohort = () => {
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
   console.log(cohortUsers);
-  const [cohortData, setCohortData] = useState({});
+  const [cohortData, setCohortData] = useState({
+    cohortId: "",
+    cohortSlackId: null,
+    cohortName: "",
+  });
   // Dialog states
   const [openNewUserDialog, setOpenNewUserDialog] = useState(false);
   const [openExistingUserDialog, setOpenExistingUserDialog] = useState(false);
