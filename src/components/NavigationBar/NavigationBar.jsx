@@ -189,8 +189,10 @@ const NavigationBar = ({ onExpireAuth }) => {
       onExpireAuth();
     } else if (setting === "Update profile") {
       setOpenProfileDialog(true);
+      setAnchorElUser(null);
     } else if (setting === "Update password") {
       setOpenPasswordDialog(true);
+      setAnchorElUser(null);
     } else {
       setAnchorElUser(null);
     }
