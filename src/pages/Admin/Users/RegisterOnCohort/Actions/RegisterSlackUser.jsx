@@ -334,7 +334,7 @@ const RegisterSlackUser = ({
             fontSize={"30px"}
             fontWeight={"bold"}
           >
-            Slack members available:
+            {`Slack members available for ${cohortData.cohortName}:`}
           </Typography>
           <AppButton
             text={""}

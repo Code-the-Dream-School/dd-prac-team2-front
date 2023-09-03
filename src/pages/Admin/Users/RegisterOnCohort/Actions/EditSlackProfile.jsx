@@ -126,7 +126,7 @@ const EditSlackProfile = ({
             fontSize={"30px"}
             fontWeight={"bold"}
           >
-            Update Slack profile:
+            {`Update ${slackProfileInfo.row.name}'s Slack Profile`}
           </Typography>
           <AppButton
             text={""}
@@ -174,7 +174,7 @@ const EditSlackProfile = ({
                   <FormSelect
                     id={"userRoles"}
                     name={"userRoles"}
-                    label={"Roles:"}
+                    label={`"Roles:"`}
                     selectValue={userRoles}
                     onSelectValue={handleOnSelectRole}
                     list={rolesList}
