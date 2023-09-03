@@ -234,8 +234,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
             <AuthFormControl width="75%">
               <Avatar
                 alt={auth.userName}
-                src={auth.avarUrl ?? "/images/userLarge.png"}
-                sx={{ width: 100, height: 100 }}
+                src={auth.avatarUrl ?? "/images/userLarge.png"}
+                sx={{ width: 200, height: 200 }}
               />
             </AuthFormControl>
             <Box
