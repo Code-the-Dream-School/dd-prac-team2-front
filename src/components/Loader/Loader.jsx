@@ -28,14 +28,14 @@ const Loader = ({
 
 export default Loader;
 
-Loader.propTypes = {
-  classes: PropTypes.object,
-  color: PropTypes.string,
-  disableShrink: PropTypes.bool,
-  size: PropTypes.func | PropTypes.string,
-  //   sx: (PropTypes.array < func) | object | (bool > PropTypes.func) | object,
-  thickness: PropTypes.number,
-  value: PropTypes.number,
-  variant: PropTypes.oneOf(["determinate", "indeterminate"]),
-  handlerFunction: PropTypes.func.isRequired,
-};
+// Loader.propTypes = {
+//   classes: PropTypes.object,
+//   color: PropTypes.string,
+//   disableShrink: PropTypes.bool,
+//   size: PropTypes.func | PropTypes.string,
+//   //   sx: (PropTypes.array < func) | object | (bool > PropTypes.func) | object,
+//   thickness: PropTypes.number,
+//   value: PropTypes.number,
+//   variant: PropTypes.oneOf(["determinate", "indeterminate"]),
+//   handlerFunction: PropTypes.func.isRequired,
+// };
