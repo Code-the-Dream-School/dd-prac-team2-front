@@ -24,7 +24,7 @@ const useRefreshToken = () => {
         ==========================
     */
   const refresh = async () => {
-    const response = await axios.get(`auth/refreshToken`, {
+    const response = await axios.get(`auth/refreshToke`, {
       withCredentials: true,
     });
     setAuth((prevAuth) => {

@@ -252,7 +252,7 @@ const EditCohort = ({
       setErrorMessage("");
       setErrorMessage(`Error. ${error}. Please try again!`);
       setOpenErrorToast(true);
-      console.error(error.response.data);
+      console.error(error);
     }
   };
 
@@ -265,12 +265,7 @@ const EditCohort = ({
           withCredentials: true,
         }
       );
-      setSuccessMessage("");
-      setErrorMessage("");
-      setSuccessMessage("Success. New cohort has been removed successfully!");
-      setOpenSuccessToast(true);
-      console.log(response);
-      setLoading(false); // Stop loading
+
       if (response.status === 200) {
         onHandleCohorts((prevCohorts) => {
           return prevCohorts.filter(
@@ -279,10 +274,9 @@ const EditCohort = ({
         });
         setSuccessMessage("");
         setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage("error! Cohor was not removed!");
+        setOpenSuccessToast(true);
         console.error(response);
+        setSuccessMessage("Cohort delited successfuly");
       }
     } catch (error) {
       setLoading(false);
@@ -290,7 +284,7 @@ const EditCohort = ({
       setSuccessMessage("");
       setErrorMessage("");
       setErrorMessage(
-        `Error. New cohort was not rempved. ${error}. Please try again!`
+        `Error. Cohort was not removed. ${error}. Please try again!`
       );
       setOpenErrorToast(true);
       if (error.response.status === 403) {
@@ -307,6 +301,12 @@ const EditCohort = ({
           isActive: undefined,
           accessToken: "",
         });
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage("Error! Please log in again.");
+        console.error(error);
       } else {
         console.error(error);
         setSuccessMessage("");
