@@ -56,7 +56,7 @@ const PersistLogin = () => {
     <>
       {isLoading ? (
         // ? <p>Loading...</p>
-        <Loader />
+        <Loader size="5rem" sx={{ padding: "15px" }} />
       ) : (
         <Outlet></Outlet>
       )}
