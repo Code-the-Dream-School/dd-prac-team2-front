@@ -264,7 +264,6 @@ const AddCohort = ({
 
   return (
     <>
-      {loading ? <Loader /> : null}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -309,6 +308,7 @@ const AddCohort = ({
           onSubmit={handleCohortSubmit}
         >
           <>
+            {loading ? <Loader /> : null}
             <DialogContent
               sx={{
                 width: "100%",

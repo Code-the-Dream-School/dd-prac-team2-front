@@ -444,7 +444,7 @@ const RegisterSlackUser = ({
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  height: "100px",
+                  height: "800px",
                 }}
               >
                 <Loader />

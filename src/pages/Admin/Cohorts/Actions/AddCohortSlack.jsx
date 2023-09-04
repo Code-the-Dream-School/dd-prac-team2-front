@@ -146,17 +146,17 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
       console.log(
         channels.map((channel) => ({
           ...channel,
-          id: channel.slackId,
-          startDate: new Date(channel.startDate),
+          id: channel?.slackId,
+          startDate: new Date(channel?.startDate),
         }))
       );
-      console.log(new Date(channels[0].startDate));
+      console.log(new Date(channels[0]?.startDate));
       setSlackChannels(
         channels.map((channel) => ({
           ...channel,
-          id: channel.slackId,
-          name: channel.name[0].toUpperCase() + channel.name.slice(1),
-          startDate: new Date(channel.startDate),
+          id: channel?.slackId,
+          name: channel?.name[0].toUpperCase() + channel?.name.slice(1),
+          startDate: new Date(channel?.startDate),
         }))
       );
       console.log(response);
@@ -246,7 +246,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  height: "100px",
+                  height: "200px",
                 }}
               >
                 <Loader />
