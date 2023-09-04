@@ -3,13 +3,9 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Paper, TextField, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import {
-  AdminPanelSettingsRounded,
-  BadgeRounded,
-  Email,
   PersonAddRounded,
-  School,
 } from "@mui/icons-material";
 
 /*
@@ -46,9 +42,6 @@ import AppDataGrid from "../../../../components/DataGrid/AppDataGrid";
 import RegisterUserActions from "./Actions/RegisterUserActions";
 import UserCohortRender from "./TableRenders/UserCohortRender";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
-import FormAutocomplete from "../../../../components/Autocomplete/Autocomplete";
-import FormTextField from "../../../../components/TextField/FormTextField";
-import FormSelect from "../../../../components/Select/FormSelect";
 import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
 import Slack from "../../Cohorts/TableRender/Slack";

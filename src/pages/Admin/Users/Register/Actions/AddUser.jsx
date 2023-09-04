@@ -1,3 +1,8 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import {
   Box,
   Dialog,
@@ -7,8 +12,6 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import React, { forwardRef, useEffect, useState } from "react";
-import AppButton from "../../../../../components/Button/AppButton";
 import {
   AdminPanelSettingsRounded,
   BadgeRounded,
@@ -16,14 +19,37 @@ import {
   Email,
   School,
 } from "@mui/icons-material";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { forwardRef, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
+import styles from "../RegisterUsers.module.css";
+
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from "../../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from "../../../../../components/Button/AppButton";
 import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import FormTextField from "../../../../../components/TextField/FormTextField";
 import FormAutocomplete from "../../../../../components/Autocomplete/Autocomplete";
 import FormSelect from "../../../../../components/Select/FormSelect";
-import styles from "../RegisterUsers.module.css";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
-import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../../../hooks/useAuth";
 import Loader from "../../../../../components/Loader/Loader";
 
 /*
@@ -115,7 +141,7 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
   };
 
   // Form submit:
-  const handleRegisterOnCohortSubmit = async (event) => {
+  const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     const formattedUserRegistration = {
       users: [
@@ -253,7 +279,7 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
           color: "#C84B31",
         }}
         autoComplete="off"
-        onSubmit={handleRegisterOnCohortSubmit}
+        onSubmit={handleRegisterSubmit}
       >
         {loading ? (
           <DialogContent
