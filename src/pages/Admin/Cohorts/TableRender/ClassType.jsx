@@ -1,4 +1,15 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Avatar } from "@mui/material";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React from "react";
 
 const ClassType = ({ params }) => {
@@ -19,3 +30,7 @@ const ClassType = ({ params }) => {
 };
 
 export default ClassType;
+
+ClassType.propTypes = {
+  params: PropTypes.object.isRequired,
+};

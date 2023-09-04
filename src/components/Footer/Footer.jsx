@@ -9,12 +9,10 @@ import {
   Divider,
   Link,
   List,
-  ListItem,
   Paper,
   Tooltip,
   Typography,
 } from "@mui/material";
-import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -137,5 +135,3 @@ const Footer = () => {
 };
 
 export default Footer;
-
-Footer.propTypes = {};

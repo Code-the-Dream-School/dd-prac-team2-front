@@ -23,17 +23,17 @@ import EditUser from "./EditUser";
 
 const RegisterUserActions = ({ params, fetchedCohorts, onHandleUsers }) => {
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   /*
-        ==========================
-        =   HANDLER FUNCTIONS    =
-        ==========================
-    */
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   const handleOpenEditUserDialog = () => {
     setOpenEditDialog(true);
   };

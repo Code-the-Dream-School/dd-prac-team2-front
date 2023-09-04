@@ -1,5 +1,16 @@
-import React from "react";
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Autocomplete, TextField } from "@mui/material";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React from "react";
 
 const FormAutocomplete = ({
   multiple,
@@ -104,3 +115,16 @@ const FormAutocomplete = ({
 };
 
 export default FormAutocomplete;
+
+FormAutocomplete.propTypes = {
+  multiple: PropTypes.bool.isRequired,
+  value: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  computedProperty: PropTypes.string,
+  computedIdProperty: PropTypes.string,
+  onHandleSelectedValueChange: PropTypes.func.isRequired,
+  inputValue: PropTypes.string.isRequired,
+  onHandleInputValueChange: PropTypes.func.isRequired,
+  options: PropTypes.array.isRequired,
+  error: PropTypes.object.isRequired,
+  variant: PropTypes.string.isRequired,
+}

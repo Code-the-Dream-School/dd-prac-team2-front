@@ -3,12 +3,10 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import AppButton from "../../../../components/Button/AppButton";
 import { Container } from "@mui/material";
-import {
-    ChecklistRounded,
-  PeopleAltRounded,
-} from "@mui/icons-material";
+import { ChecklistRounded } from "@mui/icons-material";
+import PropTypes from "prop-types";
+
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -16,6 +14,12 @@ import {
 */
 import React from "react";
 import { Link } from "react-router-dom";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from "../../../../components/Button/AppButton";
 
 const Lessons = ({ params }) => {
   return (
@@ -46,3 +50,7 @@ const Lessons = ({ params }) => {
 };
 
 export default Lessons;
+
+Lessons.propTypes = {
+  params: PropTypes.object.isRequired,
+};

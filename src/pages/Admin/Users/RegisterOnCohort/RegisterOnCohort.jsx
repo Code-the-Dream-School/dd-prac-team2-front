@@ -3,7 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { Container, Paper, Box, Typography } from "@mui/material";
 import {
   CloudDownloadRounded,
@@ -32,6 +31,7 @@ import styles from "./RegisterOnCohort.module.css";
     ==========================
 */
 import useAuth from "../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 /*
     ==========================
@@ -46,6 +46,10 @@ import RegisterOnCohortActions from "./Actions/RegisterOnCohortActions";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import RegisterCohortUser from "./Actions/RegisterCohortUser";
 import RegisterExistingUser from "./Actions/RegisterExistingUser";
+import RegisterSlackUser from "./Actions/RegisterSlackUser";
+import Loader from "../../../../components/Loader/Loader";
+import Slack from "../../Cohorts/TableRender/Slack";
+import UserAvatarRender from "./TableRenders/UserAvatarRender";
 
 const RegisterOnCohort = () => {
   /*
@@ -64,12 +68,19 @@ const RegisterOnCohort = () => {
     =         STATES         =
     ==========================
   */
+  const [loading, setLoading] = useState(true);
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
-  const [cohortData, setCohortData] = useState({});
+  console.log(cohortUsers);
+  const [cohortData, setCohortData] = useState({
+    cohortId: "",
+    cohortSlackId: null,
+    cohortName: "",
+  });
   // Dialog states
   const [openNewUserDialog, setOpenNewUserDialog] = useState(false);
   const [openExistingUserDialog, setOpenExistingUserDialog] = useState(false);
+  const [openNewSlackUserDialog, setOpenNewSlackUserDialog] = useState(false);
 
   /*
     ==========================
@@ -78,18 +89,46 @@ const RegisterOnCohort = () => {
   */
   const columns = [
     { field: "id", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
+    { field: "slackId", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
+    {
+      field: "slack",
+      headerName: "Created on:",
+      minWidth: 100,
+      maxWidth: 100,
+      flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => <Slack params={params}></Slack>,
+      sortComparator: (v1, v2) => {
+        v1.value = v1.row.slackId === null ? "0" : "1";
+        v2.value = v2.row.slackId === null ? "0" : "1";
+        return v1.value.localeCompare(v2.value);
+      },
+    },
+    {
+      field: "userAvatar",
+      headerName: "Avatar:",
+      sortable: false,
+      disableColumnMenu: true,
+      minWidth: 70,
+      maxWidth: 70,
+      flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => (
+        <UserAvatarRender name={params.row.userName} avatarUrl={params.row.userAvatar}></UserAvatarRender>
+      ),
+    },
     {
       field: "userName",
-      headerName: "Full name:",
-      minWidth: 250,
-      maxWidth: 250,
+      headerName: "Name:",
+      minWidth: 225,
+      maxWidth: 225,
       flex: 1,
     },
     {
       field: "userEmail",
       headerName: "E-mail:",
-      minWidth: 200,
-      maxWidth: 300,
+      minWidth: 225,
+      maxWidth: 325,
       flex: 1,
     },
     {
@@ -97,8 +136,8 @@ const RegisterOnCohort = () => {
       headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 160,
+      maxWidth: 160,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <UserRoleRender params={params}></UserRoleRender>,
@@ -128,6 +167,7 @@ const RegisterOnCohort = () => {
         <RegisterOnCohortActions
           params={params}
           cohortData={cohortData}
+          onLoading={setLoading}
           onHandleCohortUsers={setCohortUsers}
         ></RegisterOnCohortActions>
       ),
@@ -144,27 +184,33 @@ const RegisterOnCohort = () => {
       console.log(response);
       if (response.status === 200) {
         const participants = response.data.cohort[0].participants;
+        console.log(participants);
         const formattedUsers = participants.map((participant) => {
           return {
             id: participant._id,
+            slackId: participant.slackId,
+            userAvatar: participant.avatarUrl,
             userName: participant.name,
             userEmail: participant.email,
-            userRole: participant.role,
+            userRole: participant.role.sort(),
             userActivatedStatus: participant.isActivated,
           };
         });
         const formattedCohortData = {
           cohortId: cohortId,
+          cohortSlackId: response.data.cohort[0].slackId,
           cohortName: response.data.cohort[0].name,
         };
         console.log(formattedUsers);
         setCohortUsers(formattedUsers);
         setCohortData(formattedCohortData);
+        setLoading(false);
       } else {
         console.error("There was an error fetching the users of this cohort");
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -179,6 +225,7 @@ const RegisterOnCohort = () => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -253,23 +300,41 @@ const RegisterOnCohort = () => {
             >
               <PersonSearch fontSize="large"></PersonSearch>
             </AppButton>
-            <AppButton
-              text={"Add users from Slack"}
-              type="button"
-              width="100%"
-              handlerFunction={() => {}}
-            >
-              <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
-            </AppButton>
+            {cohortData.cohortSlackId !== null ? (
+              <AppButton
+                text={"Add users from Slack"}
+                type="button"
+                width="100%"
+                handlerFunction={() => setOpenNewSlackUserDialog(true)}
+              >
+                <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
+              </AppButton>
+            ) : null}
           </AuthFormControl>
         </div>
-        <AppDataGrid
-          columns={columns}
-          rows={cohortUsers}
-          pageSize={15}
-          fieldToBeSorted={"userName"}
-          sortType={"asc"}
-        />
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100px",
+            }}
+          >
+            <Loader />
+          </Box>
+        ) : (
+          <AppDataGrid
+            columns={columns}
+            rows={cohortUsers}
+            pageSize={15}
+            fieldToBeSorted={"userName"}
+            sortType={"asc"}
+          />
+        )}
+
         <div className={styles.buttonContainer}>
           <AppButton
             text={"Go back"}
@@ -280,8 +345,28 @@ const RegisterOnCohort = () => {
             }}
           ></AppButton>
         </div>
-        {openNewUserDialog ? <RegisterCohortUser open={openNewUserDialog} handleOpen={setOpenNewUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterCohortUser> : null}
-        {openExistingUserDialog ? <RegisterExistingUser open={openExistingUserDialog} handleOpen={setOpenExistingUserDialog} onRegisterCohortSubmit={setCohortUsers}></RegisterExistingUser> : null}
+        {openNewUserDialog ? (
+          <RegisterCohortUser
+            open={openNewUserDialog}
+            handleOpen={setOpenNewUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          ></RegisterCohortUser>
+        ) : null}
+        {openExistingUserDialog ? (
+          <RegisterExistingUser
+            open={openExistingUserDialog}
+            handleOpen={setOpenExistingUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          ></RegisterExistingUser>
+        ) : null}
+        {openNewSlackUserDialog ? (
+          <RegisterSlackUser
+            open={openNewSlackUserDialog}
+            cohortData={cohortData}
+            handleOpen={setOpenNewSlackUserDialog}
+            onRegisterCohortSubmit={setCohortUsers}
+          />
+        ) : null}
       </Paper>
     </Container>
   );
