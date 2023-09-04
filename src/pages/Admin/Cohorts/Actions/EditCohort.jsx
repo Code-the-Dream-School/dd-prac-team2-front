@@ -477,8 +477,6 @@ const EditCohort = ({
         </DialogActions>
       </Box>
     </Dialog>
-      )}
-    </>
   );
 };
 
