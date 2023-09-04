@@ -12,19 +12,19 @@ import PropTypes from "prop-types";
 */
 import React from "react";
 
-const UserAvatarRender = ({ params }) => {
+const UserAvatarRender = ({ name, avatarUrl }) => {
   return (
     <>
-      {params.row.avatarUrl === undefined ? (
+      {avatarUrl === undefined ? (
         <Avatar
-          alt={params.row.name}
+          alt={name}
           src={"/images/userLarge.png"}
           sx={{ width: 50, height: 50 }}
         />
       ) : (
         <Avatar
-          alt={params.row.name}
-          src={params.row.avatarUrl}
+          alt={name}
+          src={avatarUrl}
           sx={{ width: 50, height: 50 }}
         />
       )}
@@ -35,5 +35,5 @@ const UserAvatarRender = ({ params }) => {
 export default UserAvatarRender;
 
 UserAvatarRender.propTypes = {
-  params: PropTypes.object.isRequired,
+  avatarUrl: PropTypes.string.isRequired,
 };

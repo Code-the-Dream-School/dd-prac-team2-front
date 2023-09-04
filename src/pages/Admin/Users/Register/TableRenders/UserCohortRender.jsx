@@ -31,7 +31,7 @@ const UserCohortRender = ({ params, rowField="userCohort"}) => {
         paddingLeft: 0,
       }}
     >
-      <Stack direction={"row"} spacing={1}>
+      <Stack direction={"row"} spacing={1} overflow={"auto"}>
         {userCohorts.map((userCohort) => (
           <Chip
             key={`${userCohort[cohortName]}-${params.row[cohortId]}`}

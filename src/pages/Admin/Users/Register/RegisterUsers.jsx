@@ -50,6 +50,8 @@ import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
+import Slack from "../../Cohorts/TableRender/Slack";
+import UserAvatarRender from "../RegisterOnCohort/TableRenders/UserAvatarRender";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -112,17 +114,45 @@ const RegisterUsers = () => {
   */
   const columns = [
     { field: "id", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
+    { field: "slackId", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
+    {
+      field: "slack",
+      headerName: "Created on:",
+      minWidth: 100,
+      maxWidth: 100,
+      flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => <Slack params={params}></Slack>,
+      sortComparator: (v1, v2) => {
+        v1.value = v1.row.slackId === null ? "0" : "1";
+        v2.value = v2.row.slackId === null ? "0" : "1";
+        return v1.value.localeCompare(v2.value);
+      },
+    },
+    {
+      field: "userAvatar",
+      headerName: "Avatar:",
+      sortable: false,
+      disableColumnMenu: true,
+      minWidth: 70,
+      maxWidth: 70,
+      flex: 1,
+      valueGetter: (params) => params,
+      renderCell: (params) => (
+        <UserAvatarRender name={params.row.userName} avatarUrl={params.row.userAvatar}></UserAvatarRender>
+      ),
+    },
     {
       field: "userName",
-      headerName: "Full name:",
-      minWidth: 250,
-      maxWidth: 250,
+      headerName: "Name:",
+      minWidth: 225,
+      maxWidth: 225,
       flex: 1,
     },
     {
       field: "userEmail",
       headerName: "E-mail:",
-      minWidth: 200,
+      minWidth: 300,
       maxWidth: 300,
       flex: 1,
     },
@@ -131,9 +161,9 @@ const RegisterUsers = () => {
       headerName: "Cohort: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 250,
-      maxWidth: 750,
-      flex: 2,
+      minWidth: 350,
+      maxWidth: 350,
+      flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
         <UserCohortRender params={params}></UserCohortRender>
@@ -144,8 +174,8 @@ const RegisterUsers = () => {
       headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 150,
+      maxWidth: 150,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <UserRoleRender params={params}></UserRoleRender>,
@@ -168,8 +198,8 @@ const RegisterUsers = () => {
       headerName: "Actions: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 180,
-      flex: 0.5,
+      minWidth: 100,
+      flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
         <RegisterUserActions
@@ -195,6 +225,8 @@ const RegisterUsers = () => {
         const formattedUsers = response.data.users.map((user) => {
           return {
             id: user.id,
+            slackId: user.slackId,
+            userAvatar: user.avatarUrl,
             userName: user.name,
             userEmail: user.email,
             userCohort: user.cohorts.map((cohort) => ({

@@ -106,12 +106,14 @@ const RegisterSlackUser = ({
     {
       field: "avatarUrl",
       headerName: "Avatar:",
-      minWidth: 100,
-      maxWidth: 100,
+      sortable: false,
+      disableColumnMenu: true,
+      minWidth: 70,
+      maxWidth: 70,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
-        <UserAvatarRender params={params}></UserAvatarRender>
+        <UserAvatarRender name={params.row.name} avatarUrl={params.row.avatarUrl}></UserAvatarRender>
       ),
     },
     {
@@ -133,8 +135,8 @@ const RegisterSlackUser = ({
       headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 200,
-      maxWidth: 200,
+      minWidth: 150,
+      maxWidth: 150,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
@@ -177,12 +179,14 @@ const RegisterSlackUser = ({
     {
       field: "avatarUrl",
       headerName: "Avatar:",
-      minWidth: 100,
-      maxWidth: 100,
+      sortable: false,
+      disableColumnMenu: true,
+      minWidth: 70,
+      maxWidth: 70,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
-        <UserAvatarRender params={params}></UserAvatarRender>
+        <UserAvatarRender name={params.row.name} avatarUrl={params.row.avatarUrl}></UserAvatarRender>
       ),
     },
     {
@@ -204,8 +208,8 @@ const RegisterSlackUser = ({
       headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 100,
-      maxWidth: 100,
+      minWidth: 150,
+      maxWidth: 150,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
