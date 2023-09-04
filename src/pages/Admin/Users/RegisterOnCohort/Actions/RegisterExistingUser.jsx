@@ -43,6 +43,7 @@ import useAuth from "../../../../../hooks/useAuth";
 import AppButton from "../../../../../components/Button/AppButton";
 import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import FormAutocomplete from "../../../../../components/Autocomplete/Autocomplete";
+import Loader from "../../../../../components/Loader/Loader";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -79,6 +80,7 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
       errorMessage: "Please add a cohort for this user",
     },
   });
+  const [loading, setLoading] = useState(true);
   /*
     ==========================
     =    ASYNC FUNCTIONS     =
@@ -97,11 +99,14 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
         console.log(availableUsers);
         setUsers(availableUsers);
         setUsersValueSelected([availableUsers[0]]);
+        setLoading(false);
       } else {
         console.error("There was an error fetching the users of this cohort");
+        setLoading(false);
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -116,6 +121,7 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -133,46 +139,43 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
   //Users submission
   const handleExistingUserSubmission = async (event) => {
     event.preventDefault();
+    console.log(usersValueSelected);
     const formattedUserRegistration = {
-      users: usersValueSelected.map((user) => ({
-        name: user.name,
-        email: user.email,
-        role: user.roles,
-      })),
-      cohort: cohortId,
+      userIDs: usersValueSelected.map((user) => user.id),
     };
+    console.log(formattedUserRegistration);
     const errors = Object.values(formError);
     try {
       if (!errors.some((error) => error.error === true)) {
-        const response = await axiosPrivate.post(
-          "auth/register",
+        setLoading(true);
+        const response = await axiosPrivate.patch(
+          `/users/add-to-cohort/${cohortId}`,
           formattedUserRegistration
         );
-        console.log(...response.data.users);
-        if (response.data.users.length > 0) {
-          onRegisterCohortSubmit((prevState) => [
-            ...prevState,
-            ...response.data.users.map((user) => ({
-              id: user._id,
-              slackId: user.slackId,
-              userAvatar: user.avatarUrl,
-              userName: user.name,
-              userEmail: user.email,
-              userRole: user.role.sort(),
-              userActivatedStatus: user.isActivated,
-            })),
-          ]);
-          handleOpen(false);
-        } else if (response.data.errors.length > 0) {
-          console.error(response.data.errors);
-        }
+        console.log(response);
+        onRegisterCohortSubmit((prevState) => [
+          ...prevState,
+          ...usersValueSelected.map((user) => ({
+            id: user.id,
+            slackId: user.slackId,
+            userAvatar: user.avatarUrl,
+            userName: user.name,
+            userEmail: user.email,
+            userRole: user.roles.sort(),
+            userActivatedStatus: user.isActivated,
+          })),
+        ]);
+        setLoading(false);
+        handleOpen(false);
       } else {
+        setLoading(false);
         console.error(
           "There is an error preventing the form submission: check that your entires are correctly validated"
         );
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -187,6 +190,7 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -255,40 +259,60 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           autoComplete="off"
           onSubmit={handleExistingUserSubmission}
         >
-          <DialogContent
-            sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
-            dividers
-          >
-            <div className={styles.formContainer}>
-              <AuthFormControl width="75%">
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <GroupAddRounded fontSize="large" />
-                  <br></br>
-                  <br></br>
-                </Box>
-                <AuthFormControl width="100%" isNested={true}>
-                  <FormAutocomplete
-                    multiple={true}
-                    value={usersValueSelected}
-                    computedIdProperty={"id"}
-                    computedProperty={"name"}
-                    onHandleSelectedValueChange={handleValueSelectedChange}
-                    inputValue={usersInputValueSelected}
-                    onHandleInputValueChange={setUsersInputValueSelected}
-                    options={users}
-                    error={formError.usersError}
-                    variant={"dark"}
-                  ></FormAutocomplete>
+          {loading ? (
+            <DialogContent
+              sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+              dividers
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  height: "100px",
+                }}
+              >
+                <Loader />
+              </Box>
+            </DialogContent>
+          ) : (
+            <DialogContent
+              sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+              dividers
+            >
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <GroupAddRounded fontSize="large" />
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <AuthFormControl width="100%" isNested={true}>
+                    <FormAutocomplete
+                      multiple={true}
+                      value={usersValueSelected}
+                      computedIdProperty={"id"}
+                      computedProperty={"name"}
+                      onHandleSelectedValueChange={handleValueSelectedChange}
+                      inputValue={usersInputValueSelected}
+                      onHandleInputValueChange={setUsersInputValueSelected}
+                      options={users}
+                      error={formError.usersError}
+                      variant={"dark"}
+                    ></FormAutocomplete>
+                  </AuthFormControl>
                 </AuthFormControl>
-              </AuthFormControl>
-            </div>
-          </DialogContent>
+              </div>
+            </DialogContent>
+          )}
           <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
             <AppButton
               text={"Add user(s)"}
@@ -306,7 +330,7 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
 export default RegisterExistingUser;
 
 RegisterExistingUser.propTypes = {
-    open: PropTypes.bool.isRequired,
-    handleOpen: PropTypes.func.isRequired,
-    onRegisterCohortSubmit: PropTypes.func.isRequired
-}
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterCohortSubmit: PropTypes.func.isRequired,
+};
