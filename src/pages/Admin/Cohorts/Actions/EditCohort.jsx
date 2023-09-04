@@ -40,6 +40,7 @@ import AuthFormControl from "../../../../components/FormControl/AuthFormControl"
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
 import Loader from "../../../../components/Loader/Loader";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
     ==========================
     =          STYLES        =
@@ -94,7 +95,9 @@ const EditCohort = ({
   const [cohortName, setCohortName] = useState(cohortInfo.row.cohort);
   const [className, setClassName] = useState(cohortInfo.row.class);
   const [startDate, setStartDate] = useState(dayjs(startString.trim()));
-  const [endDate, setEndDate] = useState(dayjs((endString === undefined ? (startString.trim()):(endString.trim()))));
+  const [endDate, setEndDate] = useState(
+    dayjs(endString === undefined ? startString.trim() : endString.trim())
+  );
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -107,6 +110,11 @@ const EditCohort = ({
     },
   });
   const [reset, setReset] = useState(false);
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
 
   /*
         ==========================
@@ -124,19 +132,18 @@ const EditCohort = ({
         ==========================
     */
   const editCohort = async (cohortId, editedCohort) => {
-    setLoading(true);
     try {
       const response = await axiosPrivate.patch(
         `/cohort/${cohortId}`,
         editedCohort
       );
-      setLoading(false);
+
       return response;
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        setLoading(false);
+
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",
@@ -150,7 +157,6 @@ const EditCohort = ({
         });
       } else {
         console.error(error);
-        setLoading(false);
       }
     }
   };
@@ -181,7 +187,7 @@ const EditCohort = ({
       },
     }));
   };
-  
+
   //5. onSubmit event
   const handleEditCohortSubmit = async (event) => {
     event.preventDefault();
@@ -194,11 +200,13 @@ const EditCohort = ({
     };
     const errors = Object.values(formError);
     try {
+      setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
         console.log(response);
-        const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
-        const dateTimeFormat = new Intl.DateTimeFormat('en', options);
+        setLoading(false); // Stop loading
+        const options = { year: "2-digit", month: "numeric", day: "numeric" };
+        const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
           onHandleCohorts((prevCohorts) =>
             prevCohorts.map((prevCohort) => {
@@ -207,7 +215,10 @@ const EditCohort = ({
                   ...prevCohort,
                   cohort: response.data.cohort.name,
                   class: response.data.cohort.type,
-                  startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
+                  startEndDate: dateTimeFormat.formatRange(
+                    new Date(response.data.cohort.start),
+                    new Date(response.data.cohort.end)
+                  ),
                 };
               } else {
                 return prevCohort;
@@ -222,12 +233,25 @@ const EditCohort = ({
           onCloseDialog(true);
         }
       } else {
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage(
+          "There is an error that is preventing the form submission",
+          errors
+        );
         console.log(
           "There is an error that is preventing the form submission",
           errors
         );
       }
     } catch (error) {
+      setLoading(false);
+      setSuccessMessage("");
+      setErrorMessage("");
+      setErrorMessage(`Error. ${error}. Please try again!`);
+      setOpenErrorToast(true);
       console.error(error.response.data);
     }
   };
@@ -241,14 +265,34 @@ const EditCohort = ({
           withCredentials: true,
         }
       );
+      setSuccessMessage("");
+      setErrorMessage("");
+      setSuccessMessage("Success. New cohort has been removed successfully!");
+      setOpenSuccessToast(true);
+      console.log(response);
+      setLoading(false); // Stop loading
       if (response.status === 200) {
         onHandleCohorts((prevCohorts) => {
           return prevCohorts.filter(
             (cohort) => cohort.id !== cohortInfo.row.id
           );
         });
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage("error! Cohor was not removed!");
+        console.error(response);
       }
     } catch (error) {
+      setLoading(false);
+      console.log(error);
+      setSuccessMessage("");
+      setErrorMessage("");
+      setErrorMessage(
+        `Error. New cohort was not rempved. ${error}. Please try again!`
+      );
+      setOpenErrorToast(true);
       if (error.response.status === 403) {
         //User is required to validate auth again
         console.error(error);
@@ -265,147 +309,179 @@ const EditCohort = ({
         });
       } else {
         console.error(error);
+        setSuccessMessage("");
+        setErrorMessage("");
+        setErrorMessage(`Error.${error}. Please try again!`);
+        setOpenErrorToast(true);
       }
     }
     setLoading(false);
   };
 
   return (
-    <Dialog
-      open={openDialog}
-      TransitionComponent={Transition}
-      onClose={onCloseDialog}
-      fullWidth
-      maxWidth="sm"
-    >
-      <DialogTitle
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        gap={"5px"}
-        component={"div"}
-      >
-        <Typography
-          variant="h1"
-          textAlign={"center"}
-          fontSize={"30px"}
-          fontWeight={"bold"}
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Dialog
+          open={openDialog}
+          TransitionComponent={Transition}
+          onClose={onCloseDialog}
+          fullWidth
+          maxWidth="sm"
         >
-          Edit cohort:{" "}
-        </Typography>
-        <AppButton
-          text={""}
-          type="button"
-          width="10%"
-          handlerFunction={() => {
-            onCloseDialog();
-          }}
-        >
-          <Close></Close>
-        </AppButton>
-      </DialogTitle>
-      <Box
-        component={"form"}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          width: "100%",
-          color: "#C84B31",
-        }}
-        autoComplete="off"
-        onSubmit={handleEditCohortSubmit}
-      >
-        <DialogContent
-          sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
-          dividers
-        >
-          <div className={styles.formContainer}>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <SchoolRounded fontSize="large"></SchoolRounded>
-                <br></br>
-                <br></br>
-              </Box>
-              <FormTextField
-                required
-                value={cohortName}
-                type="text"
-                label="Cohort:"
-                name="cohort"
-                isFocused={true}
-                width="100%"
-                variant="dark"
-                regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                onHandleError={handleCohortNameError}
-                errorMessage={"Please enter a valid name"}
-                reset={reset}
-              ></FormTextField>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <LaptopRounded fontSize="large" />
-                <br></br>
-              </Box>
-              <AuthFormControl width="100%" isNested={true}>
-                <FormSelect
-                  id={"class"}
-                  name={"class"}
-                  label={"Class:"}
-                  selectValue={className}
-                  onSelectValue={handleClassNameChange}
-                  list={classList}
-                  variant="dark"
-                  error={formError.classNameError}
-                ></FormSelect>
-              </AuthFormControl>
-            </AuthFormControl>
-          </div>
-        </DialogContent>
-        <DialogActions
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "75%",
-          }}
-        >
-          <AppButton
-            text={"Edit cohort"}
-            type="submit"
-            width="50%"
-            handlerFunction={() => {}}
+          <DialogTitle
+            display={"flex"}
+            justifyContent={"space-between"}
+            alignItems={"center"}
+            gap={"5px"}
+            component={"div"}
           >
-            <EditRounded></EditRounded>
-          </AppButton>
-          {cohortInfo.row.members === 0 ? (
-            <AppButton
-              text={"Delete"}
-              type="button"
-              width="50%"
-              color="#CD1818"
-              handlerFunction={() => handleDeleteCohort()}
+            <Typography
+              variant="h1"
+              textAlign={"center"}
+              fontSize={"30px"}
+              fontWeight={"bold"}
             >
-              <DeleteRounded></DeleteRounded>
+              Edit cohort:{" "}
+            </Typography>
+            <AppButton
+              text={""}
+              type="button"
+              width="10%"
+              handlerFunction={() => {
+                onCloseDialog();
+              }}
+            >
+              <Close></Close>
             </AppButton>
-          ) : null}
-        </DialogActions>
-      </Box>
-    </Dialog>
+          </DialogTitle>
+          <Box
+            component={"form"}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              color: "#C84B31",
+            }}
+            autoComplete="off"
+            onSubmit={handleEditCohortSubmit}
+          >
+            <DialogContent
+              sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
+              dividers
+            >
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SchoolRounded fontSize="large"></SchoolRounded>
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <FormTextField
+                    required
+                    value={cohortName}
+                    type="text"
+                    label="Cohort:"
+                    name="cohort"
+                    isFocused={true}
+                    width="100%"
+                    variant="dark"
+                    regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                    onHandleError={handleCohortNameError}
+                    errorMessage={"Please enter a valid name"}
+                    reset={reset}
+                  ></FormTextField>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LaptopRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AuthFormControl width="100%" isNested={true}>
+                    <FormSelect
+                      id={"class"}
+                      name={"class"}
+                      label={"Class:"}
+                      selectValue={className}
+                      onSelectValue={handleClassNameChange}
+                      list={classList}
+                      variant="dark"
+                      error={formError.classNameError}
+                    ></FormSelect>
+                  </AuthFormControl>
+                </AuthFormControl>
+              </div>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "75%",
+              }}
+            >
+              <AppButton
+                text={"Edit cohort"}
+                type="submit"
+                width="50%"
+                handlerFunction={() => {}}
+              >
+                <EditRounded></EditRounded>
+              </AppButton>
+              {cohortInfo.row.members === 0 ? (
+                <AppButton
+                  text={"Delete"}
+                  type="button"
+                  width="50%"
+                  color="#CD1818"
+                  handlerFunction={() => handleDeleteCohort()}
+                >
+                  <DeleteRounded></DeleteRounded>
+                </AppButton>
+              ) : null}
+              <ToastMessage
+                open={openErrorToast}
+                severity="error"
+                variant="filled"
+                onClose={() => setOpenErrorToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                // background="#cd1818"
+                // color="white"
+                message={errorMessage}
+              ></ToastMessage>
+
+              <ToastMessage
+                open={openSuccessToast}
+                severity="success"
+                variant="filled"
+                // autoHideDuration={3000}
+                onClose={() => setOpenSuccessToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                message={successMessage}
+              ></ToastMessage>
+            </DialogActions>
+          </Box>
+        </Dialog>
+      )}
+    </>
   );
 };
 
