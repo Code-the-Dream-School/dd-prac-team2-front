@@ -12,13 +12,7 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import {
-  AdminPanelSettingsRounded,
-  BadgeRounded,
-  Close,
-  Email,
-} from "@mui/icons-material";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import { AdminPanelSettingsRounded, Close } from "@mui/icons-material";
 import PropTypes from "prop-types";
 
 /*
@@ -40,7 +34,6 @@ import styles from "../RegisterOnCohort.module.css";
     ==========================
 */
 import AppButton from "../../../../../components/Button/AppButton";
-import FormTextField from "../../../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import FormSelect from "../../../../../components/Select/FormSelect";
 /*
@@ -49,14 +42,15 @@ import FormSelect from "../../../../../components/Select/FormSelect";
     ==========================
 */
 import useAuth from "../../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 /*
-    ==========================
-    =     AUX VARIABLES      =
-    ==========================
+  ==========================
+  =     AUX VARIABLES      =
+  ==========================
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
@@ -68,19 +62,19 @@ const EditCohortUser = ({
   onHandleCohortUsers,
 }) => {
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
-    */
+    ==========================
+    =          HOOKS         =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   //Form states
   const [userRoles, setUserRoles] = useState(
     cohortUserInfo.row.userRole.map(
@@ -96,10 +90,10 @@ const EditCohortUser = ({
   const [reset, setReset] = useState(false);
 
   /* 
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setFormError((prevState) => ({
       ...prevState,
@@ -115,10 +109,10 @@ const EditCohortUser = ({
   });
 
   /*
-        ==========================
-        =   HANDLER FUNCTIONS    =
-        ==========================
-    */
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   // onSelect Role:
   const handleOnSelectRole = (selectedRoleName) => {
     setUserRoles(selectedRoleName);
@@ -288,5 +282,6 @@ EditCohortUser.propTypes = {
   openDialog: PropTypes.bool.isRequired,
   cohortUserInfo: PropTypes.object.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
+  onLoading: PropTypes.func,
   onHandleCohortUsers: PropTypes.func.isRequired,
 };

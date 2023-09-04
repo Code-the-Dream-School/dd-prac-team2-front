@@ -3,7 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import { Container, Paper, Box, Typography } from "@mui/material";
 import {
   CloudDownloadRounded,
@@ -32,6 +31,7 @@ import styles from "./RegisterOnCohort.module.css";
     ==========================
 */
 import useAuth from "../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 /*
     ==========================

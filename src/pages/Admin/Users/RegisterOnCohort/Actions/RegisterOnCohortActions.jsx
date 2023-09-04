@@ -35,26 +35,26 @@ const RegisterOnCohortActions = ({
   onHandleCohortUsers,
 }) => {
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
-    */
+    ==========================
+    =          HOOKS         =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   /*
-        ==========================
-        =    HANDLER FUNCTIONS   =
-        ==========================
-    */
+    ==========================
+    =    HANDLER FUNCTIONS   =
+    ==========================
+  */
   const handleDeleteCohortUser = async () => {
     onLoading(true);
     const cohortUserToBeDeleted = params.row.id;
@@ -164,5 +164,7 @@ export default RegisterOnCohortActions;
 
 RegisterOnCohortActions.propTypes = {
   params: PropTypes.object.isRequired,
+  cohortData: PropTypes.object.isRequired,
+  onLoading: PropTypes.func.isRequired,
   onHandleCohortUsers: PropTypes.func.isRequired,
 };

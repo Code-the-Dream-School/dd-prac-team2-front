@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Avatar, Chip, Container, Stack } from "@mui/material";
+import { Avatar, Container, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 
 /*
@@ -44,4 +44,5 @@ export default UserRoleRender;
 
 UserRoleRender.propTypes = {
   params: PropTypes.object.isRequired,
+  rowField: PropTypes.string,
 };

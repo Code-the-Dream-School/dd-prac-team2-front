@@ -1,4 +1,15 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Avatar } from "@mui/material";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React from "react";
 
 const UserAvatarRender = ({ params }) => {
@@ -22,3 +33,7 @@ const UserAvatarRender = ({ params }) => {
 };
 
 export default UserAvatarRender;
+
+UserAvatarRender.propTypes = {
+  params: PropTypes.object.isRequired,
+};

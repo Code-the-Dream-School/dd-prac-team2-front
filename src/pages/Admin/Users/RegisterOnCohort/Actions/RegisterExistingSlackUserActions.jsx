@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 /*
     ==========================
@@ -26,7 +26,6 @@ import useAuth from "../../../../../hooks/useAuth";
 */
 import AppButton from "../../../../../components/Button/AppButton";
 import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
-import EditSlackProfile from "./EditSlackProfile";
 
 const RegisterExistingSlackUserActions = ({
   params,
@@ -35,7 +34,16 @@ const RegisterExistingSlackUserActions = ({
   onRegisterCohortSubmit,
   onHandleNewExistingUsers,
 }) => {
+  /*
+    ==========================
+    =          HOOKS         =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { setAuth } = useAuth();
+
   const handleRegisterExistingSlackUser = async () => {
     try {
       onLoading(true);
@@ -53,7 +61,7 @@ const RegisterExistingSlackUserActions = ({
       console.log(response);
       onRegisterCohortSubmit((prevCohortUsers) => [
         ...prevCohortUsers,
-       {
+        {
           id: response.data.profile.id,
           slackId: response.data.profile.slackId,
           userAvatar: response.data.profile.avatarUrl,
@@ -70,7 +78,24 @@ const RegisterExistingSlackUserActions = ({
       );
       onLoading(false);
     } catch (error) {
-      console.error(error);
+      if (error.response.status === 403) {
+        onLoading(false);
+        console.error(error);
+        navigate("/login", { state: { from: location }, replace: true });
+        setAuth({
+          userId: "",
+          userName: "",
+          userEmail: "",
+          role: [],
+          loggedIn: false,
+          avatarUrl: "",
+          isActive: undefined,
+          accessToken: "",
+        });
+      } else {
+        onLoading(false);
+        console.error(error);
+      }
     }
   };
 
@@ -100,3 +125,11 @@ const RegisterExistingSlackUserActions = ({
 };
 
 export default RegisterExistingSlackUserActions;
+
+RegisterExistingSlackUserActions.propTypes = {
+  params: PropTypes.object.isRequired,
+  newCohortId: PropTypes.string.isRequired,
+  onLoading: PropTypes.func.isRequired,
+  onRegisterCohortSubmit: PropTypes.func.isRequired,
+  onHandleNewExistingUsers: PropTypes.func.isRequired,
+};

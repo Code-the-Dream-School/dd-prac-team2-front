@@ -1,3 +1,8 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import {
   Box,
   Dialog,
@@ -7,29 +12,48 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import React, { forwardRef, useEffect, useState } from "react";
-import AppButton from "../../../../../components/Button/AppButton";
 import { Close, GroupAddRounded } from "@mui/icons-material";
-import Loader from "../../../../../components/Loader/Loader";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { forwardRef, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+/*
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "../RegisterOnCohort.module.css";
-import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
 import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import useAuth from "../../../../../hooks/useAuth";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from "../../../../../components/Button/AppButton";
+import Loader from "../../../../../components/Loader/Loader";
+import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import Slack from "../../../Cohorts/TableRender/Slack";
 import UserRoleRender from "../TableRenders/UserRoleRender";
 import AppDataGrid from "../../../../../components/DataGrid/AppDataGrid";
 import UserAvatarRender from "../TableRenders/UserAvatarRender";
 import UserCohortRender from "../../Register/TableRenders/UserCohortRender";
-import EditSlackProfile from "./EditSlackProfile";
 import RegisterSlackUserActions from "./RegisterSlackUserActions";
 import RegisterExistingSlackUserActions from "./RegisterExistingSlackUserActions";
-import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../../../hooks/useAuth";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
-
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -49,12 +73,20 @@ const RegisterSlackUser = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
-
+  /*
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [newUsers, setNewUsers] = useState([]);
   const [newUsersToCohort, setNewUsersToCohort] = useState([]);
   const [newCohortId, setNewCohortId] = useState(undefined);
   const [loading, setLoading] = useState(false);
-  console.log(newUsers, newUsersToCohort);
+  /*
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+  */
   const newUsersColumns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
@@ -212,7 +244,11 @@ const RegisterSlackUser = ({
       ),
     },
   ];
-
+  /*
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   const fetchNewUsersFromSlack = async () => {
     try {
       setLoading(true);
@@ -292,8 +328,7 @@ const RegisterSlackUser = ({
           console.error(error);
         }
       }
-    }
-    else{
+    } else {
       console.warn("Select at least one user");
     }
   };
@@ -462,3 +497,10 @@ const RegisterSlackUser = ({
 };
 
 export default RegisterSlackUser;
+
+RegisterSlackUser.propTypes = {
+  open: PropTypes.bool.isRequired,
+  cohortData: PropTypes.object.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterCohortSubmit: PropTypes.func.isRequired,
+};

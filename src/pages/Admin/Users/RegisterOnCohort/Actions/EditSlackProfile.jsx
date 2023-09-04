@@ -1,3 +1,8 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import {
   Box,
   Dialog,
@@ -7,21 +12,41 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import React, { forwardRef, useEffect, useState } from "react";
-import AppButton from "../../../../../components/Button/AppButton";
 import { AdminPanelSettingsRounded, Close } from "@mui/icons-material";
-import styles from "../RegisterOnCohort.module.css";
-import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
-import FormSelect from "../../../../../components/Select/FormSelect";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import useAuth from "../../../../../hooks/useAuth";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
-
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
+import styles from "../RegisterOnCohort.module.css";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from "../../../../../components/Button/AppButton";
+import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
+import FormSelect from "../../../../../components/Select/FormSelect";
+/*
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -35,19 +60,10 @@ const EditSlackProfile = ({
 }) => {
   console.log(slackProfileInfo);
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
-    */
-  const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { setAuth } = useAuth();
-  /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   //Form states
   const [userRoles, setUserRoles] = useState(
     slackProfileInfo.row.role.map(
@@ -62,10 +78,10 @@ const EditSlackProfile = ({
   });
 
   /* 
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setFormError((prevState) => ({
       ...prevState,
@@ -75,7 +91,11 @@ const EditSlackProfile = ({
       },
     }));
   }, [userRoles]);
-
+  /*
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   const handleOnSelectRole = (selectedRoleName) => {
     setUserRoles(selectedRoleName);
   };
@@ -87,13 +107,11 @@ const EditSlackProfile = ({
       onHandleNewUsers((prevNewUsers) =>
         prevNewUsers.map((prevNewUser) => {
           if (prevNewUser.slackId === slackProfileInfo.row.slackId) {
-            console.log("I ENTERED same id");
             return {
               ...prevNewUser,
               role: userRoles.map((userRole) => userRole.toLowerCase()).sort(),
             };
           } else {
-            console.log("not same id");
             return prevNewUser;
           }
         })
@@ -201,3 +219,10 @@ const EditSlackProfile = ({
 };
 
 export default EditSlackProfile;
+
+EditSlackProfile.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  slackProfileInfo: PropTypes.object.isRequired,
+  onHandleNewUsers: PropTypes.func.isRequired,
+};

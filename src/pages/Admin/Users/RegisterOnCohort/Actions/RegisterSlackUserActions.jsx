@@ -4,7 +4,7 @@
     ==========================
 */
 import { Container } from "@mui/material";
-import { DeleteRounded, EditRounded } from "@mui/icons-material";
+import { EditRounded } from "@mui/icons-material";
 import PropTypes from "prop-types";
 /*
     ==========================
@@ -12,20 +12,12 @@ import PropTypes from "prop-types";
     ==========================
 */
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-/*
-    ==========================
-    =          HOOKS         =
-    ==========================
-*/
-import useAuth from "../../../../../hooks/useAuth";
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
 import AppButton from "../../../../../components/Button/AppButton";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import EditSlackProfile from "./EditSlackProfile";
 
 const RegisterSlackUserActions = ({ params, onHandleNewUsers }) => {
@@ -71,3 +63,8 @@ const RegisterSlackUserActions = ({ params, onHandleNewUsers }) => {
 };
 
 export default RegisterSlackUserActions;
+
+RegisterSlackUserActions.propTypes = {
+  params: PropTypes.object.isRequired,
+  onHandleNewUsers: PropTypes.func.isRequired,
+};
