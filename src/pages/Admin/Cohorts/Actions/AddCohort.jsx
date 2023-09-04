@@ -52,6 +52,7 @@ import AuthFormControl from "../../../../components/FormControl/AuthFormControl"
 import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -102,6 +103,10 @@ const AddCohort = ({
       errorMessage: "Please select a start date for this cohort",
     },
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
   /*
     ==========================
     =         HOOKS          =
@@ -139,6 +144,12 @@ const AddCohort = ({
         });
       } else {
         console.error(error);
+        setSuccessMessage("");
+        setErrorMessage("");
+        setErrorMessage(
+          `Error. New cohort was not added. ${error.response.data.msg}.`
+        );
+        setOpenErrorToast(true);
       }
     }
   };
@@ -194,11 +205,13 @@ const AddCohort = ({
       type: className,
     };
     const errors = Object.values(formError);
+
     try {
       setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
         console.log(response);
+        setLoading(false); // Stop loading
         if (response.status === 201) {
           setLoading(false); // Stop loading in case of error
           const options = { year: "2-digit", month: "numeric", day: "numeric" };
@@ -225,15 +238,22 @@ const AddCohort = ({
               )
             );
           }
-          handleOpen(false);
+          setSuccessMessage("");
+          setErrorMessage("");
+          setSuccessMessage("Success. New cohort has been added successfully!");
+          setOpenSuccessToast(true);
         }
       } else {
-        setLoading(false); // Stop loading in case of error
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage("Form validation is not letting form submission.");
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
       setLoading(false);
-      console.error(error);
+      console.log(error);
     } finally {
       setReset(true);
       setCohortName("");
@@ -244,6 +264,7 @@ const AddCohort = ({
 
   return (
     <>
+      {loading ? <Loader /> : null}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -287,119 +308,126 @@ const AddCohort = ({
           autoComplete="off"
           onSubmit={handleCohortSubmit}
         >
-          {loading ? (
+          <>
             <DialogContent
-              sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+              sx={{
+                width: "100%",
+                height: "auto",
+                paddingX: 0,
+                paddingY: 1,
+              }}
               dividers
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100px",
-                }}
-              >
-                <Loader />
-              </Box>
-            </DialogContent>
-          ) : (
-            <>
-              <DialogContent
-                sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
-                dividers
-              >
-                <div className={styles.formContainer}>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <SchoolRounded fontSize="large"></SchoolRounded>
-                      <br></br>
-                      <br></br>
-                    </Box>
-                    <FormTextField
-                      required
-                      value={cohortName}
-                      type="text"
-                      label="Cohort:"
-                      name="cohort"
-                      isFocused={true}
-                      width="100%"
-                      variant="dark"
-                      regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                      onHandleError={handleCohortNameError}
-                      errorMessage={"Please enter a valid name"}
-                      reset={reset}
-                    ></FormTextField>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <LaptopRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AuthFormControl
-                      width="100%"
-                      isNested={true}
-                      error={formError.classNameError.error}
-                    >
-                      <FormSelect
-                        id={"class"}
-                        name={"class"}
-                        label={"Class:"}
-                        selectValue={className}
-                        onSelectValue={handleClassNameChange}
-                        list={classList}
-                        variant={"dark"}
-                        multiple={false}
-                        error={formError.classNameError}
-                      ></FormSelect>
-                    </AuthFormControl>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <CalendarMonthRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AppDatePicker
-                      id={"startDate"}
-                      name={"startDate"}
-                      label={"Start date:"}
-                      dateValue={startDate}
-                      onDateValueChange={handleStartDateChange}
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SchoolRounded fontSize="large"></SchoolRounded>
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <FormTextField
+                    required
+                    value={cohortName}
+                    type="text"
+                    label="Cohort:"
+                    name="cohort"
+                    isFocused={true}
+                    width="100%"
+                    variant="dark"
+                    regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                    onHandleError={handleCohortNameError}
+                    errorMessage={"Please enter a valid name"}
+                    reset={reset}
+                  ></FormTextField>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LaptopRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AuthFormControl
+                    width="100%"
+                    isNested={true}
+                    error={formError.classNameError.error}
+                  >
+                    <FormSelect
+                      id={"class"}
+                      name={"class"}
+                      label={"Class:"}
+                      selectValue={className}
+                      onSelectValue={handleClassNameChange}
+                      list={classList}
                       variant={"dark"}
-                    ></AppDatePicker>
+                      multiple={false}
+                      error={formError.classNameError}
+                    ></FormSelect>
                   </AuthFormControl>
-                </div>
-              </DialogContent>
-              <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-                <AppButton
-                  text={"Add cohort"}
-                  type="submit"
-                  width="auto"
-                  handlerFunction={() => {}}
-                ></AppButton>
-              </DialogActions>
-            </>
-          )}
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CalendarMonthRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AppDatePicker
+                    id={"startDate"}
+                    name={"startDate"}
+                    label={"Start date:"}
+                    dateValue={startDate}
+                    onDateValueChange={handleStartDateChange}
+                    variant={"dark"}
+                  ></AppDatePicker>
+                </AuthFormControl>
+              </div>
+            </DialogContent>
+            <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+              <AppButton
+                text={"Add cohort"}
+                type="submit"
+                width="auto"
+                handlerFunction={() => {}}
+              ></AppButton>
+              <ToastMessage
+                open={openErrorToast}
+                severity="error"
+                variant="filled"
+                onClose={() => setOpenErrorToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                // background="#cd1818"
+                // color="white"
+                message={errorMessage}
+              ></ToastMessage>
+
+              <ToastMessage
+                open={openSuccessToast}
+                severity="success"
+                variant="filled"
+                // autoHideDuration={3000}
+                onClose={() => setOpenSuccessToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                message={successMessage}
+              ></ToastMessage>
+            </DialogActions>
+          </>
         </Box>
       </Dialog>
     </>
@@ -414,4 +442,5 @@ AddCohort.propTypes = {
   onRegisterSlackChannel: PropTypes.func,
   onRegisterCohort: PropTypes.func.isRequired,
   slackChannelData: PropTypes.object,
+  onRegisterCohort: PropTypes.func.isRequired,
 };

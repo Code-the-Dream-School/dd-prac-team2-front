@@ -38,7 +38,7 @@ import FormTextField from "../../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import FormSelect from "../../../../components/Select/FormSelect";
 import Loader from "../../../../components/Loader/Loader";
-
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
     ==========================
     =          STYLES        =
@@ -104,6 +104,11 @@ const EditCohort = ({
   const [reset, setReset] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
+
   /*
     ==========================
     =        EFFECTS         =
@@ -120,7 +125,6 @@ const EditCohort = ({
     ==========================
   */
   const editCohort = async (cohortId, editedCohort) => {
-    setLoading(true);
     try {
       const response = await axiosPrivate.patch(
         `/cohort/${cohortId}`,
@@ -133,7 +137,7 @@ const EditCohort = ({
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-        setLoading(false);
+
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",
@@ -147,7 +151,6 @@ const EditCohort = ({
         });
       } else {
         console.error(error);
-        setLoading(false);
       }
     }
   };
@@ -189,9 +192,11 @@ const EditCohort = ({
     };
     const errors = Object.values(formError);
     try {
+      setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
         console.log(response);
+        setLoading(false); // Stop loading
         const options = { year: "2-digit", month: "numeric", day: "numeric" };
         const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
@@ -218,12 +223,25 @@ const EditCohort = ({
           onCloseDialog(true);
         }
       } else {
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage(
+          "There is an error that is preventing the form submission",
+          errors
+        );
         console.log(
           "There is an error that is preventing the form submission",
           errors
         );
       }
     } catch (error) {
+      setLoading(false);
+      setSuccessMessage("");
+      setErrorMessage("");
+      setErrorMessage(`Error. ${error}. Please try again!`);
+      setOpenErrorToast(true);
       console.error(error.response.data);
     }
   };
@@ -237,14 +255,34 @@ const EditCohort = ({
           withCredentials: true,
         }
       );
+      setSuccessMessage("");
+      setErrorMessage("");
+      setSuccessMessage("Success. New cohort has been removed successfully!");
+      setOpenSuccessToast(true);
+      console.log(response);
+      setLoading(false); // Stop loading
       if (response.status === 200) {
         onHandleCohorts((prevCohorts) => {
           return prevCohorts.filter(
             (cohort) => cohort.id !== cohortInfo.row.id
           );
         });
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage("error! Cohor was not removed!");
+        console.error(response);
       }
     } catch (error) {
+      setLoading(false);
+      console.log(error);
+      setSuccessMessage("");
+      setErrorMessage("");
+      setErrorMessage(
+        `Error. New cohort was not rempved. ${error}. Please try again!`
+      );
+      setOpenErrorToast(true);
       if (error.response.status === 403) {
         //User is required to validate auth again
         console.error(error);
@@ -261,6 +299,10 @@ const EditCohort = ({
         });
       } else {
         console.error(error);
+        setSuccessMessage("");
+        setErrorMessage("");
+        setErrorMessage(`Error.${error}. Please try again!`);
+        setOpenErrorToast(true);
       }
     }
     setLoading(false);
@@ -383,7 +425,6 @@ const EditCohort = ({
             </div>
           </DialogContent>
         )}
-
         <DialogActions
           sx={{
             display: "flex",
@@ -412,9 +453,32 @@ const EditCohort = ({
               <DeleteRounded></DeleteRounded>
             </AppButton>
           ) : null}
+          <ToastMessage
+            open={openErrorToast}
+            severity="error"
+            variant="filled"
+            onClose={() => setOpenErrorToast(false)}
+            dismissible
+            // sx={{ background: "white", color: "#CD1818" }}
+            // background="#cd1818"
+            // color="white"
+            message={errorMessage}
+          ></ToastMessage>
+          <ToastMessage
+            open={openSuccessToast}
+            severity="success"
+            variant="filled"
+            // autoHideDuration={3000}
+            onClose={() => setOpenSuccessToast(false)}
+            dismissible
+            // sx={{ background: "white", color: "#CD1818" }}
+            message={successMessage}
+          ></ToastMessage>
         </DialogActions>
       </Box>
     </Dialog>
+      )}
+    </>
   );
 };
 

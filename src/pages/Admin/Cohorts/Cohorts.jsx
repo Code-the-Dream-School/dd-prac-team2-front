@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography, styled } from "@mui/material";
 import { Class, CloudDownloadRounded } from "@mui/icons-material";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 /*
@@ -41,6 +41,7 @@ import Slack from "./TableRender/Slack";
 import Members from "./TableRender/Members";
 import Lessons from "./TableRender/Lessons";
 import ClassType from "./TableRender/ClassType";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 const Cohorts = () => {
   /*
@@ -143,6 +144,11 @@ const Cohorts = () => {
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
   const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] =
     useState(false);
+  const [error, setError] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
 
   /*
     ==========================
@@ -159,6 +165,8 @@ const Cohorts = () => {
     const controller = new AbortController();
 
     const fetchCohorts = async () => {
+      setLoading(true);
+
       try {
         const response = await axiosPrivate.get("/cohort", {
           signal: controller.signal,
@@ -214,94 +222,86 @@ const Cohorts = () => {
   }, []);
 
   return (
-    <Container maxWidth="md">
-      <Paper
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "#1A1A2E",
-          color: "#FFFFFF",
-          borderRadius: "10px",
-          padding: 2,
-          height: "auto",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {" "}
-          COHORTS MANAGEMENT{" "}
-        </Typography>
-        <div className={styles.formContainer}>
-          <AuthFormControl width="70%">
-            <AppButton
-              text={"Add new cohort"}
-              type="button"
-              width="100%"
-              handlerFunction={() => setOpenNewCohortDialog(true)}
-            >
-              <Class fontSize="large"></Class>
-            </AppButton>
-            <AppButton
-              text={"Add from Slack"}
-              type="button"
-              width="100%"
-              handlerFunction={() => setOpenNewCohortSlackDialog(true)}
-            >
-              <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
-            </AppButton>
-          </AuthFormControl>
-        </div>
-        {loading ? (
-          <Box
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container maxWidth="md">
+          <Paper
+            elevation={3}
             sx={{
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "#1A1A2E",
+              color: "#FFFFFF",
+              borderRadius: "10px",
+              padding: 2,
+              height: "auto",
             }}
           >
-            <Loader />
-          </Box>
-        ) : (
-          <AppDataGrid
-            columns={columns}
-            rows={cohorts}
-            pageSize={10}
-            fieldToBeSorted={"class"}
-            sortType={"asc"}
-            variant="light"
-          />
-        )}
-        {openNewCohortDialog ? (
-          <AddCohort
-            open={openNewCohortDialog}
-            handleOpen={setOpenNewCohortDialog}
-            onLoading={setLoading}
-            onRegisterCohort={setCohorts}
-          ></AddCohort>
-        ) : null}
-        {openNewCohortSlackDialog ? (
-          <AddCohortSlack
-            open={openNewCohortSlackDialog}
-            handleOpen={setOpenNewCohortSlackDialog}
-            onLoading = {setLoading}
-            onRegisterCohort={setCohorts}
-          ></AddCohortSlack>
-        ) : null}
-      </Paper>
-    </Container>
+            <Typography
+              component={"h1"}
+              sx={{
+                backgroundColor: "#C84B31",
+                borderRadius: 2,
+                padding: 1,
+                margin: 1,
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 25,
+              }}
+            >
+              {" "}
+              COHORTS MANAGEMENT{" "}
+            </Typography>
+            <div className={styles.formContainer}>
+              <AuthFormControl width="70%">
+                <AppButton
+                  text={"Add new cohort"}
+                  type="button"
+                  width="100%"
+                  handlerFunction={() => setOpenNewCohortDialog(true)}
+                >
+                  <Class fontSize="large"></Class>
+                </AppButton>
+                <AppButton
+                  text={"Add from Slack"}
+                  type="button"
+                  width="100%"
+                  handlerFunction={() => setOpenNewCohortSlackDialog(true)}
+                >
+                  <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
+                </AppButton>
+              </AuthFormControl>
+            </div>
+            <AppDataGrid
+              columns={columns}
+              rows={cohorts}
+              pageSize={10}
+              fieldToBeSorted={"class"}
+              sortType={"asc"}
+              variant="light"
+            />
+            {openNewCohortDialog ? (
+              <AddCohort
+                open={openNewCohortDialog}
+                handleOpen={setOpenNewCohortDialog}
+                onRegisterCohort={setCohorts}
+              ></AddCohort>
+            ) : null}
+            {openNewCohortSlackDialog ? (
+              <AddCohortSlack
+                open={openNewCohortSlackDialog}
+                handleOpen={setOpenNewCohortSlackDialog}
+                onRegisterCohort={setCohorts}
+              ></AddCohortSlack>
+            ) : null}
+          </Paper>
+        </Container>
+      )}
+    </>
   );
 };
 
