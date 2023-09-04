@@ -35,5 +35,5 @@ const UserAvatarRender = ({ name, avatarUrl }) => {
 export default UserAvatarRender;
 
 UserAvatarRender.propTypes = {
-  avatarUrl: PropTypes.string.isRequired,
+  avatarUrl: PropTypes.string,
 };

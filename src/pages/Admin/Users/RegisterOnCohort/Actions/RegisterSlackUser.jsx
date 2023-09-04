@@ -113,21 +113,24 @@ const RegisterSlackUser = ({
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
-        <UserAvatarRender name={params.row.name} avatarUrl={params.row.avatarUrl}></UserAvatarRender>
+        <UserAvatarRender
+          name={params.row.name}
+          avatarUrl={params.row.avatarUrl}
+        ></UserAvatarRender>
       ),
     },
     {
       field: "name",
       headerName: "Name:",
-      minWidth: 175,
-      maxWidth: 175,
+      minWidth: 200,
+      maxWidth: 200,
       flex: 1,
     },
     {
       field: "email",
       headerName: "Email:",
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 275,
+      maxWidth: 275,
       flex: 1,
     },
     {
@@ -135,8 +138,8 @@ const RegisterSlackUser = ({
       headerName: "Roles: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 150,
-      maxWidth: 150,
+      minWidth: 175,
+      maxWidth: 175,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
@@ -148,7 +151,7 @@ const RegisterSlackUser = ({
       headerName: "Actions: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 100,
+      minWidth: 125,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
@@ -186,7 +189,10 @@ const RegisterSlackUser = ({
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
-        <UserAvatarRender name={params.row.name} avatarUrl={params.row.avatarUrl}></UserAvatarRender>
+        <UserAvatarRender
+          name={params.row.name}
+          avatarUrl={params.row.avatarUrl}
+        ></UserAvatarRender>
       ),
     },
     {
@@ -221,8 +227,8 @@ const RegisterSlackUser = ({
       headerName: "Cohorts: ",
       sortable: false,
       disableColumnMenu: true,
-      minWidth: 250,
-      maxWidth: 250,
+      minWidth: 225,
+      maxWidth: 225,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
@@ -292,7 +298,7 @@ const RegisterSlackUser = ({
         setLoading(true);
         const body = {
           users,
-          cohort: cohortData.cohortId,
+          cohort: newCohortId,
         };
         console.log(body);
         const response = await axiosPrivate.post("/auth/register", body);
@@ -337,14 +343,47 @@ const RegisterSlackUser = ({
     }
   };
 
-  const handleRegisterNewUsersToCohort = () => {
-    try {
-      setNewUsersToCohort((prevNewUsersToCohort) =>
-        prevNewUsersToCohort.filter(
-          (newUserToCohort) => newUserToCohort.isSelected === false
-        )
-      );
-    } catch (error) {}
+  const handleRegisterNewUsersToCohort = async () => {
+    const users = newUsersToCohort.filter(
+      (newUsersToCohort) => newUsersToCohort.isSelected
+    );
+    console.log(users);
+    if (users.length > 0) {
+      try {
+        setLoading(true);
+        const body = {
+          userIDs: users.map((user) => user.id),
+        };
+        console.log(body);
+        console.log(newCohortId)
+        const response = await axiosPrivate.patch(
+          `/users/add-to-cohort/${newCohortId}`,
+          body
+        );
+        setNewUsersToCohort((prevNewUsersToCohort) =>
+          prevNewUsersToCohort.filter(
+            (newUserToCohort) => newUserToCohort.isSelected === false
+          )
+        );
+        onRegisterCohortSubmit((prevCohortUsers) => [
+          ...prevCohortUsers,
+          ...users.map((user) => ({
+            id: user.id,
+            slackId: user.slackId,
+            userAvatar: user.avatarUrl,
+            userName: user.name,
+            userEmail: user.email,
+            userRole: user.roles.sort(),
+            userActivatedStatus: user.isActivated,
+          })),
+        ]);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      console.warn("Select at least one user");
+    }
   };
 
   useEffect(() => {

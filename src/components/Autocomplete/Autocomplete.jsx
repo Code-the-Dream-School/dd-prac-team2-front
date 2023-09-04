@@ -125,6 +125,6 @@ FormAutocomplete.propTypes = {
   inputValue: PropTypes.string.isRequired,
   onHandleInputValueChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
-  error: PropTypes.bool.isRequired,
+  error: PropTypes.object.isRequired,
   variant: PropTypes.string.isRequired,
 }
