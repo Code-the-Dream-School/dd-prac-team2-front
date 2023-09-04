@@ -17,42 +17,40 @@ import {
   BadgeRounded,
   Close,
   Email,
+  School,
 } from "@mui/icons-material";
-import PropTypes from "prop-types";
-
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
 import React, { forwardRef, useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 /*
     ==========================
     =        STYLES          =
     ==========================
 */
-import styles from "../RegisterOnCohort.module.css";
+import styles from "../RegisterUsers.module.css";
+
 /*
     ==========================
-    =          HOOKS         =
+    =         HOOKS          =
     ==========================
 */
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 import useAuth from "../../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
 /*
     ==========================
     =        COMPONENTS      =
     ==========================
 */
+import AppButton from "../../../../../components/Button/AppButton";
 import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import FormTextField from "../../../../../components/TextField/FormTextField";
+import FormAutocomplete from "../../../../../components/Autocomplete/Autocomplete";
 import FormSelect from "../../../../../components/Select/FormSelect";
-import AppButton from "../../../../../components/Button/AppButton";
-
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import Loader from "../../../../../components/Loader/Loader";
 
 /*
     ==========================
@@ -60,26 +58,30 @@ const Transition = forwardRef(function Transition(props, ref) {
     ==========================
 */
 const rolesList = ["Admin", "Mentor", "Student"];
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
-const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
+const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
   /*
     ==========================
     =          HOOKS         =
     ==========================
   */
-  const { cohortId } = useParams();
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
-
   /*
     ==========================
     =         STATES         =
     ==========================
   */
-  //Form states
+  // From states
   const [userRoles, setUserRoles] = useState([]);
+  const [cohortsValueSelected, setCohortsValueSelected] = useState(cohorts[0]);
+  const [cohortsInputValueSelected, setCohortsInputValueSelected] =
+    useState("");
   const [formError, setFormError] = useState({
     userNameError: {
       error: false,
@@ -89,23 +91,23 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
       error: false,
       errorMessage: "Please enter a valid e-mail address",
     },
+    userCohortError: {
+      error: false,
+      errorMessage: "Please add a cohort for this user",
+    },
     userRolesError: {
       error: true,
       errorMessage: "Please select a role for this user",
     },
   });
   const [reset, setReset] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   /*
     ==========================
     =   HANDLER FUNCTIONS    =
     ==========================
   */
-  // onSelect Role:
-  const handleOnSelectRole = (selectedRoleName) => {
-    setUserRoles(selectedRoleName);
-  };
-
   // User name:
   const handleUserNameError = (inputError) => {
     setFormError((prevState) => ({
@@ -128,8 +130,18 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
     }));
   };
 
-  //Form submit:
-  const handleRegisterOnCohortSubmit = async (event) => {
+  //User cohorts
+  const handleValueSelectedChange = (newValue) => {
+    setCohortsValueSelected(newValue);
+  };
+
+  // onSelect Role:
+  const handleOnSelectRole = (selectedRoleName) => {
+    setUserRoles(selectedRoleName);
+  };
+
+  // Form submit:
+  const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     const formattedUserRegistration = {
       users: [
@@ -139,10 +151,11 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           role: userRoles.map((role) => role.toLowerCase()),
         },
       ],
-      cohort: cohortId,
+      cohort: cohortsValueSelected.id,
     };
     const errors = Object.values(formError);
     try {
+      setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.post(
           "auth/register",
@@ -150,31 +163,33 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
         );
         console.log(response);
         if (response.data.users.length > 0) {
-          onRegisterCohortSubmit((prevState) => [
+          onHandleUsers((prevState) => [
             ...prevState,
             {
               id: response.data.users[0]._id,
-              slackId: response.data.users[0].slackId,
-              userAvatar: response.data.users[0].avatarUrl,
               userName: response.data.users[0].name,
               userEmail: response.data.users[0].email,
-              userRole: response.data.users[0].role.sort(),
+              userCohort: [cohortsValueSelected],
+              userRole: response.data.users[0].role,
               userActivatedStatus: response.data.users[0].isActivated,
             },
           ]);
+          setLoading(false);
           setReset(true);
+          setCohortsValueSelected(cohorts[0]);
           setUserRoles([]);
-          handleOpen(false);
         } else if (response.data.errors.length > 0) {
           console.error(response.data.errors);
         }
       } else {
+        setLoading(false);
         console.error(
           "There is an error preventing the form submission: check that your entires are correctly validated"
         );
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -189,16 +204,28 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
   };
 
   /* 
-    ==========================
-    =        EFFECTS         =
-    ==========================
+      ==========================
+      =        EFFECTS         =
+      ==========================
   */
+
+  useEffect(() => {
+    setFormError((prevState) => ({
+      ...prevState,
+      userCohortError: {
+        ...prevState.userCohortError,
+        error: cohortsValueSelected === null ? true : false,
+      },
+    }));
+  }, [cohortsValueSelected]);
+
   useEffect(() => {
     setFormError((prevState) => ({
       ...prevState,
@@ -209,54 +236,70 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
     }));
   }, [userRoles]);
 
-  useEffect(() => {
-    setReset(false);
-  });
   return (
-    <>
-      <Dialog
-        open={open}
-        TransitionComponent={Transition}
-        onClose={() => handleOpen(false)}
-        fullWidth
-        maxWidth="sm"
+    <Dialog
+      open={open}
+      TransitionComponent={Transition}
+      onClose={() => handleOpen(false)}
+      fullWidth
+      maxWidth="md"
+    >
+      <DialogTitle
+        display={"flex"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        gap={"5px"}
+        component={"div"}
       >
-        <DialogTitle
-          display={"flex"}
-          justifyContent={"space-between"}
-          alignItems={"center"}
-          gap={"5px"}
-          component={"div"}
+        <Typography
+          variant="h1"
+          textAlign={"center"}
+          fontSize={"30px"}
+          fontWeight={"bold"}
         >
-          <Typography
-            variant="h1"
-            textAlign={"center"}
-            fontSize={"30px"}
-            fontWeight={"bold"}
-          >
-            Add a new user:
-          </Typography>
-          <AppButton
-            text={""}
-            type="button"
-            width="10%"
-            handlerFunction={() => handleOpen(false)}
-          >
-            <Close></Close>
-          </AppButton>
-        </DialogTitle>
-        <Box
-          component={"form"}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            color: "#C84B31",
-          }}
-          autoComplete="off"
-          onSubmit={handleRegisterOnCohortSubmit}
+          Add a new user:
+        </Typography>
+        <AppButton
+          text={""}
+          type="button"
+          width="10%"
+          handlerFunction={() => handleOpen(false)}
         >
+          <Close></Close>
+        </AppButton>
+      </DialogTitle>
+      <Box
+        component={"form"}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          width: "100%",
+          color: "#C84B31",
+        }}
+        autoComplete="off"
+        onSubmit={handleRegisterSubmit}
+      >
+        {loading ? (
+          <DialogContent
+            sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+            dividers
+          >
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+                height: "100px",
+              }}
+            >
+              <Loader />
+            </Box>
+          </DialogContent>
+        ) : (
           <DialogContent
             sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
             dividers
@@ -287,8 +330,6 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
                   errorMessage={"Please enter a valid name"}
                   reset={reset}
                 ></FormTextField>
-              </AuthFormControl>
-              <AuthFormControl width="75%">
                 <Box
                   sx={{
                     display: "flex",
@@ -322,6 +363,33 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
                     justifyContent: "center",
                   }}
                 >
+                  <School fontSize="large" />
+                  <br></br>
+                  <br></br>
+                </Box>
+                <AuthFormControl width="100%" isNested={true}>
+                  <FormAutocomplete
+                    multiple={false}
+                    value={cohortsValueSelected}
+                    computedIdProperty={"id"}
+                    computedProperty={"cohort"}
+                    onHandleSelectedValueChange={handleValueSelectedChange}
+                    inputValue={cohortsInputValueSelected}
+                    onHandleInputValueChange={setCohortsInputValueSelected}
+                    options={cohorts}
+                    error={formError.userCohortError}
+                    variant={"dark"}
+                  ></FormAutocomplete>
+                </AuthFormControl>
+              </AuthFormControl>
+              <AuthFormControl width="75%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
                   <AdminPanelSettingsRounded fontSize="large" />
                   <br></br>
                 </Box>
@@ -345,24 +413,18 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
               </AuthFormControl>
             </div>
           </DialogContent>
-          <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-            <AppButton
-              text={"Add user"}
-              type="submit"
-              width="auto"
-              handlerFunction={() => {}}
-            ></AppButton>
-          </DialogActions>
-        </Box>
-      </Dialog>
-    </>
+        )}
+        <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+          <AppButton
+            text={"Add user"}
+            type="submit"
+            width="100%"
+            handlerFunction={() => {}}
+          />
+        </DialogActions>
+      </Box>
+    </Dialog>
   );
 };
 
-export default RegisterCohortUser;
-
-RegisterCohortUser.propTypes = {
-  open: PropTypes.bool.isRequired,
-  handleOpen: PropTypes.func.isRequired,
-  onRegisterCohortSubmit: PropTypes.func.isRequired
-}
+export default AddUser;

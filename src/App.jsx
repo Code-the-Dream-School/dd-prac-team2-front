@@ -78,11 +78,12 @@ const App = () => {
       console.log("LOGOUT", response);
       setAuth({
         userId: "",
+        slackId: undefined,
         userName: "",
         userEmail: "",
         role: [],
         loggedIn: false,
-        avatarUrl: "",
+        avatarUrl: undefined,
         isActive: undefined,
         accessToken: "",
       });

@@ -21,6 +21,7 @@ import {
   Email,
 } from "@mui/icons-material";
 import useAxiosPrivate from "./../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -234,8 +235,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
             <AuthFormControl width="75%">
               <Avatar
                 alt={auth.userName}
-                src="/images/userLarge.png"
-                sx={{ width: 100, height: 100 }}
+                src={auth.avatarUrl ?? "/images/userLarge.png"}
+                sx={{ width: 200, height: 200 }}
               />
             </AuthFormControl>
             <Box
@@ -357,3 +358,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
 };
 
 export default UpdateProfile;
+
+UpdateProfile.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpenDialog: PropTypes.func.isRequired,
+};

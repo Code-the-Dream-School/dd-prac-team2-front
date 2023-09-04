@@ -4,7 +4,6 @@
     ==========================
 */
 import {
-  Avatar,
   Box,
   Dialog,
   DialogActions,
@@ -13,21 +12,15 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import {
-  BadgeRounded,
-  Close,
-  DeleteRounded,
-  EditRounded,
-  Email,
-  LockRounded,
-} from "@mui/icons-material";
+import { Close, LockRounded } from "@mui/icons-material";
 import useAxiosPrivate from "./../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
-import React, { useState, useEffect, forwardRef } from "react";
+import React, { useState, forwardRef } from "react";
 /*
     ==========================
     =         STYLES         =
@@ -90,16 +83,15 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
     event.preventDefault();
     const body = {
       currentPassword: event.target["current-password"].value,
-      newPassword: event.target["new-password"].value
-    }
+      newPassword: event.target["new-password"].value,
+    };
     const errors = Object.values(formError);
     try {
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.patch("profile/password", body);
         console.log(response);
         handleOpenDialog(false);
-      }
-      else{
+      } else {
         console.error("There is an error preventing the form submission");
       }
     } catch (error) {
@@ -213,9 +205,7 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
                   isFocused={false}
                   width="100%"
                   variant="dark"
-                  errorMessage={
-                    "This field is required"
-                  }
+                  errorMessage={"This field is required"}
                   onHandleError={handleCurrentPasswordError}
                   reset={reset}
                 ></FormTextField>
@@ -265,3 +255,8 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
 };
 
 export default UpdatePassword;
+
+UpdatePassword.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpenDialog: PropTypes.func.isRequired,
+};

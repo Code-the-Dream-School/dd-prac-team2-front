@@ -3,18 +3,22 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import AppButton from "../../../../components/Button/AppButton";
 import { Container } from "@mui/material";
-import {
-  PeopleAltRounded,
-} from "@mui/icons-material";
+import { PeopleAltRounded } from "@mui/icons-material";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
 import React from "react";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
+import AppButton from "../../../../components/Button/AppButton";
 
 const Members = ({ params }) => {
   return (
@@ -45,3 +49,7 @@ const Members = ({ params }) => {
 };
 
 export default Members;
+
+Members.propTypes = {
+  params: PropTypes.object.isRequired,
+};

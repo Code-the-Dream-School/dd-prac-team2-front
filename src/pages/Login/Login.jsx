@@ -90,12 +90,12 @@ const Login = () => {
         });
         setAuth({
           userId: response.data.user.id,
-          slackId: response.data.user.slackId ?? "",
+          slackId: response.data.user.slackId,
           userName: response.data.user.name,
           userEmail: response.data.user.email,
           role: response.data.user.roles,
           loggedIn: true,
-          avatarUrl: response.data.user.avatarUrl ?? "",
+          avatarUrl: response.data.user.avatarUrl,
           isActive: response.data.user.isActivated,
           accessToken: response.data.token,
         });

@@ -5,57 +5,33 @@
 */
 import AppButton from "../../../../components/Button/AppButton";
 import { Container } from "@mui/material";
-import {
-  ChecklistRounded,
-  DeleteRounded,
-  EditRounded,
-  PeopleAltRounded,
-} from "@mui/icons-material";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import { EditRounded } from "@mui/icons-material";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
     ==========================
 */
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-/*
-    ==========================
-    =          HOOKS         =
-    ==========================
-*/
-import useAuth from "../../../../hooks/useAuth";
 /*
     ==========================
     =       COMPONENTS       =
     ==========================
 */
 import EditCohort from "./EditCohort";
-import Loader from "../../../../components/Loader/Loader";
 
 const CohortsActions = ({ params, onHandleCohorts }) => {
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
-    */
-  const axiosPrivate = useAxiosPrivate();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { setAuth } = useAuth();
-  /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+      ==========================
+      =         STATES         =
+      ==========================
+  */
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [loading, setLoading] = useState(false);
   /*
-        ==========================
-        =         HANDLERS       =
-        ==========================
-    */
-
+      ==========================
+      =         HANDLERS       =
+      ==========================
+  */
   const handleOpenEditCohort = () => {
     setOpenEditDialog(true);
   };
@@ -66,7 +42,6 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
 
   return (
     <>
-      {loading ? <Loader /> : null}
       <Container
         sx={{
           display: "flex",
@@ -101,3 +76,8 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
 };
 
 export default CohortsActions;
+
+CohortsActions.propTypes = {
+  params: PropTypes.object.isRequired,
+  onHandleCohorts: PropTypes.func.isRequired,
+};
