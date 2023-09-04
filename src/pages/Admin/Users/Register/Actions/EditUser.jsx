@@ -22,6 +22,15 @@ import PropTypes from "prop-types";
 */
 import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+
+/*
+    ==========================
+    =          HOOKS         =
+    ==========================
+*/
+import useAuth from "../../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
+
 /*
     ==========================
     =        STYLES          =
@@ -37,13 +46,6 @@ import AppButton from "../../../../../components/Button/AppButton";
 import AuthFormControl from "../../../../../components/FormControl/AuthFormControl";
 import FormAutocomplete from "../../../../../components/Autocomplete/Autocomplete";
 import FormSelect from "../../../../../components/Select/FormSelect";
-import useAxiosPrivate from "../../../../../hooks/useAxiosPrivate";
-/*
-    ==========================
-    =          HOOKS         =
-    ==========================
-*/
-import useAuth from "../../../../../hooks/useAuth";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -63,19 +65,19 @@ const EditUser = ({
   onHandleUsers,
 }) => {
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
-    */
+    ==========================
+    =          HOOKS         =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   //Fetched data states:
   const [cohorts, setCohorts] = useState(fetchedCohorts);
   const [userRoles, setUserRoles] = useState(
@@ -98,12 +100,11 @@ const EditUser = ({
     },
   });
   console.log(cohorts, userInfo.row.userCohort);
-
   /*
-        ==========================
-        =   HANDLER FUNCTIONS    =
-        ==========================
-    */
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   //User cohorts
   const handleValueSelectedChange = (newValue) => {
     setCohortsValueSelected(newValue);
@@ -174,10 +175,10 @@ const EditUser = ({
     }
   };
   /* 
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setFormError((prevState) => ({
       ...prevState,

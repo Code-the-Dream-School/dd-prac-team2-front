@@ -10,7 +10,6 @@ import {
   Email,
   School,
 } from "@mui/icons-material";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 
 /*
     ==========================
@@ -32,6 +31,7 @@ import styles from "./RegisterUsers.module.css";
     =         HOOKS          =
     ==========================
 */
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import useAuth from "../../../../hooks/useAuth";
 
 /*
@@ -59,9 +59,9 @@ const rolesList = ["Admin", "Mentor", "Student"];
 
 const RegisterUsers = () => {
   /*
-        ==========================
-        =          HOOKS         =
-        ==========================
+    ==========================
+    =          HOOKS         =
+    ==========================
   */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -69,9 +69,9 @@ const RegisterUsers = () => {
   const { setAuth } = useAuth();
 
   /*
-        ==========================
-        =         STATES         =
-        ==========================
+    ==========================
+    =         STATES         =
+    ==========================
   */
   // Fetched data states:
   const [users, setUsers] = useState([]);
@@ -106,10 +106,10 @@ const RegisterUsers = () => {
   });
   const [reset, setReset] = useState(false);
   /*
-        ==========================
-        =      AUX VARIABLES     =
-        ==========================
-    */
+    ==========================
+    =      AUX VARIABLES     =
+    ==========================
+  */
   const columns = [
     { field: "id", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
     {
@@ -266,10 +266,10 @@ const RegisterUsers = () => {
   };
 
   /*
-        ==========================
-        =   HANDLER FUNCTIONS    =
-        ==========================
-    */
+    ==========================
+    =   HANDLER FUNCTIONS    =
+    ==========================
+  */
   // User name:
   const handleUserNameError = (inputError) => {
     setFormError((prevState) => ({

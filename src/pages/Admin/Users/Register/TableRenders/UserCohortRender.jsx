@@ -5,7 +5,6 @@
 */
 import { Chip, Container, Stack } from "@mui/material";
 import PropTypes from "prop-types";
-
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -14,6 +13,11 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const UserCohortRender = ({ params, rowField="userCohort"}) => {
+  /*
+    ==========================
+    =      AUX VARIABLES     =
+    ==========================
+  */
   const userCohorts = params.row[rowField];
   const cohortName = rowField==="userCohort" ? "cohort" : "name"
   const cohortId = rowField === "userCohort" ? "userId" : "_id" 
@@ -49,4 +53,5 @@ export default UserCohortRender;
 
 UserCohortRender.propTypes = {
   params: PropTypes.object.isRequired,
+  rowField: PropTypes.string
 };
