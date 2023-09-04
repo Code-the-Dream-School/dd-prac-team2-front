@@ -1,3 +1,8 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import {
   Box,
   Dialog,
@@ -6,22 +11,37 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import React, { forwardRef, useEffect, useState } from "react";
-import AppButton from "../../../../components/Button/AppButton";
 import { Close } from "@mui/icons-material";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { forwardRef, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+/*
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
+import useAuth from "../../../../hooks/useAuth";
+import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+/*
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
+import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
 import CohortsSlackAction from "./CohortsSlackAction";
 import AppDataGrid from "../../../../components/DataGrid/AppDataGrid";
-import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import { useLocation, useNavigate } from "react-router-dom";
-import useAuth from "../../../../hooks/useAuth";
 import Slack from "../TableRender/Slack";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
-
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
@@ -36,8 +56,18 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
+  /*
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [slackChannels, setSlackChannels] = useState([]);
   const [loading, setLoading] = useState(false);
+  /*
+    ==========================
+    =      AUX VARIABLES     =
+    ==========================
+  */
   const columns = [
     {
       field: "slackId",
@@ -72,7 +102,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
     {
       field: "numberOfMembers",
       headerName: "Members",
-      type:"number",
+      type: "number",
       minWidth: 70,
       maxWidth: 70,
       flex: 1,
@@ -94,33 +124,47 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
       minWidth: 175,
       maxWidth: 175,
       valueGetter: (params) => params,
-      renderCell: (params) => <CohortsSlackAction params={params} onRegisterSlackChannel={setSlackChannels} onRegisterCohort={onRegisterCohort}></CohortsSlackAction>,
+      renderCell: (params) => (
+        <CohortsSlackAction
+          params={params}
+          onRegisterSlackChannel={setSlackChannels}
+          onRegisterCohort={onRegisterCohort}
+        ></CohortsSlackAction>
+      ),
     },
   ];
-
+  /*
+    ==========================
+    =     ASYNC FUNCTIONS    =
+    ==========================
+  */
   const fetchSlackChannels = async () => {
     try {
       setLoading(true);
       const response = await axiosPrivate.get("/slack/channels");
       const channels = response.data.channels.list;
-      console.log(channels.map((channel)=>({
-        ...channel,
-        id: channel.slackId,
-        startDate: new Date(channel.startDate),
-      })))
+      console.log(
+        channels.map((channel) => ({
+          ...channel,
+          id: channel.slackId,
+          startDate: new Date(channel.startDate),
+        }))
+      );
       console.log(new Date(channels[0].startDate));
-      setSlackChannels(channels.map((channel)=>({
-        ...channel,
-        id: channel.slackId,
-        name: channel.name[0].toUpperCase() + channel.name.slice(1),
-        startDate: new Date(channel.startDate),
-      })));
+      setSlackChannels(
+        channels.map((channel) => ({
+          ...channel,
+          id: channel.slackId,
+          name: channel.name[0].toUpperCase() + channel.name.slice(1),
+          startDate: new Date(channel.startDate),
+        }))
+      );
       console.log(response);
       setLoading(false);
     } catch (error) {
       console.error(error);
       if (error.response.status === 403) {
-        setLoading(false)
+        setLoading(false);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -134,15 +178,20 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
           accessToken: "",
         });
       } else {
-        setLoading(false)
+        setLoading(false);
         console.error(error);
       }
     }
   };
-
+  /* 
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     fetchSlackChannels();
   }, []);
+
   return (
     <>
       <Dialog
@@ -224,3 +273,9 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
 };
 
 export default AddCohortSlack;
+
+AddCohortSlack.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterCohort: PropTypes.func.isRequired,
+};

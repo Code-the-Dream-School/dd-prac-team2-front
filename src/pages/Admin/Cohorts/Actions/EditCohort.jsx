@@ -13,7 +13,6 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  CalendarMonthRounded,
   Close,
   DeleteRounded,
   EditRounded,
@@ -38,8 +37,8 @@ import AppButton from "../../../../components/Button/AppButton";
 import FormTextField from "../../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import FormSelect from "../../../../components/Select/FormSelect";
-import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
 import Loader from "../../../../components/Loader/Loader";
+
 /*
     ==========================
     =          STYLES        =
@@ -58,9 +57,9 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 /*
-    ==========================
-    =     AUX VARIABLES      =
-    ==========================
+  ==========================
+  =     AUX VARIABLES      =
+  ==========================
 */
 const classList = [
   "Intro to programming",
@@ -76,26 +75,22 @@ const EditCohort = ({
   onHandleCohorts,
 }) => {
   /*
-        ==========================
-        =         HOOKS          =
-        ==========================
-    */
+    ==========================
+    =         HOOKS          =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
 
   /*
-        ==========================
-        =         STATES         =
-        ==========================
-    */
-  const [startString, endString] = cohortInfo.row.startEndDate.split("–");
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [cohortName, setCohortName] = useState(cohortInfo.row.cohort);
   const [className, setClassName] = useState(cohortInfo.row.class);
-  const [startDate, setStartDate] = useState(dayjs(startString.trim()));
-  const [endDate, setEndDate] = useState(dayjs((endString === undefined ? (startString.trim()):(endString.trim()))));
-  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -107,22 +102,23 @@ const EditCohort = ({
     },
   });
   const [reset, setReset] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   /*
-        ==========================
-        =        EFFECTS         =
-        ==========================
-    */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   //1. Used to set reset textfield value to false as it will only be true when user submits a form.
   useEffect(() => {
     setReset(false);
   });
 
   /*
-        ==========================
-        =    ASYNC FUNCTIONS     =
-        ==========================
-    */
+    ==========================
+    =    ASYNC FUNCTIONS     =
+    ==========================
+  */
   const editCohort = async (cohortId, editedCohort) => {
     setLoading(true);
     try {
@@ -157,10 +153,10 @@ const EditCohort = ({
   };
 
   /*
-        ==========================
-        =        HANDLERS        =
-        ==========================
-    */
+    ==========================
+    =        HANDLERS        =
+    ==========================
+  */
   //1. Cohort errorHandler:
   const handleCohortNameError = (inputError) => {
     setFormError((prevState) => ({
@@ -182,7 +178,7 @@ const EditCohort = ({
       },
     }));
   };
-  
+
   //5. onSubmit event
   const handleEditCohortSubmit = async (event) => {
     event.preventDefault();
@@ -196,8 +192,8 @@ const EditCohort = ({
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
         console.log(response);
-        const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
-        const dateTimeFormat = new Intl.DateTimeFormat('en', options);
+        const options = { year: "2-digit", month: "numeric", day: "numeric" };
+        const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
           onHandleCohorts((prevCohorts) =>
             prevCohorts.map((prevCohort) => {
@@ -206,7 +202,10 @@ const EditCohort = ({
                   ...prevCohort,
                   cohort: response.data.cohort.name,
                   class: response.data.cohort.type,
-                  startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
+                  startEndDate: dateTimeFormat.formatRange(
+                    new Date(response.data.cohort.start),
+                    new Date(response.data.cohort.end)
+                  ),
                 };
               } else {
                 return prevCohort;
@@ -216,8 +215,6 @@ const EditCohort = ({
           setReset(true);
           setCohortName("");
           setClassName("");
-          setStartDate(dayjs());
-          setEndDate(dayjs());
           onCloseDialog(true);
         }
       } else {
@@ -316,64 +313,77 @@ const EditCohort = ({
         autoComplete="off"
         onSubmit={handleEditCohortSubmit}
       >
-        <DialogContent
-          sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
-          dividers
-        >
-          <div className={styles.formContainer}>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <SchoolRounded fontSize="large"></SchoolRounded>
-                <br></br>
-                <br></br>
-              </Box>
-              <FormTextField
-                required
-                value={cohortName}
-                type="text"
-                label="Cohort:"
-                name="cohort"
-                isFocused={true}
-                width="100%"
-                variant="dark"
-                regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                onHandleError={handleCohortNameError}
-                errorMessage={"Please enter a valid name"}
-                reset={reset}
-              ></FormTextField>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <LaptopRounded fontSize="large" />
-                <br></br>
-              </Box>
-              <AuthFormControl width="100%" isNested={true}>
-                <FormSelect
-                  id={"class"}
-                  name={"class"}
-                  label={"Class:"}
-                  selectValue={className}
-                  onSelectValue={handleClassNameChange}
-                  list={classList}
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Loader />
+          </Box>
+        ) : (
+          <DialogContent
+            sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
+            dividers
+          >
+            <div className={styles.formContainer}>
+              <AuthFormControl width="75%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <SchoolRounded fontSize="large"></SchoolRounded>
+                  <br></br>
+                  <br></br>
+                </Box>
+                <FormTextField
+                  required
+                  value={cohortName}
+                  type="text"
+                  label="Cohort:"
+                  name="cohort"
+                  isFocused={true}
+                  width="100%"
                   variant="dark"
-                  error={formError.classNameError}
-                ></FormSelect>
+                  regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                  onHandleError={handleCohortNameError}
+                  errorMessage={"Please enter a valid name"}
+                  reset={reset}
+                ></FormTextField>
               </AuthFormControl>
-            </AuthFormControl>
-          </div>
-        </DialogContent>
+              <AuthFormControl width="75%">
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <LaptopRounded fontSize="large" />
+                  <br></br>
+                </Box>
+                <AuthFormControl width="100%" isNested={true}>
+                  <FormSelect
+                    id={"class"}
+                    name={"class"}
+                    label={"Class:"}
+                    selectValue={className}
+                    onSelectValue={handleClassNameChange}
+                    list={classList}
+                    variant="dark"
+                    error={formError.classNameError}
+                  ></FormSelect>
+                </AuthFormControl>
+              </AuthFormControl>
+            </div>
+          </DialogContent>
+        )}
+
         <DialogActions
           sx={{
             display: "flex",

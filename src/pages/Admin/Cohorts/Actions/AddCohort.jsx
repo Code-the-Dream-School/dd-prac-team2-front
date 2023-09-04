@@ -20,32 +20,32 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 /*
-      ==========================
-      =     REACT LIBRARIES    =
-      ==========================
-  */
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-  */
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
 import useAuth from "../../../../hooks/useAuth";
 /*
-      ==========================
-      =        STYLES          =
-      ==========================
-  */
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "../Cohorts.module.css";
 /*
-      ==========================
-      =        COMPONENTS      =
-      ==========================
-  */
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
 import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
@@ -53,10 +53,10 @@ import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const classList = [
   "Intro to programming",
   "React.js",
@@ -68,17 +68,25 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort, slackChannelData}) => {
+const AddCohort = ({
+  open,
+  handleOpen,
+  onRegisterSlackChannel,
+  onRegisterCohort,
+  slackChannelData,
+}) => {
   console.log(slackChannelData);
   /*
-      ==========================
-      =         STATES         =
-      ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [reset, setReset] = useState(false);
   const [cohortName, setCohortName] = useState(slackChannelData?.name ?? "");
   const [className, setClassName] = useState(slackChannelData?.type ?? "");
-  const [startDate, setStartDate] = useState(dayjs(slackChannelData?.startDate) ?? dayjs());
+  const [startDate, setStartDate] = useState(
+    dayjs(slackChannelData?.startDate) ?? dayjs()
+  );
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -86,29 +94,29 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
       errorMessage: "Please enter a valid name",
     },
     classNameError: {
-      error: slackChannelData === undefined ? true:false, //Initial value is blank, this is why I set the error to true.
+      error: slackChannelData === undefined ? true : false, //Initial value is blank, this is why I set the error to true.
       errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
       error: false,
       errorMessage: "Please select a start date for this cohort",
-    }
+    },
   });
   /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-    */
+    ==========================
+    =         HOOKS          =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
 
   /*
-      ==========================
-      =     ASYNC FUNCTIONS    =
-      ==========================
-    */
+    ==========================
+    =     ASYNC FUNCTIONS    =
+    ==========================
+  */
   const postCohorts = async (newCohort) => {
     console.log(newCohort);
     try {
@@ -136,19 +144,19 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
   };
 
   /* 
-          ==========================
-          =        EFFECTS         =
-          ==========================
-      */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setReset(false);
   });
 
   /*
-          ==========================
-          =         HANDLERS       =
-          ==========================
-    */
+    ==========================
+    =         HANDLERS       =
+    ==========================
+  */
   //1. Cohort errorHandler:
   const handleCohortNameError = (inputError) => {
     setFormError((prevState) => ({
@@ -193,8 +201,8 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
         console.log(response);
         if (response.status === 201) {
           setLoading(false); // Stop loading in case of error
-          const options = { year: '2-digit', month: 'numeric', day: 'numeric' };
-          const dateTimeFormat = new Intl.DateTimeFormat('en', options);
+          const options = { year: "2-digit", month: "numeric", day: "numeric" };
+          const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
             ...prevCohorts,
             {
@@ -203,11 +211,19 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
               cohort: response.data.cohort.name,
               class: response.data.cohort.type,
               members: response.data.cohort.participants.length,
-              startEndDate: dateTimeFormat.formatRange(new Date(response.data.cohort.start), new Date(response.data.cohort.end)),
+              startEndDate: dateTimeFormat.formatRange(
+                new Date(response.data.cohort.start),
+                new Date(response.data.cohort.end)
+              ),
             },
           ]);
-          if(slackChannelData !== undefined){
-            onRegisterSlackChannel((prevSlackChannels)=>prevSlackChannels.filter((slackChannel)=>slackChannel.slackId !== slackChannelData.slackId))
+          if (slackChannelData !== undefined) {
+            onRegisterSlackChannel((prevSlackChannels) =>
+              prevSlackChannels.filter(
+                (slackChannel) =>
+                  slackChannel.slackId !== slackChannelData.slackId
+              )
+            );
           }
           handleOpen(false);
         }
@@ -393,7 +409,9 @@ const AddCohort = ({ open, handleOpen, onRegisterSlackChannel, onRegisterCohort,
 export default AddCohort;
 
 AddCohort.propTypes = {
-    open: PropTypes.bool.isRequired,
-    handleOpen: PropTypes.func.isRequired,
-    onRegisterCohort: PropTypes.func.isRequired
-}
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterSlackChannel: PropTypes.func,
+  onRegisterCohort: PropTypes.func.isRequired,
+  slackChannelData: PropTypes.object,
+};
