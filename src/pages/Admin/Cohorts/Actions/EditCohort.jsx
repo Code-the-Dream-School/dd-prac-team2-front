@@ -276,7 +276,7 @@ const EditCohort = ({
         setErrorMessage("");
         setOpenSuccessToast(true);
         console.error(response);
-        setSuccessMessage("Cohort delited successfuly");
+        setSuccessMessage("Success!Cohort removed.");
       }
     } catch (error) {
       setLoading(false);
