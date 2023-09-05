@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { Box, Button, Paper, Typography } from "@mui/material";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 
 const MentorHome = () => {
+  const [queryParams] = useSearchParams();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
   const [cohorts, setCohorts] = useState([]);
@@ -24,7 +29,7 @@ const MentorHome = () => {
       }
     };
 
-    if (!selectedCohort) {
+    if (!selectedCohort || queryParams.get("resetCohort")) {
       fetchCohorts();
     } else {
       navigate(`/cohort/${selectedCohort._id}`);
