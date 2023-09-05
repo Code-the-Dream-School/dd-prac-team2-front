@@ -189,8 +189,10 @@ const NavigationBar = ({ onExpireAuth }) => {
       onExpireAuth();
     } else if (setting === "Update profile") {
       setOpenProfileDialog(true);
+      setAnchorElUser(null);
     } else if (setting === "Update password") {
       setOpenPasswordDialog(true);
+      setAnchorElUser(null);
     } else {
       setAnchorElUser(null);
     }
@@ -299,7 +301,7 @@ const NavigationBar = ({ onExpireAuth }) => {
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar
                         alt="User profile picture"
-                        src="/images/user.png"
+                        src={auth.avatarUrl ?? "/images/user.png"}
                       />
                     </IconButton>
                   </Tooltip>

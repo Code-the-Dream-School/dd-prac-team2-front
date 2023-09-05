@@ -1,16 +1,51 @@
+/*
+    ==========================
+    =  THIRD PARTY LIBRARIES =
+    ==========================
+*/
 import { Container } from "@mui/material";
-import React, { useState } from "react";
-import AppButton from "../../../../components/Button/AppButton";
 import { CloudDownloadRounded } from "@mui/icons-material";
+import PropTypes from "prop-types";
+/*
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
+import React, { useState } from "react";
+/*
+    ==========================
+    =       COMPONENTS       =
+    ==========================
+*/
+import AppButton from "../../../../components/Button/AppButton";
 import AddCohort from "./AddCohort";
 
-const CohortsSlackAction = ({ params, onRegisterSlackChannel, onRegisterCohort }) => {
+const CohortsSlackAction = ({
+  params,
+  onRegisterSlackChannel,
+  onRegisterCohort,
+}) => {
+  /*
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
-
+  /*
+    ==========================
+    =      AUX VARIABLES     =
+    ==========================
+  */
   const slackChannelData = params.row;
+  /*
+    ==========================
+    =         HANDLERS       =
+    ==========================
+  */
   const handleOpenNewCohortDialog = (open) => {
-    setOpenNewCohortDialog(open)
-  }
+    setOpenNewCohortDialog(open);
+  };
+
   return (
     <>
       <Container
@@ -46,3 +81,9 @@ const CohortsSlackAction = ({ params, onRegisterSlackChannel, onRegisterCohort }
 };
 
 export default CohortsSlackAction;
+
+CohortsSlackAction.propTypes = {
+  params: PropTypes.object.isRequired,
+  onRegisterSlackChannel: PropTypes.func.isRequired,
+  onRegisterCohort: PropTypes.func.isRequired,
+};

@@ -68,6 +68,12 @@ const Cohorts = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Slack params={params}></Slack>,
+      sortComparator: (v1, v2) => {
+        v1.value = v1.row.slackId === null ? "0" : "1";
+        v2.value = v2.row.slackId === null ? "0" : "1";
+        console.log(v1, v2);
+        return v1.value.localeCompare(v2.value);
+      },
     },
     {
       field: "cohort",
@@ -102,10 +108,15 @@ const Cohorts = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Members params={params}></Members>,
+      sortComparator: (v1, v2) => {
+        return Number(v1.value)-Number(v2.value);
+      },
     },
     {
       field: "lessons",
       headerName: "Lessons",
+      sortable: false,
+      disableColumnMenu: true,
       minWidth: 125,
       maxWidth: 125,
       flex: 1,
@@ -265,17 +276,6 @@ const Cohorts = () => {
                 </AppButton>
               </AuthFormControl>
             </div>
-            {/* {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Loader />
-          </Box>
-        ) : ( */}
             <AppDataGrid
               columns={columns}
               rows={cohorts}
@@ -284,7 +284,6 @@ const Cohorts = () => {
               sortType={"asc"}
               variant="light"
             />
-            {/* )} */}
             {openNewCohortDialog ? (
               <AddCohort
                 open={openNewCohortDialog}

@@ -23,29 +23,29 @@ import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
 import PropTypes from "prop-types";
 
 /*
-      ==========================
-      =     REACT LIBRARIES    =
-      ==========================
-  */
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-  */
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
 import useAuth from "../../../../hooks/useAuth";
 /*
-      ==========================
-      =        STYLES          =
-      ==========================
-  */
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "../Cohorts.module.css";
 /*
-      ==========================
-      =        COMPONENTS      =
-      ==========================
-  */
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
 import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
@@ -54,10 +54,10 @@ import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
 import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const classList = [
   "Intro to programming",
   "React.js",
@@ -78,10 +78,10 @@ const AddCohort = ({
 }) => {
   console.log(slackChannelData);
   /*
-      ==========================
-      =         STATES         =
-      ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [reset, setReset] = useState(false);
   const [cohortName, setCohortName] = useState(slackChannelData?.name ?? "");
   const [className, setClassName] = useState(slackChannelData?.type ?? "");
@@ -108,20 +108,20 @@ const AddCohort = ({
   const [openSuccessToast, setOpenSuccessToast] = useState(false);
   const [openErrorToast, setOpenErrorToast] = useState(false);
   /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-    */
+    ==========================
+    =         HOOKS          =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
 
   /*
-      ==========================
-      =     ASYNC FUNCTIONS    =
-      ==========================
-    */
+    ==========================
+    =     ASYNC FUNCTIONS    =
+    ==========================
+  */
   const postCohorts = async (newCohort) => {
     console.log(newCohort);
     try {
@@ -155,19 +155,19 @@ const AddCohort = ({
   };
 
   /* 
-          ==========================
-          =        EFFECTS         =
-          ==========================
-      */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setReset(false);
   });
 
   /*
-          ==========================
-          =         HANDLERS       =
-          ==========================
-    */
+    ==========================
+    =         HANDLERS       =
+    ==========================
+  */
   //1. Cohort errorHandler:
   const handleCohortNameError = (inputError) => {
     setFormError((prevState) => ({
@@ -213,6 +213,7 @@ const AddCohort = ({
         console.log(response);
         setLoading(false); // Stop loading
         if (response.status === 201) {
+          setLoading(false); // Stop loading in case of error
           const options = { year: "2-digit", month: "numeric", day: "numeric" };
           const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
@@ -263,7 +264,6 @@ const AddCohort = ({
 
   return (
     <>
-      {loading ? <Loader /> : null}
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -308,6 +308,7 @@ const AddCohort = ({
           onSubmit={handleCohortSubmit}
         >
           <>
+            {loading ? <Loader /> : null}
             <DialogContent
               sx={{
                 width: "100%",
@@ -438,5 +439,8 @@ export default AddCohort;
 AddCohort.propTypes = {
   open: PropTypes.bool.isRequired,
   handleOpen: PropTypes.func.isRequired,
+  onRegisterSlackChannel: PropTypes.func,
+  onRegisterCohort: PropTypes.func.isRequired,
+  slackChannelData: PropTypes.object,
   onRegisterCohort: PropTypes.func.isRequired,
 };

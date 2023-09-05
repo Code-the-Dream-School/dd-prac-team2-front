@@ -3,7 +3,7 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-import { Chip, Container, Stack } from "@mui/material";
+import { Avatar, Container, Stack } from "@mui/material";
 import PropTypes from "prop-types";
 
 /*
@@ -13,8 +13,8 @@ import PropTypes from "prop-types";
 */
 import React from "react";
 
-const UserRoleRender = ({ params }) => {
-  const roles = params.row.userRole;
+const UserRoleRender = ({ params, rowField="userRole"}) => {
+  const roles = params.row[rowField];
 
   return (
     <Container
@@ -28,20 +28,11 @@ const UserRoleRender = ({ params }) => {
     >
       <Stack direction={"row"} spacing={1}>
         {roles.map((role) => (
-          <Chip
+          <Avatar
             key={`${role}-${params.row.userId}`}
-            label={role}
-            sx={{
-              backgroundColor:
-                role === "admin"
-                  ? "#B8621B"
-                  : role === "mentor"
-                  ? "#609966"
-                  : "#0F3460",
-              color: "white",
-              fontWeight: "bold",
-              textTransform: "capitalize",
-            }}
+            alt={role}
+            variant="square"
+            src={role==="admin" ? "/images/admin.png" : role==="mentor" ? "/images/mentor.png":"/images/student.png"}
           />
         ))}
       </Stack>
@@ -53,4 +44,5 @@ export default UserRoleRender;
 
 UserRoleRender.propTypes = {
   params: PropTypes.object.isRequired,
+  rowField: PropTypes.string,
 };

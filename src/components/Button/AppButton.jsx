@@ -22,7 +22,6 @@ const AppButton = ({
   text,
   type,
   width,
-  height,
   color="#C84B31",
   textColor,
   handlerFunction,
