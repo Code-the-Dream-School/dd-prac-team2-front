@@ -34,11 +34,11 @@ import RegisterOnCohort from "./pages/Admin/Users/RegisterOnCohort/RegisterOnCoh
 import RegisterUsers from "./pages/Admin/Users/Register/RegisterUsers";
 import AccountConfirmation from "./pages/AccountConfirmation/AccountConfirmation";
 import Cohort from "./pages/Mentor/Cohort";
-import MentorSessions from "./pages/Mentor/MentorSessions";
+import MentorSessions from "./pages/Mentor/MentorSession/MentorSessions";
 import MentorContext from "./pages/Mentor/MentorContext";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
-import MentorSession from "./pages/Mentor/SessionDetails";
+import MentorSessionDetails from "./pages/Mentor/MentorSessionDetails";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -200,7 +200,7 @@ const App = () => {
                 ></Route>
                 <Route
                   path="mentor/session/:sessionId"
-                  element={<MentorSession />}
+                  element={<MentorSessionDetails />}
                 ></Route>
               </Route>
             </Route>
