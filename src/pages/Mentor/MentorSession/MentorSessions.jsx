@@ -28,7 +28,7 @@ function MentorSessions() {
   const updateSessions = (session) => {
     const dataGridSession = mapSessionToDataGrid(session);
     const newSessions = [...sessions, dataGridSession];
-    newSessions.sort((a, b) => (a.start > b.start ? 1 : -1));
+    newSessions.sort((a, b) => (a.date > b.date ? 1 : -1));
     setSessions(newSessions);
   };
 
