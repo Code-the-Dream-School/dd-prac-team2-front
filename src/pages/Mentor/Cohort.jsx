@@ -5,15 +5,18 @@ import {
   List,
   Card,
   CardContent,
-  CardActions,
-  Button,
   CircularProgress,
   IconButton,
+  Tooltip,
+  ListItemText,
+  Badge,
 } from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
+import { formatDateAndTime } from "../../util";
 
 const Cohort = () => {
   const [currentWeek, setCurrentWeek] = useState();
@@ -55,6 +58,12 @@ const Cohort = () => {
       return;
     }
     getWeek(currentWeek.index - 1);
+  };
+
+  const handleClick = (sessionId) => {
+    if (sessionId) {
+      navigate(`/mentor/session/${sessionId}`);
+    }
   };
 
   return (
@@ -128,28 +137,89 @@ const Cohort = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBlockEnd: 2,
+                  marginTop: "1px",
                 }}
               >
-                <Box>
-                  <CardContent>
-                    <Link to={`/mentor/session/${session._id}`}>
-                      {" "}
-                      {`${session.type} session`}
-                    </Link>
-                    <Typography variant="subtitle1">
-                      {new Date(session.start).toLocaleDateString()}
+                <Box sx={{ p: 0.3 }}>
+                  <CardContent
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "#f3950d",
+                        borderRadius: 1.5,
+                      },
+                    }}
+                  >
+                    <Typography
+                      onClick={() => handleClick(session._id)}
+                      variant="h6"
+                      color="#112f58"
+                    >
+                      <Tooltip
+                        title="Click to see session details."
+                        followCursor
+                        placement="top"
+                      >
+                        <b>{`${session.type} Session`}</b>
+                      </Tooltip>
+                    </Typography>
+                    <Typography variant="subtitle1" color="#c84b31">
+                      <b>{formatDateAndTime(session.start)}</b>{" "}
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box>
+                <Box display="flex">
                   <CardContent>
-                    <Typography>{`${session.participant.length} students confirmed`}</Typography>
+                    <ListItemText
+                      sx={{
+                        "& .MuiListItemText-primary": {
+                          marginBottom: "8px",
+                        },
+                      }}
+                      primary={
+                        <Box>
+                          Host:
+                          <Typography
+                            sx={{ display: "inline" }}
+                            paragraph={true}
+                            variant="h7"
+                            color="#112f58"
+                          >
+                            <b>
+                              {` ${session.creator.name ?? "Not assigned"}`}
+                            </b>
+                          </Typography>
+                        </Box>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="text.primary"
+                            textAlign="center"
+                          >
+                            {`Attendees:  `}
+                          </Typography>
+                          <Badge
+                            sx={{
+                              "& .MuiBadge-badge": {
+                                backgroundColor:
+                                  session.participant.length > 0
+                                    ? { main: "#2196f3", contrastText: "white" }
+                                    : "gray",
+                              },
+                            }}
+                            badgeContent={`${session.participant.length}`}
+                            color="success"
+                          >
+                            <GroupIcon />
+                          </Badge>
+                        </>
+                      }
+                    />
                   </CardContent>
                 </Box>
-                <CardActions>
-                  <Button size="small">Details</Button>
-                </CardActions>
               </Card>
             ))
           ) : (
