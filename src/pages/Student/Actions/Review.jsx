@@ -64,7 +64,7 @@ const Review = ({ sessionId }) => {
         text={"Write a Review"}
         type="button"
         width="100%"
-        color="#1a1a2e"
+        color="#0F3460"
         handlerFunction={() => {
           handleOpenReview();
         }}
