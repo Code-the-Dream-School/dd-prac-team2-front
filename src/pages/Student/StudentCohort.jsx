@@ -34,7 +34,10 @@ import { useNavigate, useLocation } from "react-router-dom";
     ==========================
 */
 import AppButton from "../../components/Button/AppButton";
+import Loader from "../../components/Loader/Loader";
 import useAuth from "../../hooks/useAuth";
+
+import styles from "./Student.module.css";
 
 const StudentCohort = () => {
   /*
@@ -52,10 +55,9 @@ const StudentCohort = () => {
       ==========================
   */
   const [currentWeek, setCurrentWeek] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const cohortId = state._id;
   const navigate = useNavigate();
-
   /*
       ==========================
       =      AUX FUNCTION      =
@@ -93,8 +95,12 @@ const StudentCohort = () => {
       =   HANDLER FUNCTIONS    =
       ==========================
   */
+  //1. Function to navigate back
+  const goBack = () => {
+    navigate(-1);
+  };
+
   const getCurrentWeek = async () => {
-    setLoading(true);
     try {
       const { data } = await axiosPrivate.get(`/week/${cohortId}/current`);
       setCurrentWeek(data.currentWeek);
@@ -108,11 +114,13 @@ const StudentCohort = () => {
 
   const handleConfirmStatus = async (sessionID) => {
     if (!isUserOnSession(sessionID)) {
-      setLoading(true);
       try {
-        const data = await axiosPrivate.patch(`/session/${sessionID}/student/updateStatus`, {
-          status: true,
-        });
+        const data = await axiosPrivate.patch(
+          `/session/${sessionID}/student/updateStatus`,
+          {
+            status: true,
+          }
+        );
         console.log(data);
         setCurrentWeek((prevState) => ({
           ...prevState,
@@ -127,10 +135,8 @@ const StudentCohort = () => {
             }
           }),
         }));
-        setLoading(false);
       } catch (error) {
         if (error.response.status === 403) {
-          setLoading(false);
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -143,7 +149,6 @@ const StudentCohort = () => {
             accessToken: "",
           });
         } else {
-          setLoading(false);
           console.error(error);
         }
       }
@@ -152,7 +157,6 @@ const StudentCohort = () => {
 
   const handleCancelStatus = async (sessionID) => {
     if (isUserOnSession(sessionID)) {
-      setLoading(true);
       try {
         await axiosPrivate.patch(`/session/${sessionID}/student/updateStatus`, {
           status: false,
@@ -172,10 +176,8 @@ const StudentCohort = () => {
             }
           }),
         }));
-        setLoading(false);
       } catch (error) {
         if (error.response.status === 403) {
-          setLoading(false);
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -188,7 +190,6 @@ const StudentCohort = () => {
             accessToken: "",
           });
         } else {
-          setLoading(false);
           console.error(error);
         }
       }
@@ -210,108 +211,143 @@ const StudentCohort = () => {
   }, []);
 
   return (
-    <Container>
-      <Typography
-        component={"h1"}
-        sx={{
-          backgroundColor: "#C84B31",
-          padding: 2,
-          color: "background.paper",
-          textAlign: "center",
-          fontWeight: "bold",
-          fontSize: 25,
-          borderRadius: 2,
-          marginBottom: 4,
-        }}
-      >
-        {`${state.name} Mentor Session`}
-      </Typography>
-      <Box
-        sx={{
-          justifyContent: "center",
-          padding: 3,
-          backgroundColor: "#1a1a2e",
-          fontSize: 25,
-          borderRadius: 2,
-          marginBottom: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            bgcolor: "transparent",
-          }}
-        ></Box>
-        <Typography
-          sx={{
-            backgroundColor: "#1a1a2e",
-            padding: 3,
-            color: "background.paper",
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-          component={"div"}
-        >
-          <Box
+    <>
+      {loading ? (
+        <Loader></Loader>
+      ) : (
+        <Container>
+          <Typography
+            component={"h1"}
             sx={{
-              width: "60%",
-              margin: "auto",
               backgroundColor: "#C84B31",
+              padding: 2,
+              color: "background.paper",
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: 25,
               borderRadius: 2,
               marginBottom: 4,
-              p: 0.5,
-              fontSize: 22,
             }}
           >
-            {currentWeek?.name}
-          </Box>
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            spacing={{ xs: 1, sm: 2, md: 4 }}
-            alignItems="center"
-            justifyContent="center"
+            {`${state.name} Mentor Session`}
+          </Typography>
+          <Box
+            sx={{
+              justifyContent: "center",
+              padding: 3,
+              backgroundColor: "#1a1a2e",
+              fontSize: 25,
+              borderRadius: 2,
+              marginBottom: 4,
+            }}
           >
-            <Chip
-              label={`Start Date:  ${new Date(
-                currentWeek?.start
-              ).toLocaleDateString()}`}
-              sx={{
-                backgroundColor: "#C84B31",
-                color: "white",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  transition: "all 0.2s ease-in-out",
-                },
-              }}
-            />
-            <Chip
-              label={`End Date:  ${new Date(
-                currentWeek?.end
-              ).toLocaleDateString()}`}
-              sx={{
-                backgroundColor: "#C84B31",
-                color: "white",
-                "&:hover": {
-                  transform: "scale(1.05)",
-                  transition: "all 0.2s ease-in-out",
-                },
-              }}
-            />
-          </Stack>
-        </Typography>
-      </Box>
-      {loading ? (
-        <Box
-          sx={{ display: "flex", justifyContent: "center", paddingBlock: 2 }}
-        >
-          <CircularProgress />
-        </Box>
-      ) : (
-        <List>
-          {currentWeek?.sessions?.length > 0 ? (
-            currentWeek?.sessions.map((session) => (
+            {currentWeek?.sessions?.length > 0 ? (
+              <>
+                {" "}
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    bgcolor: "transparent",
+                  }}
+                ></Box>
+                <Typography
+                  sx={{
+                    backgroundColor: "#1a1a2e",
+                    padding: 3,
+                    color: "background.paper",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    fontSize: 25,
+                  }}
+                  component={"div"}
+                >
+                  <Box
+                    sx={{
+                      width: "60%",
+                      margin: "auto",
+                      backgroundColor: "#C84B31",
+                      borderRadius: 2,
+                      marginBottom: 4,
+                      p: 0.5,
+                      fontSize: 22,
+                    }}
+                  >
+                    {currentWeek?.name}
+                  </Box>
+                  <Stack
+                    direction={{ xs: "column", sm: "row" }}
+                    spacing={{ xs: 1, sm: 2, md: 4 }}
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Chip
+                      label={`Start Date:  ${new Date(
+                        currentWeek?.start
+                      ).toLocaleDateString()}`}
+                      sx={{
+                        backgroundColor: "#C84B31",
+                        color: "white",
+                        "&:hover": {
+                          transform: "scale(1.05)",
+                          transition: "all 0.2s ease-in-out",
+                        },
+                      }}
+                    />
+                    <Chip
+                      label={`End Date:  ${new Date(
+                        currentWeek?.end
+                      ).toLocaleDateString()}`}
+                      sx={{
+                        backgroundColor: "#C84B31",
+                        color: "white",
+                        "&:hover": {
+                          transform: "scale(1.05)",
+                          transition: "all 0.2s ease-in-out",
+                        },
+                      }}
+                    />
+                  </Stack>
+                </Typography>
+              </>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
+                  gap:2,
+                }}
+              >
+                <Typography
+                  sx={{
+                    backgroundColor: "#f2f2f2",
+                    padding: 2,
+                    borderRadius: 2,
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    width: "85%",
+                  }}
+                >
+                  No sessions scheduled for this week
+                </Typography>
+                <div className={styles.buttonContainer}>
+                  <AppButton
+                    text={"Go back"}
+                    type="button"
+                    width="100%"
+                    handlerFunction={() => {
+                      goBack();
+                    }}
+                  ></AppButton>
+                </div>
+              </Box>
+            )}
+          </Box>
+          <List>
+            {currentWeek?.sessions.map((session) => (
               <Card
                 key={session._id}
                 sx={{
@@ -432,23 +468,11 @@ const StudentCohort = () => {
                   )}
                 </CardActions>
               </Card>
-            ))
-          ) : (
-            <Typography
-              sx={{
-                backgroundColor: "#f2f2f2",
-                padding: 2,
-                borderRadius: 2,
-                textAlign: "center",
-                fontWeight: "bold",
-              }}
-            >
-              No sessions scheduled for this week
-            </Typography>
-          )}
-        </List>
+            ))}
+          </List>
+        </Container>
       )}
-    </Container>
+    </>
   );
 };
 
