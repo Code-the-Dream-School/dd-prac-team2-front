@@ -229,7 +229,7 @@ const StudentCohort = () => {
               marginBottom: 4,
             }}
           >
-            {`${state.name} Mentor Session`}
+            {`${state.name} Sessions`}
           </Typography>
           <Box
             sx={{
