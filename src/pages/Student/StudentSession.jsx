@@ -52,15 +52,14 @@ const StudentSession = () => {
   console.log(currentSession);
 
   const getCurrentSession = async () => {
-    try{
+    try {
       const { data } = await axiosPrivate.get(`/session/${sessionId}`);
       setCurrentSession(data.session);
       await loggedInUserStatus();
       setLoading(false);
       console.log(data);
       console.log(formatDateAndTime(data.session.end));
-    }
-    catch(error){
+    } catch (error) {
       console.error(error);
     }
   };
@@ -145,9 +144,10 @@ const StudentSession = () => {
             sx={{
               display: "flex",
               justifyContent: "center",
+              flexDirection: { xs: "column", sm: "row", md: "row" },
               padding: 2,
               gap: 2,
-              backgroundColor: "#C84B31",
+              backgroundColor: "#1A1A2E",
               fontSize: 25,
               borderRadius: 2,
               marginBottom: 4,
@@ -164,16 +164,27 @@ const StudentSession = () => {
               You're {userStatus === "Confirm" ? "Enrolled" : "Not Enrolled"}
             </Button>
             <Divider
-              orientation="vertical"
+              orientation={"vertical"}
               flexItem
-              sx={{ borderRightWidth: 3, borderRightColor: "white" }}
+              sx={{
+                borderWidth: 1,
+                borderColor: "white",
+                "&::before, &::after": {
+                  borderColor: "white",
+                  borderWidth: 1,
+                },
+              }}
             />
-            <Typography
-              component="div"
-              sx={{ border: 2, p: 1, borderRadius: 1, bgcolor: "#1a1a2e" }}
+            <Box
+              sx={{
+                width: { xs: "100%", sm: "30%", md: "30%" },
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
               <Review sessionId={sessionId} />
-            </Typography>
+            </Box>
           </Box>
           <Box
             sx={{
