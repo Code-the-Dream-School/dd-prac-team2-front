@@ -107,16 +107,6 @@ const adminPages = [
 
 const studentPages = [
   { title: "Home", icon: <HomeRounded sx={{ color: "white" }} />, link: "/" },
-  {
-    title: "Cohorts",
-    icon: <SchoolRounded sx={{ color: "white" }} />,
-    link: "student/cohorts",
-  },
-  {
-    title: "Users",
-    icon: <SupervisedUserCircleRounded sx={{ color: "white" }} />,
-    link: "/sessions",
-  },
 ];
 
 const mentorPages = [
