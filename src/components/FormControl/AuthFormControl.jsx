@@ -22,7 +22,7 @@ const StyledAuthFormControl = styled(FormControl)(() => ({
   flexDirection: "row",
   alignItems: "center",
   justifyContent: "center",
-  gap: "10px",
+  gap: "15px",
   //Spacing
   padding: "5px",
 }));

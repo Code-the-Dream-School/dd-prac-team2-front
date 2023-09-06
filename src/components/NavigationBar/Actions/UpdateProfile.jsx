@@ -21,6 +21,7 @@ import {
   Email,
 } from "@mui/icons-material";
 import useAxiosPrivate from "./../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -144,43 +145,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
     }
   };
 
-  const handleEmailSubmit = async (event) => {
-    event.preventDefault();
-    const body = {
-      email: event.target.userEmail.value,
-    };
-    try {
-      if (!formError.userEmailError.error) {
-        const response = await axiosPrivate.patch("/profile", body);
-        setAuth((prevState) => ({
-          ...prevState,
-          userEmail: response.data.profile.email,
-        }));
-        console.log(auth);
-      } else {
-        console.error("There is an error preventing the form submission");
-      }
-    } catch (error) {
-      if (error.response.status === 403) {
-        console.error(error);
-        //User is required to validate auth again
-        navigate("/login", { state: { from: location }, replace: true });
-        setAuth({
-          userId: "",
-          userName: "",
-          userEmail: "",
-          role: [],
-          loggedIn: false,
-          avatarUrl: "",
-          isActive: undefined,
-          accessToken: "",
-        });
-      } else {
-        console.error(error);
-      }
-    }
-  };
-
   const handleDeleteAccount = async () => {
     try {
       const response = await axiosPrivate.delete("/profile");
@@ -271,8 +235,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
             <AuthFormControl width="75%">
               <Avatar
                 alt={auth.userName}
-                src="/images/userLarge.png"
-                sx={{ width: 100, height: 100 }}
+                src={auth.avatarUrl ?? "/images/userLarge.png"}
+                sx={{ width: 200, height: 200 }}
               />
             </AuthFormControl>
             <Box
@@ -336,7 +300,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
               </AuthFormControl>
             </Box>
             <Box
-              component={"form"}
               sx={{
                 display: "flex",
                 flexDirection: "column",
@@ -346,7 +309,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
                 color: "#C84B31",
               }}
               autoComplete="off"
-              onSubmit={handleEmailSubmit}
             >
               <AuthFormControl width="75%">
                 <Box
@@ -362,6 +324,7 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
                 </Box>
                 <FormTextField
                   required
+                  disabled={true}
                   value={auth.userEmail}
                   type="text"
                   label="E-mail:"
@@ -374,25 +337,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
                   errorMessage={"Please enter a valid e-mail address"}
                   reset={reset}
                 ></FormTextField>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <AppButton
-                    text={"Update"}
-                    type="submit"
-                    width="auto"
-                    color="#F3950D"
-                    handlerFunction={() => {}}
-                  >
-                    <EditRounded></EditRounded>
-                  </AppButton>
-                  <br></br>
-                  <br></br>
-                </Box>
               </AuthFormControl>
             </Box>
           </div>
@@ -414,3 +358,8 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
 };
 
 export default UpdateProfile;
+
+UpdateProfile.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleOpenDialog: PropTypes.func.isRequired,
+};

@@ -32,11 +32,14 @@ const useRefreshToken = () => {
       //console.log(response.data.accessToken);
       console.log("refresh", response);
       return {
-        userId: response.data.user.userId,
+        userId: response.data.user.id,
+        slackId: response.data.user.slackId,
         userName: response.data.user.name,
         userEmail: response.data.user.email,
-        role: response.data.user.role,
+        role: response.data.user.roles,
         loggedIn: true,
+        avatarUrl: response.data.user.avatarUrl,
+        isActive: response.data.user.isActivated,
         accessToken: response.data.token,
       };
     });

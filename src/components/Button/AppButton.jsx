@@ -22,15 +22,13 @@ const AppButton = ({
   text,
   type,
   width,
-  height,
-  color,
+  color="#C84B31",
   textColor,
   handlerFunction,
 }) => {
   const handleOnClick = () => {
     handlerFunction();
   };
-
   return (
     <StyledButton
       key={text}

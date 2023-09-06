@@ -20,43 +20,44 @@ import {
 } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
-import PropTypes from "prop-types"
+import PropTypes from "prop-types";
 
 /*
-      ==========================
-      =     REACT LIBRARIES    =
-      ==========================
-  */
+    ==========================
+    =     REACT LIBRARIES    =
+    ==========================
+*/
 import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-  */
+    ==========================
+    =         HOOKS          =
+    ==========================
+*/
 import useAuth from "../../../../hooks/useAuth";
 /*
-      ==========================
-      =        STYLES          =
-      ==========================
-  */
+    ==========================
+    =        STYLES          =
+    ==========================
+*/
 import styles from "../Cohorts.module.css";
 /*
-      ==========================
-      =        COMPONENTS      =
-      ==========================
-  */
+    ==========================
+    =        COMPONENTS      =
+    ==========================
+*/
 import AppButton from "../../../../components/Button/AppButton";
 import Loader from "../../../../components/Loader/Loader";
 import AuthFormControl from "../../../../components/FormControl/AuthFormControl";
 import FormTextField from "../../../../components/TextField/FormTextField";
 import FormSelect from "../../../../components/Select/FormSelect";
 import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
-      ==========================
-      =     AUX VARIABLES      =
-      ==========================
-  */
+    ==========================
+    =     AUX VARIABLES      =
+    ==========================
+*/
 const classList = [
   "Intro to programming",
   "React.js",
@@ -68,16 +69,25 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
+const AddCohort = ({
+  open,
+  handleOpen,
+  onRegisterSlackChannel,
+  onRegisterCohort,
+  slackChannelData,
+}) => {
+  console.log(slackChannelData);
   /*
-      ==========================
-      =         STATES         =
-      ==========================
-    */
+    ==========================
+    =         STATES         =
+    ==========================
+  */
   const [reset, setReset] = useState(false);
-  const [className, setClassName] = useState("");
-  const [startDate, setStartDate] = useState(dayjs());
-  const [endDate, setEndDate] = useState(dayjs());
+  const [cohortName, setCohortName] = useState(slackChannelData?.name ?? "");
+  const [className, setClassName] = useState(slackChannelData?.type ?? "");
+  const [startDate, setStartDate] = useState(
+    dayjs(slackChannelData?.startDate) ?? dayjs()
+  );
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
@@ -85,33 +95,33 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
       errorMessage: "Please enter a valid name",
     },
     classNameError: {
-      error: true, //Initial value is blank, this is why I set the error to true.
+      error: slackChannelData === undefined ? true : false, //Initial value is blank, this is why I set the error to true.
       errorMessage: "Please select a class for this cohort",
     },
     startDateError: {
       error: false,
       errorMessage: "Please select a start date for this cohort",
     },
-    endDateError: {
-      error: false,
-      errorMessage: "Please select an end date for this cohort",
-    },
   });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [openSuccessToast, setOpenSuccessToast] = useState(false);
+  const [openErrorToast, setOpenErrorToast] = useState(false);
   /*
-      ==========================
-      =         HOOKS          =
-      ==========================
-    */
+    ==========================
+    =         HOOKS          =
+    ==========================
+  */
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
   const location = useLocation();
   const { setAuth } = useAuth();
 
   /*
-      ==========================
-      =     ASYNC FUNCTIONS    =
-      ==========================
-    */
+    ==========================
+    =     ASYNC FUNCTIONS    =
+    ==========================
+  */
   const postCohorts = async (newCohort) => {
     console.log(newCohort);
     try {
@@ -134,24 +144,30 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
         });
       } else {
         console.error(error);
+        setSuccessMessage("");
+        setErrorMessage("");
+        setErrorMessage(
+          `Error. New cohort was not added. ${error.response.data.msg}.`
+        );
+        setOpenErrorToast(true);
       }
     }
   };
 
   /* 
-          ==========================
-          =        EFFECTS         =
-          ==========================
-      */
+    ==========================
+    =        EFFECTS         =
+    ==========================
+  */
   useEffect(() => {
     setReset(false);
   });
 
   /*
-          ==========================
-          =         HANDLERS       =
-          ==========================
-    */
+    ==========================
+    =         HANDLERS       =
+    ==========================
+  */
   //1. Cohort errorHandler:
   const handleCohortNameError = (inputError) => {
     setFormError((prevState) => ({
@@ -176,71 +192,73 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
   //3. Start date handler
   const handleStartDateChange = (newStartDate) => {
     setStartDate(newStartDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      endDateError: {
-        ...prevState.endDateError,
-        error: endDate < newStartDate ? true : false,
-      },
-    }));
   };
-  //4. End date handler
-  const handleEndDateChange = (newEndDate) => {
-    setEndDate(newEndDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      startDateError: {
-        ...prevState.startDateError,
-        error: newEndDate < startDate ? true : false,
-      },
-      endDateError: {
-        ...prevState.endDateError,
-        error: newEndDate < startDate ? true : false,
-      },
-    }));
-  };
-  //5. Form onSubmit event handler
+
+  //4. Form onSubmit event handler
   const handleCohortSubmit = async (event) => {
     console.log("I entered");
     event.preventDefault();
     const newCohort = {
+      slackId: slackChannelData?.slackId ?? null,
       name: event.target.cohort.value.trim(),
       start: startDate.format(),
-      end: endDate.format(),
       type: className,
     };
     const errors = Object.values(formError);
+
     try {
       setLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
         console.log(response);
+        setLoading(false); // Stop loading
         if (response.status === 201) {
           setLoading(false); // Stop loading in case of error
+          const options = { year: "2-digit", month: "numeric", day: "numeric" };
+          const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
             ...prevCohorts,
             {
               id: response.data.cohort._id,
+              slackId: response.data.cohort.slackId,
               cohort: response.data.cohort.name,
               class: response.data.cohort.type,
-              startDate: new Date(response.data.cohort.start),
-              endDate: new Date(response.data.cohort.end),
+              members: response.data.cohort.participants.length,
+              startEndDate: dateTimeFormat.formatRange(
+                new Date(response.data.cohort.start),
+                new Date(response.data.cohort.end)
+              ),
             },
           ]);
-          handleOpen(false);
+          if (slackChannelData !== undefined) {
+            onRegisterSlackChannel((prevSlackChannels) =>
+              prevSlackChannels.filter(
+                (slackChannel) =>
+                  slackChannel.slackId !== slackChannelData.slackId
+              )
+            );
+          }
+          setSuccessMessage("");
+          setErrorMessage("");
+          setSuccessMessage("Success. New cohort has been added successfully!");
+          setOpenSuccessToast(true);
         }
       } else {
-        setLoading(false); // Stop loading in case of error
+        setSuccessMessage("");
+        setErrorMessage("");
+        setOpenErrorToast(true);
+        // setErrorMessage(response.data.msg);
+        setErrorMessage("Form validation is not letting form submission.");
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
       setLoading(false);
-      console.error(error);
+      console.log(error);
     } finally {
       setReset(true);
+      setCohortName("");
       setClassName("");
       setStartDate(dayjs());
-      setEndDate(dayjs());
     }
   };
 
@@ -289,127 +307,127 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
           autoComplete="off"
           onSubmit={handleCohortSubmit}
         >
-          {loading ? (
+          <>
+            {loading ? <Loader /> : null}
             <DialogContent
-              sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
+              sx={{
+                width: "100%",
+                height: "auto",
+                paddingX: 0,
+                paddingY: 1,
+              }}
               dividers
             >
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: "100%",
-                  height: "100px",
-                }}
-              >
-                <Loader />
-              </Box>
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SchoolRounded fontSize="large"></SchoolRounded>
+                    <br></br>
+                    <br></br>
+                  </Box>
+                  <FormTextField
+                    required
+                    value={cohortName}
+                    type="text"
+                    label="Cohort:"
+                    name="cohort"
+                    isFocused={true}
+                    width="100%"
+                    variant="dark"
+                    regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
+                    onHandleError={handleCohortNameError}
+                    errorMessage={"Please enter a valid name"}
+                    reset={reset}
+                  ></FormTextField>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <LaptopRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AuthFormControl
+                    width="100%"
+                    isNested={true}
+                    error={formError.classNameError.error}
+                  >
+                    <FormSelect
+                      id={"class"}
+                      name={"class"}
+                      label={"Class:"}
+                      selectValue={className}
+                      onSelectValue={handleClassNameChange}
+                      list={classList}
+                      variant={"dark"}
+                      multiple={false}
+                      error={formError.classNameError}
+                    ></FormSelect>
+                  </AuthFormControl>
+                </AuthFormControl>
+                <AuthFormControl width="75%">
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <CalendarMonthRounded fontSize="large" />
+                    <br></br>
+                  </Box>
+                  <AppDatePicker
+                    id={"startDate"}
+                    name={"startDate"}
+                    label={"Start date:"}
+                    dateValue={startDate}
+                    onDateValueChange={handleStartDateChange}
+                    variant={"dark"}
+                  ></AppDatePicker>
+                </AuthFormControl>
+              </div>
             </DialogContent>
-          ) : (
-            <>
-              <DialogContent
-                sx={{ width: "100%", height: "auto", paddingX: 0, paddingY: 1 }}
-                dividers
-              >
-                <div className={styles.formContainer}>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <SchoolRounded fontSize="large"></SchoolRounded>
-                      <br></br>
-                      <br></br>
-                    </Box>
-                    <FormTextField
-                      required
-                      type="text"
-                      label="Cohort:"
-                      name="cohort"
-                      isFocused={true}
-                      width="100%"
-                      variant="dark"
-                      regex={/^[a-zA-Z]+( [a-zA-Z]+)*$/}
-                      onHandleError={handleCohortNameError}
-                      errorMessage={"Please enter a valid name"}
-                      reset={reset}
-                    ></FormTextField>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <LaptopRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AuthFormControl
-                      width="100%"
-                      isNested={true}
-                      error={formError.classNameError.error}
-                    >
-                      <FormSelect
-                        id={"class"}
-                        name={"class"}
-                        label={"Class:"}
-                        selectValue={className}
-                        onSelectValue={handleClassNameChange}
-                        list={classList}
-                        variant={"dark"}
-                        multiple={false}
-                        error={formError.classNameError}
-                      ></FormSelect>
-                    </AuthFormControl>
-                  </AuthFormControl>
-                  <AuthFormControl width="75%">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <CalendarMonthRounded fontSize="large" />
-                      <br></br>
-                    </Box>
-                    <AppDatePicker
-                      id={"startDate"}
-                      name={"startDate"}
-                      label={"Start date:"}
-                      dateValue={startDate}
-                      onDateValueChange={handleStartDateChange}
-                      variant={"dark"}
-                    ></AppDatePicker>
-                    <AppDatePicker
-                      id={"endDate"}
-                      name={"endDate"}
-                      label={"End date:"}
-                      dateValue={endDate}
-                      onDateValueChange={handleEndDateChange}
-                      minDate={startDate}
-                      variant={"dark"}
-                    ></AppDatePicker>
-                  </AuthFormControl>
-                </div>
-              </DialogContent>
-              <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-                <AppButton
-                  text={"Add cohort"}
-                  type="submit"
-                  width="auto"
-                  handlerFunction={() => {}}
-                ></AppButton>
-              </DialogActions>
-            </>
-          )}
+            <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
+              <AppButton
+                text={"Add cohort"}
+                type="submit"
+                width="auto"
+                handlerFunction={() => {}}
+              ></AppButton>
+              <ToastMessage
+                open={openErrorToast}
+                severity="error"
+                variant="filled"
+                onClose={() => setOpenErrorToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                // background="#cd1818"
+                // color="white"
+                message={errorMessage}
+              ></ToastMessage>
+
+              <ToastMessage
+                open={openSuccessToast}
+                severity="success"
+                variant="filled"
+                // autoHideDuration={3000}
+                onClose={() => setOpenSuccessToast(false)}
+                dismissible
+                // sx={{ background: "white", color: "#CD1818" }}
+                message={successMessage}
+              ></ToastMessage>
+            </DialogActions>
+          </>
         </Box>
       </Dialog>
     </>
@@ -419,7 +437,10 @@ const AddCohort = ({ open, handleOpen, onRegisterCohort }) => {
 export default AddCohort;
 
 AddCohort.propTypes = {
-    open: PropTypes.bool.isRequired,
-    handleOpen: PropTypes.func.isRequired,
-    onRegisterCohort: PropTypes.func.isRequired
-}
+  open: PropTypes.bool.isRequired,
+  handleOpen: PropTypes.func.isRequired,
+  onRegisterSlackChannel: PropTypes.func,
+  onRegisterCohort: PropTypes.func.isRequired,
+  slackChannelData: PropTypes.object,
+  onRegisterCohort: PropTypes.func.isRequired,
+};

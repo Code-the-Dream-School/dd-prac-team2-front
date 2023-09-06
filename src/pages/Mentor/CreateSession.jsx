@@ -17,7 +17,7 @@ function CreateSession({ updateSessions }) {
   const [start, setStart] = useState(dayjs(Date.now()));
   const [end, setEnd] = useState(dayjs(Date.now() + 60 * 60 * 1000));
   const [isOneHour, setIsOneHour] = useState(true);
-  const [shouldRepeat, setShouldRepeat] = useState(true);
+  const [shouldRepeat, setShouldRepeat] = useState(false);
   const axiosPrivate = useAxiosPrivate();
   const [cohort] = useOutletContext();
 
@@ -34,6 +34,7 @@ function CreateSession({ updateSessions }) {
       type: "Mentor",
       link: "https://us02web.zoom.us/j/88579364493?pwd=loNkjaIa9sJA9slajs2jY5dz09",
       cohortId: cohort._id,
+      multipleSessions: shouldRepeat,
     });
 
     updateSessions(res.data.session);
@@ -44,12 +45,12 @@ function CreateSession({ updateSessions }) {
       <Typography sx={{ paddingBottom: "2rem", fontSize: 20 }}>
         Create new session
       </Typography>
-      <DateTimePicker
-        value={start}
-        onChange={(newVal) => setStart(newVal)}
-        label="Start"
-      />
       <FormGroup>
+        <DateTimePicker
+          value={start}
+          onChange={(newVal) => setStart(newVal)}
+          label="Start"
+        />
         <FormControlLabel
           control={
             <Checkbox

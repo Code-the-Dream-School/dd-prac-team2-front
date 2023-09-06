@@ -5,7 +5,6 @@
 */
 import { Chip, Container, Stack } from "@mui/material";
 import PropTypes from "prop-types";
-
 /*
     ==========================
     =     REACT LIBRARIES    =
@@ -13,8 +12,15 @@ import PropTypes from "prop-types";
 */
 import React from "react";
 
-const UserCohortRender = ({ params }) => {
-  const userCohorts = params.row.userCohort;
+const UserCohortRender = ({ params, rowField="userCohort"}) => {
+  /*
+    ==========================
+    =      AUX VARIABLES     =
+    ==========================
+  */
+  const userCohorts = params.row[rowField];
+  const cohortName = rowField==="userCohort" ? "cohort" : "name"
+  const cohortId = rowField === "userCohort" ? "userId" : "_id" 
   return (
     <Container
       sx={{
@@ -25,11 +31,11 @@ const UserCohortRender = ({ params }) => {
         paddingLeft: 0,
       }}
     >
-      <Stack direction={"row"} spacing={1}>
+      <Stack direction={"row"} spacing={1} overflow={"auto"}>
         {userCohorts.map((userCohort) => (
           <Chip
-            key={`${userCohort.cohort}-${params.row.userId}`}
-            label={userCohort.cohort}
+            key={`${userCohort[cohortName]}-${params.row[cohortId]}`}
+            label={userCohort[cohortName]}
             sx={{
               backgroundColor: "#0F3460",
               color: "white",
@@ -47,4 +53,5 @@ export default UserCohortRender;
 
 UserCohortRender.propTypes = {
   params: PropTypes.object.isRequired,
+  rowField: PropTypes.string
 };
