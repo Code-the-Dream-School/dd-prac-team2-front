@@ -48,11 +48,13 @@ const StudentSession = () => {
       errorMessage: "Please enter a valid comment",
     },
   });
+  console.log(currentSession);
 
   const getCurrentSession = async () => {
     setLoading(true);
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
+    console.log(data);
     setLoading(false);
     console.log(formatDateAndTime(data.session.end));
   };
@@ -89,7 +91,6 @@ const StudentSession = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-
     const { data } = await axiosPrivate.post("/session/comment", {
       name: auth.userName,
       content: e.target.comment.value.trim(),
@@ -97,6 +98,12 @@ const StudentSession = () => {
     });
     console.log(data);
     setComment("");
+    setReset(true);
+    setCurrentSession((prevCurrentSession)=>({
+      ...prevCurrentSession,
+     discussion: [...prevCurrentSession.discussion, {name: {_id: auth.userId, avatarUrl: auth.avatarUrl, name:auth.userName}, content: e.target.comment.value.trim(), _id: sessionId}]
+    }));
+
   };
   useEffect(() => {
     getCurrentSession();
@@ -116,6 +123,7 @@ const StudentSession = () => {
   console.log("Discussion:", currentSession?.discussion);
 
   return (
+
     <Container>
       <Box
         sx={{
@@ -250,7 +258,7 @@ const StudentSession = () => {
                   }}
                   key={p._id}
                   avatar={
-                    <Avatar sx={{ bgcolor: "white", color: blue[500] }}>
+                    <Avatar src={p.avatarUrl} sx={{ bgcolor: "white", color: blue[500] }}>
                       <SchoolOutlinedIcon />
                     </Avatar>
                   }
@@ -374,7 +382,7 @@ const StudentSession = () => {
                   }}
                 >
                   <ListItemAvatar>
-                    <Avatar>{`${d.name.name[0].toUpperCase()}`}</Avatar>
+                    <Avatar src={d.name.avatarUrl}>{`${d.name.name[0].toUpperCase()}`}</Avatar>
                   </ListItemAvatar>
                   <ListItemText
                     primary=<Typography

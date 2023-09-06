@@ -110,12 +110,10 @@ const StudentCohort = () => {
     if (!isUserOnSession(sessionID)) {
       setLoading(true);
       try {
-        const { data } = await axiosPrivate.patch(
-          `/session/${sessionID}/student/updateStatus`,
-          {
-            status: true,
-          }
-        );
+        const data = await axiosPrivate.patch(`/session/${sessionID}/student/updateStatus`, {
+          status: true,
+        });
+        console.log(data);
         setCurrentWeek((prevState) => ({
           ...prevState,
           sessions: prevState.sessions.map((session) => {
