@@ -14,6 +14,8 @@ import {
   ListItem,
   Button,
 } from "@mui/material";
+import AddCommentRoundedIcon from "@mui/icons-material/AddCommentRounded";
+
 import SchoolOutlinedIcon from "@mui/icons-material/SchoolOutlined";
 import { blue } from "@mui/material/colors";
 
@@ -96,19 +98,9 @@ const StudentSession = () => {
     console.log(data);
     setComment("");
   };
-
-  const getComment = async () => {
-    setLoading(true);
-    const { data } = await axiosPrivate.get("/session/comment");
-    console.log("Comments Array", data);
-    // setComment((prev)=>[...prev, data]);
-    setLoading(false);
-  };
-
   useEffect(() => {
     getCurrentSession();
     loggedInUserStatus();
-    getComment();
   }, [sessionId]);
 
   const handleCommentError = (inputError) => {
@@ -147,6 +139,17 @@ const StudentSession = () => {
         >
           You're {userStatus === "Confirm" ? "Enrolled" : "Not Enrolled"}
         </Button>
+        <Divider
+          orientation="vertical"
+          flexItem
+          sx={{ borderRightWidth: 3, borderRightColor: "white" }}
+        />
+        <Typography
+          component="div"
+          sx={{ border: 2, p: 1, borderRadius: 1, bgcolor: "#1a1a2e" }}
+        >
+          <Review sessionId={sessionId} />
+        </Typography>
       </Box>
       <Box
         sx={{
@@ -156,17 +159,25 @@ const StudentSession = () => {
           backgroundColor: "#1a1a2e",
           fontSize: 25,
           borderRadius: 2,
-          marginBottom: 4,
         }}
       >
         <Box
           sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
             backgroundColor: "#1a1a2e",
-            padding: 3,
+            padding: 2,
             textAlign: "center",
-            fontSize: 20,
           }}
         >
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            sx={{ marginBottom: 2, color: "white" }}
+          >
+            Session Time
+          </Typography>
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={{ xs: 1, sm: 2, md: 4 }}
@@ -174,7 +185,7 @@ const StudentSession = () => {
             justifyContent="center"
           >
             <Chip
-              label=<Typography>{`Start Time: ${
+              label=<Typography fontWeight="bold">{`Start Time: ${
                 currentSession?.start
                   ? getSessionTime(currentSession?.start)
                   : null
@@ -182,7 +193,7 @@ const StudentSession = () => {
               sx={{
                 backgroundColor: "#C84B31",
                 color: "white",
-                fontSize: 20,
+                fontWeight: "bold",
                 "&:hover": {
                   transform: "scale(1.05)",
                   transition: "all 0.2s ease-in-out",
@@ -190,7 +201,7 @@ const StudentSession = () => {
               }}
             />
             <Chip
-              label=<Typography>
+              label=<Typography fontWeight="bold">
                 {`End Time: ${
                   currentSession?.end
                     ? getSessionTime(currentSession?.end)
@@ -200,7 +211,6 @@ const StudentSession = () => {
               sx={{
                 backgroundColor: "#C84B31",
                 color: "white",
-                fontSize: 20,
                 "&:hover": {
                   transform: "scale(1.05)",
                   transition: "all 0.2s ease-in-out",
@@ -209,28 +219,24 @@ const StudentSession = () => {
             />
           </Stack>
         </Box>
-        <Box sx={{ backgroundColor: "#1a1a2e", padding: 3 }}>
-          <Typography component="div" sx={{ maxWidth: "60%", margin: "auto" }}>
-            <Review sessionId={sessionId} />
-          </Typography>
-        </Box>
         <Box
           sx={{
-            padding: 3,
             textAlign: "center",
             fontWeight: "bold",
             fontSize: 25,
             color: "white",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            marginBottom: 2,
           }}
         >
           <Typography variant="h5" fontWeight="bold">
             Session Attendees
           </Typography>
-          <br />
           <Stack
             direction="row"
             spacing={1}
-            divider={<Divider orientation="vertical" flexItem />}
             flexWrap="wrap"
             useFlexGap
             justifyContent="center"
@@ -238,14 +244,21 @@ const StudentSession = () => {
             {currentSession?.participant?.length > 0 ? (
               currentSession?.participant.map((p) => (
                 <Chip
+                  sx={{
+                    paddingX: 0,
+                    paddingy: 2,
+                  }}
                   key={p._id}
                   avatar={
-                    <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
+                    <Avatar sx={{ bgcolor: "white", color: blue[500] }}>
                       <SchoolOutlinedIcon />
                     </Avatar>
                   }
-                  label=<Typography color="white">{`${p.name}`}</Typography>
-                  variant="outlined"
+                  label=<Typography
+                    fontWeight="bold"
+                    color="white"
+                  >{`${p.name}`}</Typography>
+                  variant="filled"
                   color="success"
                 />
               ))
@@ -253,14 +266,14 @@ const StudentSession = () => {
               <Typography
                 component="div"
                 sx={{
-                  width: "75%",
+                  minWidth: "75%",
                   margin: "auto",
                   backgroundColor: "#C84B31",
                   borderRadius: 2,
                   textAlign: "center",
                   fontWeight: "bold",
                   fontSize: 25,
-                  padding: 1,
+                  padding: 2,
                 }}
               >
                 <Typography
@@ -268,13 +281,12 @@ const StudentSession = () => {
                   color="text.primary"
                   fontWeight="bold"
                   sx={{
-                    backgroundColor: "#f2f2f2",
-                    padding: 2,
                     width: "75%",
                     margin: "auto",
+                    backgroundColor: "#f2f2f2",
+                    padding: 2,
                     borderRadius: 2,
                     textAlign: "center",
-                    fontWeight: "bold",
                   }}
                 >
                   No students in this session
@@ -283,7 +295,7 @@ const StudentSession = () => {
             )}
           </Stack>
         </Box>
-        <br />
+
         <Box
           component={"form"}
           sx={{
@@ -292,7 +304,6 @@ const StudentSession = () => {
             justifyContent: "center",
             alignItems: "center",
             width: "100%",
-            marginBottom: 2,
           }}
           autoComplete="off"
           onSubmit={handleCommentSubmit}
@@ -326,78 +337,77 @@ const StudentSession = () => {
               type="submit"
               width="60%"
               handlerFunction={() => {}}
-            />
+            >
+              <AddCommentRoundedIcon />
+            </AppButton>
           </div>
         </Box>
-
         <Typography
-          component="div"
+          variant="h5"
+          fontWeight="bold"
+          color="White"
+          sx={{ textAlign: "center", marginTop: 1 }}
+        >
+          Discussion
+        </Typography>
+        <List
           sx={{
-            width: "75%",
-            margin: "auto",
+            display: "flex",
+            flexDirection: "column",
             backgroundColor: "#C84B31",
             borderRadius: 2,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
+            width: "75%",
+            margin: "auto",
           }}
         >
-          <Divider sx={{ color: "#FFFFFF" }}>Discussion</Divider>
-          <List
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            {currentSession?.discussion?.length > 0 ? (
-              currentSession?.discussion.map((d) => (
-                <ListItem alignItems="flex-start" key={d._id}>
-                  <Paper
-                    elevation={24}
-                    sx={{
-                      p: 2,
-                      width: "100% ",
-                      display: "flex",
-                      alignItems: "flex-start",
-                      borderRadius: 2,
-                    }}
-                  >
-                    <ListItemAvatar>
-                      <Avatar>{`${d.name.name[0].toUpperCase()}`}</Avatar>
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary=<Typography
-                        variant="body1"
-                        color="text.primary"
-                        fontWeight="bold"
-                      >{`${d.name.name}`}</Typography>
-                      secondary=<Typography
-                        variant="body2"
-                        fontSize="medium"
-                      >{`${d.content}`}</Typography>
-                    />
-                  </Paper>
-                </ListItem>
-              ))
-            ) : (
-              <Typography
-                variant="h6"
-                color="text.primary"
-                fontWeight="bold"
-                sx={{
-                  width: "75%",
-                  margin: "auto",
-                  backgroundColor: "#f2f2f2",
-                  padding: 2,
-                  borderRadius: 2,
-                  textAlign: "center",
-                }}
-              >
-                No discussions in this session
-              </Typography>
-            )}
-          </List>
-        </Typography>
+          {currentSession?.discussion?.length > 0 ? (
+            currentSession?.discussion.map((d) => (
+              <ListItem alignItems="flex-start" key={d._id} sx={{}}>
+                <Paper
+                  elevation={24}
+                  sx={{
+                    p: 2,
+                    width: "100% ",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    borderRadius: 2,
+                  }}
+                >
+                  <ListItemAvatar>
+                    <Avatar>{`${d.name.name[0].toUpperCase()}`}</Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary=<Typography
+                      variant="body1"
+                      color="text.primary"
+                      fontWeight="bold"
+                    >{`${d.name.name}`}</Typography>
+                    secondary=<Typography
+                      variant="body2"
+                      fontSize="medium"
+                    >{`${d.content}`}</Typography>
+                  />
+                </Paper>
+              </ListItem>
+            ))
+          ) : (
+            <Typography
+              variant="h6"
+              color="text.primary"
+              fontWeight="bold"
+              sx={{
+                width: "75%",
+                margin: "auto",
+                backgroundColor: "#f2f2f2",
+                padding: 2,
+                borderRadius: 2,
+                textAlign: "center",
+              }}
+            >
+              No discussions in this session
+            </Typography>
+          )}
+        </List>
       </Box>
     </Container>
   );

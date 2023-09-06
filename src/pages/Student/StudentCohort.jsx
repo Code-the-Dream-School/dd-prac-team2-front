@@ -442,6 +442,7 @@ const StudentCohort = () => {
                 padding: 2,
                 borderRadius: 2,
                 textAlign: "center",
+                fontWeight: "bold",
               }}
             >
               No sessions scheduled for this week
