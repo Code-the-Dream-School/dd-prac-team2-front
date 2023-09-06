@@ -335,7 +335,7 @@ const StudentSession = () => {
             <AppButton
               text={"Add a new comment"}
               type="submit"
-              width="60%"
+              width="40%"
               handlerFunction={() => {}}
             >
               <AddCommentRoundedIcon />
