@@ -14,14 +14,13 @@ import FormTextField from "../../../components/TextField/FormTextField";
 import AuthFormControl from "../../../components/FormControl/AuthFormControl";
 import styles from "../Student.module.css";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import TextArea from "../../../components/TextField/TextArea"
+import TextArea from "../../../components/TextField/TextArea";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 const Review = ({ sessionId }) => {
-
   const axiosPrivate = useAxiosPrivate();
   const [review, setReview] = useState();
   const [openDialog, setOpenDialog] = useState(false);
@@ -62,10 +61,10 @@ const Review = ({ sessionId }) => {
   return (
     <>
       <AppButton
-        text={"Write Review"}
+        text={"Write a Review"}
         type="button"
         width="100%"
-        color="#F3950D"
+        color="#1a1a2e"
         handlerFunction={() => {
           handleOpenReview();
         }}

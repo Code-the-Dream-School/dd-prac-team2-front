@@ -58,7 +58,6 @@ const Loader = ({
   handlerFunction,
 }) => {
   const [loading, setLoading] = useState(true); // Set this to false when the loading is complete
-
   return (
     <div>
       <Box

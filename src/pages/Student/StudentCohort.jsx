@@ -213,92 +213,97 @@ const StudentCohort = () => {
 
   return (
     <Container>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          bgcolor: "transparent",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#112f58",
-            border: 2,
-            borderColor: "#C84B31",
-            borderRadius: 2,
-            padding: 2,
-            margin: 1,
-            color: "background.paper",
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-            "&:hover": {
-              backgroundColor: "#f3950d",
-            },
-          }}
-        >
-          {state.name}
-        </Typography>
-      </Box>
       <Typography
+        component={"h1"}
         sx={{
           backgroundColor: "#C84B31",
-          borderRadius: 2,
-          padding: 1,
-          margin: 1,
+          padding: 2,
           color: "background.paper",
           textAlign: "center",
           fontWeight: "bold",
           fontSize: 25,
+          borderRadius: 2,
+          marginBottom: 4,
         }}
-        component={"div"}
+      >
+        {`${state.name} Mentor Session`}
+      </Typography>
+      <Box
+        sx={{
+          justifyContent: "center",
+          padding: 3,
+          backgroundColor: "#1a1a2e",
+          fontSize: 25,
+          borderRadius: 2,
+          marginBottom: 4,
+        }}
       >
         <Box
           sx={{
-            backgroundColor: "#112f58",
-            borderRadius: 2,
-            marginBottom: 1,
-            p: 0.5,
-            fontSize: 22,
+            display: "flex",
+            justifyContent: "center",
+            bgcolor: "transparent",
           }}
+        ></Box>
+        <Typography
+          sx={{
+            backgroundColor: "#1a1a2e",
+            padding: 3,
+            color: "background.paper",
+            textAlign: "center",
+            fontWeight: "bold",
+            fontSize: 25,
+          }}
+          component={"div"}
         >
-          {currentWeek?.name}
-        </Box>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={{ xs: 1, sm: 2, md: 4 }}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Chip
-            label={`Start Date:  ${new Date(
-              currentWeek?.start
-            ).toLocaleDateString()}`}
+          <Box
             sx={{
-              backgroundColor: "#112f57",
-              color: "white",
-              "&:hover": {
-                transform: "scale(1.05)",
-                transition: "all 0.2s ease-in-out",
-              },
+              width: "60%",
+              margin: "auto",
+              backgroundColor: "#C84B31",
+              borderRadius: 2,
+              marginBottom: 4,
+              p: 0.5,
+              fontSize: 22,
             }}
-          />
-          <Chip
-            label={`End Date:  ${new Date(
-              currentWeek?.end
-            ).toLocaleDateString()}`}
-            sx={{
-              backgroundColor: "#112f57",
-              color: "white",
-              "&:hover": {
-                transform: "scale(1.05)",
-                transition: "all 0.2s ease-in-out",
-              },
-            }}
-          />
-        </Stack>
-      </Typography>
+          >
+            {currentWeek?.name}
+          </Box>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 1, sm: 2, md: 4 }}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Chip
+              label={`Start Date:  ${new Date(
+                currentWeek?.start
+              ).toLocaleDateString()}`}
+              sx={{
+                backgroundColor: "#C84B31",
+                color: "white",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+            />
+            <Chip
+              label={`End Date:  ${new Date(
+                currentWeek?.end
+              ).toLocaleDateString()}`}
+              sx={{
+                backgroundColor: "#C84B31",
+                color: "white",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+            />
+          </Stack>
+        </Typography>
+      </Box>
       {loading ? (
         <Box
           sx={{ display: "flex", justifyContent: "center", paddingBlock: 2 }}
@@ -315,88 +320,71 @@ const StudentCohort = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginTop: "1px",
+                  marginBottom: 2,
                 }}
               >
-                <Box sx={{ p: 0.3 }}>
+                <Box onClick={() => handleClick(session._id)} width="30%">
                   <CardContent
                     sx={{
                       cursor: "pointer",
-                      "&:hover": {
-                        backgroundColor: "#f3950d",
-                        borderRadius: 1.5,
-                      },
                     }}
                   >
-                    <Typography
-                      onClick={() => handleClick(session._id)}
-                      variant="h6"
-                      color="#112f58"
-                    >
-                      <Tooltip
-                        title="Click to see session details."
-                        followCursor
-                        placement="top"
-                      >
-                        <b>{`${session.type} Session`}</b>
-                      </Tooltip>
-                    </Typography>
-                    <Typography variant="subtitle1" color="#c84b31">
-                      <b> {convertLocalTime(session.start)}</b>
+                    <Typography variant="h6" color="#112f58">
+                      <b>{`${session.type} Session`}</b>
+                      <Typography variant="body2" color="#c84b31">
+                        <b>{convertLocalTime(session.start)}</b>
+                      </Typography>
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box display="flex">
-                  <CardContent>
-                    <ListItemText
-                      sx={{
-                        "& .MuiListItemText-primary": {
-                          marginBottom: "8px",
-                        },
-                      }}
-                      primary={
-                        <Box>
-                          Host:
-                          <Typography
-                            sx={{ display: "inline" }}
-                            paragraph={true}
-                            variant="h7"
-                            color="#112f58"
-                          >
-                            <b>
-                              {` ${session.creator.name ?? "Not assigned"}`}
-                            </b>
-                          </Typography>
-                        </Box>
-                      }
-                      secondary={
-                        <>
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            color="text.primary"
-                            textAlign="center"
-                          >
-                            {`Attendees:  `}
-                          </Typography>
-                          <Badge
-                            sx={{
-                              "& .MuiBadge-badge": {
-                                backgroundColor:
-                                  session.participant.length > 0
-                                    ? { main: "#2196f3", contrastText: "white" }
-                                    : "gray",
-                              },
-                            }}
-                            badgeContent={`${session.participant.length}`}
-                            color="success"
-                          >
-                            <GroupIcon />
-                          </Badge>
-                        </>
-                      }
-                    />
-                  </CardContent>
+                <Box display="flex" width="35%">
+                  <ListItemText
+                    sx={{
+                      "& .MuiListItemText-primary": {
+                        marginBottom: "8px",
+                        fontWeight: "bold",
+                        fontSize: 18,
+                      },
+                    }}
+                    primary={
+                      <Box sx={{ display: "inline-flex" }}>
+                        {`Host `}
+                        <Typography
+                          component={"p"}
+                          variant="h7"
+                          color="#112f58"
+                        >
+                          {`  --   ${session.creator.name ?? "Not assigned"}`}
+                        </Typography>
+                      </Box>
+                    }
+                    secondary={
+                      <>
+                        <Typography
+                          component="span"
+                          variant="body1"
+                          color="text.primary"
+                          textAlign="center"
+                        >
+                          <b>{`Attendees:  `}</b>
+                        </Typography>
+                        <Badge
+                          sx={{
+                            "& .MuiBadge-badge": {
+                              backgroundColor:
+                                session.participant.length > 0
+                                  ? { main: "#2196f3", contrastText: "white" }
+                                  : "gray",
+                            },
+                          }}
+                          badgeContent={`${session.participant.length}`}
+                          color="success"
+                        >
+                          <GroupIcon />
+                        </Badge>
+                      </>
+                    }
+                  />
                 </Box>
                 <CardActions>
                   {session.participant.includes(auth.userId) ? (
@@ -454,6 +442,7 @@ const StudentCohort = () => {
                 padding: 2,
                 borderRadius: 2,
                 textAlign: "center",
+                fontWeight: "bold",
               }}
             >
               No sessions scheduled for this week
