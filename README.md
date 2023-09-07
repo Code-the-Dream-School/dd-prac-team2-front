@@ -79,6 +79,13 @@ To get started with MentorUp, follow these simple steps:
 ## Team Info
 
 - secch97 [https://github.com/secch97]
+- diorshelton [https://github.com/diorshelton]
+- miminiverse [https://github.com/Miminiverse]
+- cdpaiva [https://github.com/cdpaiva]
+- akabishau [https://github.com/akabishau]
+- Mbareck21 [https://github.com/Mbareck21]
+- LiubovCass[https://github.com/LiubovCass]
+
 
 ## Contributing
 
