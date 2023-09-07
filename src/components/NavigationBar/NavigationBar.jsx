@@ -6,9 +6,7 @@
 import {
   Avatar,
   Box,
-  Button,
   Container,
-  Divider,
   IconButton,
   List,
   ListItem,
@@ -22,10 +20,9 @@ import {
   Tooltip,
   Typography,
   styled,
-  useTheme,
 } from "@mui/material";
 import {
-  CalendarMonth,
+  HolidayVillage,
   HomeRounded,
   MenuRounded,
   SchoolRounded,
@@ -129,6 +126,11 @@ const mentorPages = [
     title: "Sessions",
     icon: <SchoolRounded sx={{ color: "white" }} />,
     link: "/mentor/sessions",
+  },
+  {
+    title: "Choose Cohort",
+    icon: <HolidayVillage sx={{ color: "white" }} />,
+    link: "/mentor?resetCohort=true",
   },
 ];
 

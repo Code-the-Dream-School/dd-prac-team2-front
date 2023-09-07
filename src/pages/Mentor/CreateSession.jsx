@@ -1,8 +1,6 @@
-import { DateTimePicker } from "@mui/x-date-pickers";
 import { useEffect, useState } from "react";
 import {
   Box,
-  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -11,6 +9,8 @@ import {
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import AppDateTimePicker from "../../components/DateTimePicker/AppDateTimePicker";
+import AppButton from "../../components/Button/AppButton";
 
 function CreateSession({ updateSessions }) {
   const navigate = useNavigate();
@@ -40,30 +40,43 @@ function CreateSession({ updateSessions }) {
     updateSessions(res.data.session);
   };
 
+  const handleChangeStartDate = (val) => {
+    setStart(val);
+    if (isOneHour) {
+      const newEnd = val.add(1, "h");
+      setEnd(newEnd);
+    }
+  };
+
+  const handleChangeEndDate = (val) => {
+    setEnd(val);
+  };
+
   return (
     <Box sx={{ backgroundColor: "#fefefe", padding: 4 }}>
-      <Typography sx={{ paddingBottom: "2rem", fontSize: 20 }}>
+      <Typography component="h1" sx={{ fontSize: "2rem", marginBlockEnd: 1 }}>
         Create new session
       </Typography>
       <FormGroup>
-        <DateTimePicker
+        <AppDateTimePicker
           value={start}
-          onChange={(newVal) => setStart(newVal)}
+          handleChange={handleChangeStartDate}
           label="Start"
         />
         <FormControlLabel
           control={
             <Checkbox
               checked={isOneHour}
+              color="error"
               onChange={(e) => setIsOneHour(e.target.checked)}
             />
           }
           label="1 hour session"
         ></FormControlLabel>
         {!isOneHour && (
-          <DateTimePicker
+          <AppDateTimePicker
             value={end}
-            onChange={(newVal) => setEnd(newVal)}
+            handleChange={handleChangeEndDate}
             label="End"
           />
         )}
@@ -71,15 +84,19 @@ function CreateSession({ updateSessions }) {
           control={
             <Checkbox
               checked={shouldRepeat}
+              color="error"
               onChange={(e) => setShouldRepeat(e.target.checked)}
             />
           }
           label="Repeat in the next weeks"
         ></FormControlLabel>
       </FormGroup>
-      <Button variant="contained" onClick={handleClick}>
-        Create session
-      </Button>
+      <AppButton
+        text="Create session"
+        type="button"
+        handlerFunction={handleClick}
+        width="auto"
+      />
     </Box>
   );
 }

@@ -5,15 +5,20 @@ import {
   List,
   Card,
   CardContent,
-  CardActions,
-  Button,
   CircularProgress,
   IconButton,
+  Tooltip,
+  ListItemText,
+  Badge,
+  Stack,
+  Chip,
 } from "@mui/material";
+import GroupIcon from "@mui/icons-material/Group";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
+import { formatDateAndTime } from "../../util";
 
 const Cohort = () => {
   const [currentWeek, setCurrentWeek] = useState();
@@ -57,56 +62,98 @@ const Cohort = () => {
     getWeek(currentWeek.index - 1);
   };
 
+  const handleClick = (sessionId) => {
+    if (sessionId) {
+      navigate(`/mentor/session/${sessionId}`);
+    }
+  };
+
   return (
     <Container>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          bgcolor: "transparent",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 2,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {cohort?.name}
-        </Typography>
-      </Box>
-      <Box
+      <Typography
+        component={"h1"}
         sx={{
           backgroundColor: "#C84B31",
-          display: "flex",
-          justifyContent: "space-between",
+          padding: 2,
+          color: "background.paper",
+          textAlign: "center",
+          fontWeight: "bold",
+          fontSize: 25,
           borderRadius: 2,
+          marginBottom: 4,
         }}
       >
-        <IconButton onClick={handlePreviousWeek}>
-          <NavigateBefore fontSize="large" />
-        </IconButton>
-        <Typography
+        {`${cohort?.name} Mentor Session`}
+      </Typography>
+      <Box
+        sx={{
+          justifyContent: "center",
+          padding: 3,
+          backgroundColor: "#1a1a2e",
+          fontSize: 25,
+          borderRadius: 2,
+          marginBottom: 4,
+        }}
+      >
+        <Box
           sx={{
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            fontWeight: "bold",
-            fontSize: 25,
-            flexGrow: 1,
+            display: "flex",
+            justifyContent: "space-around",
+            alignItems: "center",
+            width: "60%",
+            margin: "auto",
+            backgroundColor: "#C84B31",
+            borderRadius: 2,
+            marginBottom: 4,
+            p: 0.5,
+            fontSize: 22,
           }}
         >
-          {currentWeek?.name}
-        </Typography>
-        <IconButton onClick={handleNextWeek}>
-          <NavigateNext fontSize="large" />
-        </IconButton>
+          <IconButton onClick={handlePreviousWeek}>
+            <NavigateBefore fontSize="large" />
+          </IconButton>
+          <Typography
+            sx={{
+              color: "background.paper",
+              textAlign: "center",
+              fontWeight: "bold",
+              fontSize: 25,
+            }}
+          >
+            {currentWeek?.name}
+          </Typography>
+
+          <IconButton onClick={handleNextWeek}>
+            <NavigateNext fontSize="large" />
+          </IconButton>
+        </Box>
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={{ xs: 1, sm: 2, md: 4 }}
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Chip
+            label={`Start Date:  ${new Date(
+              currentWeek?.start
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#C84B31",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          />
+          <Chip
+            label={`End Date:  ${new Date(
+              currentWeek?.end
+            ).toLocaleDateString()}`}
+            sx={{
+              backgroundColor: "#C84B31",
+              color: "white",
+              fontWeight: "bold",
+            }}
+          />
+        </Stack>
       </Box>
       {loading ? (
         <Box
@@ -128,28 +175,89 @@ const Cohort = () => {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBlockEnd: 2,
+                  marginBottom: 2,
                 }}
               >
-                <Box>
-                  <CardContent>
-                    <Link to={`/mentor/session/${session._id}`}>
-                      {" "}
-                      {`${session.type} session`}
-                    </Link>
-                    <Typography variant="subtitle1">
-                      {new Date(session.start).toLocaleDateString()}
+                <Box sx={{ p: 0.3 }}>
+                  <CardContent
+                    sx={{
+                      cursor: "pointer",
+                      "&:hover": {
+                        backgroundColor: "#f3950d",
+                        borderRadius: 1.5,
+                      },
+                    }}
+                  >
+                    <Typography
+                      onClick={() => handleClick(session._id)}
+                      variant="h6"
+                      color="#112f58"
+                    >
+                      <Tooltip
+                        title="Click to see session details."
+                        followCursor
+                        placement="top"
+                      >
+                        <b>{`${session.type} Session`}</b>
+                      </Tooltip>
+                    </Typography>
+                    <Typography variant="subtitle1" color="#c84b31">
+                      <b>{formatDateAndTime(session.start)}</b>{" "}
                     </Typography>
                   </CardContent>
                 </Box>
-                <Box>
+                <Box display="flex">
                   <CardContent>
-                    <Typography>{`${session.participant.length} students confirmed`}</Typography>
+                    <ListItemText
+                      sx={{
+                        "& .MuiListItemText-primary": {
+                          marginBottom: "8px",
+                        },
+                      }}
+                      primary={
+                        <Box>
+                          Host:
+                          <Typography
+                            sx={{ display: "inline" }}
+                            paragraph={true}
+                            variant="h7"
+                            color="#112f58"
+                          >
+                            <b>
+                              {` ${session.creator.name ?? "Not assigned"}`}
+                            </b>
+                          </Typography>
+                        </Box>
+                      }
+                      secondary={
+                        <>
+                          <Typography
+                            component="span"
+                            variant="body1"
+                            color="text.primary"
+                            textAlign="center"
+                          >
+                            {`Attendees:  `}
+                          </Typography>
+                          <Badge
+                            sx={{
+                              "& .MuiBadge-badge": {
+                                backgroundColor:
+                                  session.participant.length > 0
+                                    ? { main: "#2196f3", contrastText: "white" }
+                                    : "gray",
+                              },
+                            }}
+                            badgeContent={`${session.participant.length}`}
+                            color="success"
+                          >
+                            <GroupIcon />
+                          </Badge>
+                        </>
+                      }
+                    />
                   </CardContent>
                 </Box>
-                <CardActions>
-                  <Button size="small">Details</Button>
-                </CardActions>
               </Card>
             ))
           ) : (
