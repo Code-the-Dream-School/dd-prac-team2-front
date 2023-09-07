@@ -1,30 +1,83 @@
-# Front-End Repo for Node/React Practicum
+## Hi there 👋 Welcome to:
 
-This will be the front-end for your team's practicum project.
+# [MentorUp] - Class Management App
 
-It is suggested that you run these instructions **after** you setup the back-end server first.
-You can go through these steps during your first group meeting in case you need assistance from your mentors.
+Introducing the Ultimate Class Management App: Streamlining Education Like Never Before!
 
-You will have two folders inside one team folder (one for front-end and one for back-end). Name the parent folder something appropriate (in the below example we title it "Practicum Project"). Then clone directly (do not fork and clone) the front and back repos while inside the parent ("Practicum Project") project folder.
+<div>
+<img src="" alt="class-management"  />
+</div>
 
-![folders](images/folder_structure.png)
+## Table of Contents
 
-> The front-end app (React) will be running on port 3000. The back-end server will be running on port 8000. You will need to run both the front-end app and the back-end server at the same time to test your app.
+- [Introduction](#introduction)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Contributing](#contributing)
+- [Support](#support)
+- [License](#license)
 
-### Setting up local development environment
+## Introduction
 
-1. Clone this repository to the folder that was already created for both the front-end and back-end repos
-2. Run `npm install` to install dependencies
-3. Pull the latest version of the `main` branch (when needed)
-4. Run `npm start` to start the development server
-5. Open http://localhost:3000 with your browser to see the data received the back-end server.
-6. Now you have your front-end and back-end running locally!
+Whether you're an administrator overseeing multiple classes, a mentor guiding students on their academic journey, or a student seeking to stay organized, our cutting-edge Class Management App has you covered. Powered by Express, TypeScript, and React, this application offers a seamless user experience while integrating the convenience of Google OAuth and Slack.
 
-#### Running the front-end server in Visual Studio Code
+## Features
 
-Note: In the below example, the group's front-end repository was named `bb-practicum-team1-front` and the back-end repository was named `bb-practicum-team-1-back`. Your repository will have a different name, but the rest should look the same.
-![vsc running](images/front-end-running-vsc.png)
+- **Tailored roles:** Our app caters to the diverse needs of administrators, mentors, and students with distinct roles. Admins wield comprehensive class management control, mentors effortlessly create and oversee classes, and students access their schedules seamlessly within one intuitive platform.
 
-#### Running the front-end server in the browser
+- **Enhanced security:** MentorUp employs refresh tokens for added security, ensuring your data remains private and protected.
 
-![browser running](images/front-end-running-browser.png)
+- **Email Notifications:** Users will receive email confirmations upon successful registration within the app.
+
+- **Multiple Class and Session Creation:** Admin & Mentors can now effortlessly generate multiple sessions instead of the laborious weekly manual input.
+
+- **Real-time Schedule Access:** Empower students to access their class schedules with ease, guaranteeing they never miss essential sessions
+
+- **Google Integration:**
+  Users can securely sign in with their Google accounts and utilize Google Calendar to manage their class schedules effortlessly.
+- **Slack Integration:**
+  Our integration with Slack empowers administrators to efficiently handle member profiles and customize private and public channels for seamless communication.
+
+## Getting Started
+
+To get started with MentorUp, follow these simple steps:
+
+1. Create your own .env file (see .env.example)
+2. npm install
+3. npm run dev
+4. Go to http://localhost:3000/ to start our application
+
+## Screenshots
+
+<div>
+<img src="" alt="app"  />
+<img src="" alt="app"  />
+<img src="" alt="app"  />
+<img src="" alt="app"  />
+</div>
+
+## Team Info
+
+- secch97 [https://github.com/secch97]
+
+## Contributing
+
+👩‍💻We welcome contributions from the community to make MentorUp even better! If you have any bug fixes, feature suggestions, or improvements, please follow our [contribution guidelines](CONTRIBUTING.md).
+
+## Support
+
+🍿If you need any assistance or have questions, you can reach out to our support team at [deerdove23@gmail.com]
+
+<div>
+<img src="https://www.educatorstechnology.com/wp-content/webp-express/webp-images/uploads/2023/05/Best-Tools-and-Apps-to-help-you-manage-your-class-1.png.webp" alt="app"  />
+</div>
+
+## License
+
+🧙
+MentorUp is released under the [MIT License](LICENSE).
+
+---
