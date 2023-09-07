@@ -4,9 +4,6 @@
 
 Introducing the Ultimate Class Management App: Streamlining Education Like Never Before!
 
-<div>
-<img src="" alt="class-management"  />
-</div>
 
 ## Table of Contents
 
