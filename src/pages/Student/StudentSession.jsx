@@ -3,7 +3,7 @@ import {
   Container,
   Typography,
   List,
-  Card,
+  Link,
   Chip,
   Stack,
   ListItemText,
@@ -256,6 +256,37 @@ const StudentSession = () => {
             </Box>
             <Box
               sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 2,
+              }}
+            >
+              <Link
+                sx={{
+                  backgroundColor: "#C84B31",
+                  padding: 2,
+                  borderRadius: 2,
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    transition: "all 0.2s ease-in-out",
+                  },
+                }}
+                href={currentSession?.link}
+                underline="none"
+              >
+                <Typography
+                  sx={{
+                    fontSize: "1.3rem",
+                    fontWeight: "bold",
+                    color: "white",
+                  }}
+                >
+                  Access zoom session
+                </Typography>
+              </Link>
+            </Box>
+            <Box
+              sx={{
                 textAlign: "center",
                 fontWeight: "bold",
                 fontSize: 25,
@@ -384,7 +415,7 @@ const StudentSession = () => {
               variant="h5"
               fontWeight="bold"
               color="White"
-              sx={{ textAlign: "center", marginTop: 1 }}
+              sx={{ textAlign: "center", margin: 1 }}
             >
               Discussion
             </Typography>

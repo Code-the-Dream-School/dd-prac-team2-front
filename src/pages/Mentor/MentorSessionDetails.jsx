@@ -7,6 +7,7 @@ import {
   ListItem,
   TextField,
   Button,
+  Link,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -139,6 +140,13 @@ const MentorSessionDetails = () => {
             </Box>
           </Box>
 
+          <Box sx={{ textAlign: "center", paddingBlock: 2 }}>
+            <Link href={currentSession?.link}>
+              <Typography sx={{ fontSize: "1.3rem" }}>
+                Access zoom session
+              </Typography>
+            </Link>
+          </Box>
           <Box>
             <Typography
               component="h3"
