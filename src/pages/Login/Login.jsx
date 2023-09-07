@@ -137,7 +137,7 @@ const Login = () => {
   const handleGoogleAuthUrl = () => {
     const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
-      redirect_uri: "http://localhost:8000/auth/google/callback",
+      redirect_uri: "https://prac-team2.onrender.com/auth/google/callback",
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
