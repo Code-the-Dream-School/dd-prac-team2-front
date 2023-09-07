@@ -21,6 +21,7 @@ function CreateSession({ updateSessions }) {
   const axiosPrivate = useAxiosPrivate();
   const [cohort] = useOutletContext();
 
+  console.log(start, end);
   useEffect(() => {
     if (!cohort) {
       navigate("/mentor");
