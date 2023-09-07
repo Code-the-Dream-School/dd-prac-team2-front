@@ -53,10 +53,10 @@ To get started with MentorUp, follow these simple steps:
 ## Screenshots
 
 <div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-cohort.png?raw=true" alt="admin-cohort"  />
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-users.png?raw=true" alt="admin-user"  />
 <img src="" alt="app"  />
-<img src="" alt="app"  />
-<img src="" alt="app"  />
-<img src="" alt="app"  />
+
 </div>
 
 ## Team Info
