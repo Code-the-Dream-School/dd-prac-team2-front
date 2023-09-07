@@ -4,9 +4,6 @@
 
 Introducing the Ultimate Class Management App: Streamlining Education Like Never Before!
 
-<div>
-<img src="" alt="class-management"  />
-</div>
 
 ## Table of Contents
 
@@ -52,16 +49,43 @@ To get started with MentorUp, follow these simple steps:
 
 ## Screenshots
 
+- ADMIN
 <div>
-<img src="" alt="app"  />
-<img src="" alt="app"  />
-<img src="" alt="app"  />
-<img src="" alt="app"  />
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-dashboard.png?raw=true" alt="admin-dashboard"  />
+<br/>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-cohort.png?raw=true" alt="admin-cohort"  />
+<br/>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-users.png?raw=true" alt="admin-user"  />
+</div>
+
+- MENTOR
+
+<div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/mentor-session1.png?raw=true" alt="mentor-session1"  />
+<br/>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/mentor-session2.png?raw=true" alt="mentor-session2"  />
+
+</div>
+
+- STUDENT
+<div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-cohort.png?raw=true" alt="student-cohort"  />
+<br/>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-session1.png?raw=true" alt="student-session1"  />
+<br/>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-session2.png?raw=true" alt="student-session2"  />
 </div>
 
 ## Team Info
 
 - secch97 [https://github.com/secch97]
+- diorshelton [https://github.com/diorshelton]
+- miminiverse [https://github.com/Miminiverse]
+- cdpaiva [https://github.com/cdpaiva]
+- akabishau [https://github.com/akabishau]
+- Mbareck21 [https://github.com/Mbareck21]
+- LiubovCass[https://github.com/LiubovCass]
+
 
 ## Contributing
 
@@ -71,9 +95,6 @@ To get started with MentorUp, follow these simple steps:
 
 🍿If you need any assistance or have questions, you can reach out to our support team at [deerdove23@gmail.com]
 
-<div>
-<img src="https://www.educatorstechnology.com/wp-content/webp-express/webp-images/uploads/2023/05/Best-Tools-and-Apps-to-help-you-manage-your-class-1.png.webp" alt="app"  />
-</div>
 
 ## License
 
