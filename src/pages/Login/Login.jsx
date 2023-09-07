@@ -35,13 +35,15 @@ import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 import AuthFormControl from "../../components/FormControl/AuthFormControl";
 
+import { BASE_URL } from "../../config";
+
 const Login = () => {
   /*
         ==========================
         =        CONTEXT         =
         ==========================
     */
-  const {auth, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   /*
         ==========================
         =         STATES         =
@@ -137,7 +139,7 @@ const Login = () => {
   const handleGoogleAuthUrl = () => {
     const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
-      redirect_uri: "https://prac-team2.onrender.com/auth/google/callback",
+      redirect_uri: BASE_URL,
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
@@ -243,9 +245,7 @@ const Login = () => {
                   isFocused={false}
                   width="100%"
                   variant="light"
-                  errorMessage={
-                    "This field is required"
-                  }
+                  errorMessage={"This field is required"}
                   onHandleError={handlePasswordError}
                   reset={reset}
                 ></FormTextField>

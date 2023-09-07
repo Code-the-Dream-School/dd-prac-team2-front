@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE_URL = "https://prac-team2.onrender.com/api/v1";
+import { BASE_URL } from "../config";
 
 export default axios.create({
   baseURL: BASE_URL,
