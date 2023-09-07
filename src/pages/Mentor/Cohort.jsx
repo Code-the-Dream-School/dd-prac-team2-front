@@ -6,25 +6,22 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  IconButton,
   Tooltip,
   ListItemText,
   Badge,
-  Stack,
-  Chip,
 } from "@mui/material";
 import GroupIcon from "@mui/icons-material/Group";
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 import { formatDateAndTime } from "../../util";
+import CohortHeader from "../../components/CohortHeader/CohortHeader";
 
 const Cohort = () => {
-  const [currentWeek, setCurrentWeek] = useState();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+  const [currentWeek, setCurrentWeek] = useState();
+  const [loading, setLoading] = useState(false);
   const [cohort] = useOutletContext();
 
   useEffect(() => {
@@ -48,20 +45,6 @@ const Cohort = () => {
     setLoading(false);
   };
 
-  const handleNextWeek = () => {
-    if (currentWeek.end === cohort.end) {
-      return;
-    }
-    getWeek(currentWeek.index + 1);
-  };
-
-  const handlePreviousWeek = () => {
-    if (currentWeek.index === 0) {
-      return;
-    }
-    getWeek(currentWeek.index - 1);
-  };
-
   const handleClick = (sessionId) => {
     if (sessionId) {
       navigate(`/mentor/session/${sessionId}`);
@@ -70,91 +53,11 @@ const Cohort = () => {
 
   return (
     <Container>
-      <Typography
-        component={"h1"}
-        sx={{
-          backgroundColor: "#C84B31",
-          padding: 2,
-          color: "background.paper",
-          textAlign: "center",
-          fontWeight: "bold",
-          fontSize: 25,
-          borderRadius: 2,
-          marginBottom: 4,
-        }}
-      >
-        {`${cohort?.name} Mentor Session`}
-      </Typography>
-      <Box
-        sx={{
-          justifyContent: "center",
-          padding: 3,
-          backgroundColor: "#1a1a2e",
-          fontSize: 25,
-          borderRadius: 2,
-          marginBottom: 4,
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-around",
-            alignItems: "center",
-            width: "60%",
-            margin: "auto",
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            marginBottom: 4,
-            p: 0.5,
-            fontSize: 22,
-          }}
-        >
-          <IconButton onClick={handlePreviousWeek}>
-            <NavigateBefore fontSize="large" />
-          </IconButton>
-          <Typography
-            sx={{
-              color: "background.paper",
-              textAlign: "center",
-              fontWeight: "bold",
-              fontSize: 25,
-            }}
-          >
-            {currentWeek?.name}
-          </Typography>
-
-          <IconButton onClick={handleNextWeek}>
-            <NavigateNext fontSize="large" />
-          </IconButton>
-        </Box>
-        <Stack
-          direction={{ xs: "column", sm: "row" }}
-          spacing={{ xs: 1, sm: 2, md: 4 }}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Chip
-            label={`Start Date:  ${new Date(
-              currentWeek?.start
-            ).toLocaleDateString()}`}
-            sx={{
-              backgroundColor: "#C84B31",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          />
-          <Chip
-            label={`End Date:  ${new Date(
-              currentWeek?.end
-            ).toLocaleDateString()}`}
-            sx={{
-              backgroundColor: "#C84B31",
-              color: "white",
-              fontWeight: "bold",
-            }}
-          />
-        </Stack>
-      </Box>
+      <CohortHeader
+        cohort={cohort}
+        currentWeek={currentWeek}
+        getWeek={getWeek}
+      />
       {loading ? (
         <Box
           sx={{

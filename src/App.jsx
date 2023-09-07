@@ -39,6 +39,7 @@ import MentorContext from "./pages/Mentor/MentorContext";
 import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
 import MentorSessionDetails from "./pages/Mentor/MentorSessionDetails";
+import StudentContext from "./pages/Student/StudentContext";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -157,10 +158,9 @@ const App = () => {
                   auth.role.includes("admin") ? (
                     <AdminHome></AdminHome>
                   ) : auth.role.includes("mentor") ? (
-                    // <MentorHome></MentorHome>
                     <Navigate to="/mentor" />
                   ) : auth.role.includes("student") ? (
-                    <StudentHome></StudentHome>
+                    <Navigate to="/student" />
                   ) : null
                 }
               />
@@ -207,15 +207,18 @@ const App = () => {
             <Route
               element={<RequireAuth allowedRole={["student"]}></RequireAuth>}
             >
-              <Route
-                path="student/cohort/:cohortId"
-                element={<StudentCohort></StudentCohort>}
-              ></Route>
-              <Route
-                path="student/session/:sessionId"
-                exact
-                element={<StudentSession></StudentSession>}
-              ></Route>
+              <Route element={<StudentContext />}>
+                <Route path="student" element={<StudentHome />}></Route>
+                <Route
+                  path="student/cohort/:cohortId"
+                  element={<StudentCohort></StudentCohort>}
+                ></Route>
+                <Route
+                  path="student/session/:sessionId"
+                  exact
+                  element={<StudentSession></StudentSession>}
+                ></Route>
+              </Route>
             </Route>
           </Route>
         </Routes>

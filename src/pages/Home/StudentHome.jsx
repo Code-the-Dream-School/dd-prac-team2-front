@@ -3,27 +3,32 @@ import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import {
   Avatar,
   Box,
-  Button,
   Container,
   Paper,
   Stack,
   Typography,
 } from "@mui/material";
-import { useNavigate, useOutletContext } from "react-router-dom";
+import {
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import styles from "./StudentHome.module.css";
 import AuthFormControl from "./../../components/FormControl/AuthFormControl";
 
 const StudentHome = () => {
   const navigate = useNavigate();
+  const [queryParams] = useSearchParams();
   const axiosPrivate = useAxiosPrivate();
   const [cohorts, setCohorts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [selectedCohort, setSelectedCohort] = useOutletContext();
+  const [loading, setLoading] = useState();
+  const [selectedCohort, setSelectedCohort] = useOutletContext();
 
   useEffect(() => {
     const fetchCohorts = async () => {
       try {
+        setLoading(true);
         const { data } = await axiosPrivate.get("/profile", {});
         console.log(data);
         setCohorts(data.profile.cohorts);
@@ -32,12 +37,18 @@ const StudentHome = () => {
         console.log(err);
       }
     };
-    fetchCohorts();
+
+    if (!selectedCohort || queryParams.get("resetCohort")) {
+      fetchCohorts();
+    } else {
+      navigate(`/student/cohort/${selectedCohort._id}`);
+    }
   }, [axiosPrivate]);
 
   useEffect(() => {
     if (cohorts.length === 1) {
-      navigate(`/student/cohort/${cohorts[0]._id}`, { state: cohorts[0] });
+      setSelectedCohort(cohorts[0]);
+      navigate(`/student/cohort/${cohorts[0]._id}`);
     }
   }, [cohorts]);
 
@@ -46,8 +57,8 @@ const StudentHome = () => {
   };
 
   const handleClick = (id) => {
-    console.log(id);
-    navigate(`student/cohort/${id}`, { state: getCohort(id) });
+    setSelectedCohort(getCohort(id));
+    navigate(`/student/cohort/${id}`);
   };
 
   return (
@@ -89,7 +100,7 @@ const StudentHome = () => {
               <div className={styles.formContainer}>
                 <AuthFormControl width="75%">
                   <Box
-                    sx={{ width:"90%" }}
+                    sx={{ width: "90%" }}
                     display={"flex"}
                     flexDirection={"column"}
                     justifyContent={"center"}
@@ -119,14 +130,14 @@ const StudentHome = () => {
                           width={"100%"}
                         >
                           <Avatar
-                              alt={"User Cohort"}
-                              src="/images/sad.png"
-                              sx={{
-                                width: 64,
-                                height: 64,
-                              }}
-                              variant="square"
-                            />
+                            alt={"User Cohort"}
+                            src="/images/sad.png"
+                            sx={{
+                              width: 64,
+                              height: 64,
+                            }}
+                            variant="square"
+                          />
                           <Typography
                             component={"h2"}
                             sx={{
@@ -186,7 +197,7 @@ const StudentHome = () => {
                                 "&:hover": {
                                   transform: "scale(1.03)",
                                   transition: "0.2s ease-in-out",
-                                  cursor: "pointer"
+                                  cursor: "pointer",
                                 },
                               }}
                               onClick={() => handleClick(c._id)}
