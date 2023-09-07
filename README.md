@@ -52,11 +52,25 @@ To get started with MentorUp, follow these simple steps:
 
 ## Screenshots
 
+- ADMIN
 <div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-dashboard.png?raw=true" alt="admin-dashboard"  />
 <img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-cohort.png?raw=true" alt="admin-cohort"  />
 <img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/admin-users.png?raw=true" alt="admin-user"  />
-<img src="" alt="app"  />
+</div>
+- MENTOR
 
+<div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/mentor-session1.png?raw=true" alt="mentor-session1"  />
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/mentor-session2.png?raw=true" alt="mentor-session2"  />
+
+</div>
+
+- STUDENT
+<div>
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-cohort.png?raw=true" alt="student-cohort"  />
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-session1.png?raw=true" alt="student-session1"  />
+<img src="https://github.com/Code-the-Dream-School/dd-prac-team2-back/blob/main/images/student-session2.png?raw=true" alt="student-session2"  />
 </div>
 
 ## Team Info
