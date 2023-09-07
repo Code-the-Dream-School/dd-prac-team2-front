@@ -26,11 +26,14 @@ const Cohort = () => {
 
   useEffect(() => {
     const getCurrentWeek = async () => {
-      setLoading(true);
-      const res = await axiosPrivate.get(`/week/${cohort._id}/current`);
-      console.log(res);
-      setCurrentWeek(res.data.currentWeek);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const res = await axiosPrivate.get(`/week/${cohort._id}/current`);
+        setCurrentWeek(res.data.currentWeek);
+        setLoading(false);
+      } catch (err) {
+        setLoading(false);
+      }
     };
     if (!cohort) {
       navigate("/mentor");
