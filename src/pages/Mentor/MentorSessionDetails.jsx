@@ -65,6 +65,7 @@ const MentorSessionDetails = () => {
     };
     setCurrentSession(newSession);
     setComment("");
+    setReset(true);
   };
 
   useEffect(() => {
