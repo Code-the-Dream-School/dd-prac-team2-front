@@ -5,15 +5,13 @@ import {
   List,
   CardContent,
   ListItem,
-  TextField,
-  Button,
+  Link,
   Avatar,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
-import { blue } from "@mui/material/colors";
 import {
   AddCommentRounded,
   ScheduleRounded,
@@ -266,6 +264,37 @@ const MentorSessionDetails = () => {
                 </Typography>
               </Box>
             </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 2,
+            }}
+          >
+            <Link
+              sx={{
+                backgroundColor: "#C84B31",
+                padding: 2,
+                borderRadius: 2,
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+              href={currentSession?.link}
+              underline="none"
+            >
+              <Typography
+                sx={{
+                  fontSize: "1.3rem",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                Access zoom session
+              </Typography>
+            </Link>
           </Box>
           <Box
             sx={{
