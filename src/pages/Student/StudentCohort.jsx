@@ -243,72 +243,67 @@ const StudentCohort = () => {
           >
             {currentWeek?.sessions?.length > 0 ? (
               <>
-                {" "}
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    bgcolor: "transparent",
+                    width: "60%",
+                    margin: "auto",
+                    backgroundColor: "#C84B31",
+                    borderRadius: 2,
+                    marginBottom: 4,
+                    p: 0.5,
+                    fontSize: 22,
                   }}
-                ></Box>
-                <Typography
-                  sx={{
-                    backgroundColor: "#1a1a2e",
-                    padding: 3,
-                    color: "background.paper",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    fontSize: 25,
-                  }}
-                  component={"div"}
                 >
-                  <Box
+                  <Typography
                     sx={{
-                      width: "60%",
-                      margin: "auto",
-                      backgroundColor: "#C84B31",
-                      borderRadius: 2,
-                      marginBottom: 4,
-                      p: 0.5,
-                      fontSize: 22,
+                      color: "background.paper",
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      fontSize: 25,
                     }}
                   >
                     {currentWeek?.name}
-                  </Box>
-                  <Stack
-                    direction={{ xs: "column", sm: "row" }}
-                    spacing={{ xs: 1, sm: 2, md: 4 }}
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Chip
-                      label={`Start Date:  ${new Date(
-                        currentWeek?.start
-                      ).toLocaleDateString()}`}
-                      sx={{
-                        backgroundColor: "#C84B31",
-                        color: "white",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          transition: "all 0.2s ease-in-out",
-                        },
-                      }}
-                    />
-                    <Chip
-                      label={`End Date:  ${new Date(
-                        currentWeek?.end
-                      ).toLocaleDateString()}`}
-                      sx={{
-                        backgroundColor: "#C84B31",
-                        color: "white",
-                        "&:hover": {
-                          transform: "scale(1.05)",
-                          transition: "all 0.2s ease-in-out",
-                        },
-                      }}
-                    />
-                  </Stack>
-                </Typography>
+                  </Typography>
+                </Box>
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={{ xs: 1, sm: 2, md: 4 }}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Chip
+                    label={`Start Date:  ${new Date(
+                      currentWeek?.start
+                    ).toLocaleDateString()}`}
+                    sx={{
+                      backgroundColor: "#C84B31",
+                      color: "white",
+                      fontWeight: "bold",
+                      transform: "scale(1.00)",
+                      transition: "0.2s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        transition: "all 0.2s ease-in-out",
+                      },
+                    }}
+                  />
+                  <Chip
+                    label={`End Date:  ${new Date(
+                      currentWeek?.end
+                    ).toLocaleDateString()}`}
+                    sx={{
+                      backgroundColor: "#C84B31",
+                      color: "white",
+                      fontWeight: "bold",
+                      transform: "scale(1.00)",
+                      transition: "0.2s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        transition: "all 0.2s ease-in-out",
+                      },
+                    }}
+                  />
+                </Stack>
               </>
             ) : (
               <Box
@@ -318,7 +313,7 @@ const StudentCohort = () => {
                   justifyContent: "center",
                   alignItems: "center",
                   width: "100%",
-                  gap:2,
+                  gap: 2,
                 }}
               >
                 <Typography
@@ -357,7 +352,7 @@ const StudentCohort = () => {
                   marginBottom: 2,
                 }}
               >
-                <Box onClick={() => handleClick(session._id)} width="30%">
+                <Box onClick={() => handleClick(session._id)} display="flex" justifyContent={"flex-start"} width="30%" sx={{padding:0}} className={"animate__animated animate__bounceIn"}>
                   <CardContent
                     sx={{
                       cursor: "pointer",
@@ -376,19 +371,18 @@ const StudentCohort = () => {
                     sx={{
                       "& .MuiListItemText-primary": {
                         marginBottom: "8px",
-                        fontWeight: "bold",
                         fontSize: 18,
                       },
                     }}
                     primary={
-                      <Box sx={{ display: "inline-flex" }}>
-                        {`Host `}
+                      <Box sx={{ display: "inline-flex", fontWeight: "bold" }}>
+                        {`Host: `}
                         <Typography
                           component={"p"}
                           variant="h7"
                           color="#112f58"
                         >
-                          {`  --   ${session.creator.name ?? "Not assigned"}`}
+                          {` ${session.creator.name ?? "Not assigned"}`}
                         </Typography>
                       </Box>
                     }
@@ -399,8 +393,9 @@ const StudentCohort = () => {
                           variant="body1"
                           color="text.primary"
                           textAlign="center"
+                          fontWeight={"bold"}
                         >
-                          <b>{`Attendees:  `}</b>
+                          {`Attendees:  `}
                         </Typography>
                         <Badge
                           sx={{
