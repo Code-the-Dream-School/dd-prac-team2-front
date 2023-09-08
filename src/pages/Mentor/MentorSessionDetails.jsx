@@ -72,6 +72,10 @@ const MentorSessionDetails = () => {
     getCurrentSession();
   }, [sessionId]);
 
+  useEffect(()=>{
+    setReset(false);
+  });
+
   const convertDate = (date) => {
     if (!date) {
       return;
