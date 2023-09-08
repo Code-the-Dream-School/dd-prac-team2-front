@@ -58,10 +58,22 @@ function CohortHeader({ cohort, currentWeek, getWeek }) {
               borderRadius: 2,
               marginBottom: 4,
               p: 0.5,
+              fontSize: 22,
             }}
           >
-            <IconButton onClick={handlePreviousWeek}>
-              <NavigateBefore fontSize="large" />
+            <IconButton
+              onClick={handlePreviousWeek}
+              sx={{
+                transform: "scale(1.00)",
+                transition: "0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "#0F3460",
+                  transform: "scale(1.03)",
+                  transition: "0.2s ease-in-out",
+                },
+              }}
+            >
+              <NavigateBefore fontSize="large" sx={{ color: "white" }} />
             </IconButton>
             <Typography
               sx={{
@@ -72,8 +84,19 @@ function CohortHeader({ cohort, currentWeek, getWeek }) {
             >
               {currentWeek?.name}
             </Typography>
-            <IconButton onClick={handleNextWeek}>
-              <NavigateNext fontSize="large" />
+            <IconButton
+              onClick={handleNextWeek}
+              sx={{
+                transform: "scale(1.00)",
+                transition: "0.2s ease-in-out",
+                "&:hover": {
+                  backgroundColor: "#0F3460",
+                  transform: "scale(1.03)",
+                  transition: "0.2s ease-in-out",
+                },
+              }}
+            >
+              <NavigateNext fontSize="large" sx={{ color: "white" }} />
             </IconButton>
           </Box>
 
@@ -89,6 +112,12 @@ function CohortHeader({ cohort, currentWeek, getWeek }) {
                 backgroundColor: "#C84B31",
                 color: "white",
                 fontWeight: "bold",
+                transform: "scale(1.00)",
+                transition: "0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: " 0.2s ease-in-out",
+                },
               }}
             />
             <Chip
@@ -97,6 +126,12 @@ function CohortHeader({ cohort, currentWeek, getWeek }) {
                 backgroundColor: "#C84B31",
                 color: "white",
                 fontWeight: "bold",
+                transform: "scale(1.00)",
+                transition: "0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: " 0.2s ease-in-out",
+                },
               }}
             />
           </Stack>
