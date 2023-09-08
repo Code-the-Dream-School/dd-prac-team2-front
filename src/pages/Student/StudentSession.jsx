@@ -154,7 +154,17 @@ const StudentSession = () => {
             }}
           >
             <Button variant="contained">{currentSession?.type} Session</Button>
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" sx={{display:"flex", justifyContent:"center", alignItems:"center", gap:1}}>
+            <Avatar
+                src={currentSession?.creator.avatarUrl}
+                alt={currentSession?.creator.name}
+                sx={{
+                  bgcolor: "#0F3460",
+                  color: "white",
+                  width: "48px",
+                  height: "48px",
+                }}
+              />
               {currentSession?.creator.name}
             </Button>
             <Button

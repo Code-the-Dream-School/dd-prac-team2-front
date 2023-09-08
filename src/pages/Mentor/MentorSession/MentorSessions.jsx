@@ -81,6 +81,7 @@ function MentorSessions() {
           padding: 4,
           marginBlockEnd: 2,
           backgroundColor: "#1A1A2E",
+          borderRadius: 2,
           color: "#FFFFFF",
         }}
       >
