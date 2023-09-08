@@ -21,6 +21,7 @@ function CreateSession({ updateSessions }) {
   const axiosPrivate = useAxiosPrivate();
   const [cohort] = useOutletContext();
 
+  console.log(start, end);
   useEffect(() => {
     if (!cohort) {
       navigate("/mentor");
@@ -53,7 +54,7 @@ function CreateSession({ updateSessions }) {
   };
 
   return (
-    <Box sx={{ backgroundColor: "#fefefe", padding: 4 }}>
+    <Box sx={{ backgroundColor: "#fefefe", borderRadius: 2, padding: 4 }}>
       <Typography component="h1" sx={{ fontSize: "2rem", marginBlockEnd: 1 }}>
         Create new session
       </Typography>
