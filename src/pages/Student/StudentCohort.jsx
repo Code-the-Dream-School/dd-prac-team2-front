@@ -375,7 +375,7 @@ const StudentCohort = () => {
                       },
                     }}
                     primary={
-                      <Box sx={{ display: "inline-flex" }}>
+                      <Box sx={{ display: "inline-flex", fontWeight: "bold" }}>
                         {`Host: `}
                         <Typography
                           component={"p"}
