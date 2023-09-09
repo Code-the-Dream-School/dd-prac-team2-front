@@ -5,12 +5,18 @@ import CreateSession from "../CreateSession";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import MentorSessionsTableActions from "./Actions/MentorSessionsActions";
 import Loader from "./../../../components/Loader/Loader";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 function MentorSessions() {
   const axiosPrivate = useAxiosPrivate();
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingCover, setLoadingCover] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
 
   useEffect(() => {
     const getUpcomingSessions = async () => {
@@ -73,6 +79,7 @@ function MentorSessions() {
           id={row.id}
           removeSession={removeSession}
           onLoading={setLoadingCover}
+          onToast={setToast}
         ></MentorSessionsTableActions>
       ),
     },
@@ -84,6 +91,16 @@ function MentorSessions() {
         <Loader />
       ) : (
         <Container maxWidth="lg">
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <Box
             sx={{
               padding: 4,
@@ -104,7 +121,11 @@ function MentorSessions() {
               loading={loadingCover}
             />
           </Box>
-          <CreateSession updateSessions={updateSessions} onLoading={setLoadingCover} />
+          <CreateSession
+            updateSessions={updateSessions}
+            onLoading={setLoadingCover}
+            onToast={setToast}
+          />
         </Container>
       )}
     </>

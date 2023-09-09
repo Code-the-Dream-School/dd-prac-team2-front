@@ -12,7 +12,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import AppDateTimePicker from "../../components/DateTimePicker/AppDateTimePicker";
 import AppButton from "../../components/Button/AppButton";
 
-function CreateSession({ updateSessions, onLoading }) {
+function CreateSession({ updateSessions, onLoading, onToast }) {
   const navigate = useNavigate();
   const [start, setStart] = useState(dayjs(Date.now()));
   const [end, setEnd] = useState(dayjs(Date.now() + 60 * 60 * 1000));
@@ -37,6 +37,11 @@ function CreateSession({ updateSessions, onLoading }) {
       link: "https://us02web.zoom.us/j/88579364493?pwd=loNkjaIa9sJA9slajs2jY5dz09",
       cohortId: cohort._id,
       multipleSessions: shouldRepeat,
+    });
+    onToast({
+      isOpened: true,
+      severity: "success",
+      message: `Success! The session(s) has/have been created`,
     });
     updateSessions(res.data.session);
     onLoading(false);

@@ -23,6 +23,7 @@ import AuthFormControl from "../../components/FormControl/AuthFormControl";
 import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 import Loader from "./../../components/Loader/Loader";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const MentorSessionDetails = () => {
   const { sessionId } = useParams();
@@ -38,6 +39,11 @@ const MentorSessionDetails = () => {
       errorMessage: "Please enter a valid comment",
     },
   });
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
 
   const getCurrentSession = async () => {
     setLoading(true);
@@ -49,26 +55,39 @@ const MentorSessionDetails = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+    const errors = Object.values(formError);
+    if (!errors.some((error) => error.error === true)) {
+      const { data } = await axiosPrivate.post("/session/comment", {
+        name: auth.userName,
+        content: e.target.comment.value.trim(),
+        sessionId: sessionId,
+      });
 
-    const { data } = await axiosPrivate.post("/session/comment", {
-      name: auth.userName,
-      content: e.target.comment.value.trim(),
-      sessionId: sessionId,
-    });
-
-    const newComment = data.comment;
-    newComment.name = {
-      _id: auth.userId,
-      name: auth.userName,
-      avatarUrl: auth.avatarUrl,
-    };
-    const newSession = {
-      ...currentSession,
-      discussion: [...currentSession.discussion, newComment],
-    };
-    setCurrentSession(newSession);
-    setComment("");
-    setReset(true);
+      const newComment = data.comment;
+      newComment.name = {
+        _id: auth.userId,
+        name: auth.userName,
+        avatarUrl: auth.avatarUrl,
+      };
+      const newSession = {
+        ...currentSession,
+        discussion: [...currentSession.discussion, newComment],
+      };
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! You have added a new comment!`,
+      });
+      setCurrentSession(newSession);
+      setComment("");
+      setReset(true);
+    } else {
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! Please submit a valid comment`,
+      });
+    }
   };
 
   useEffect(() => {
@@ -137,6 +156,16 @@ const MentorSessionDetails = () => {
             borderRadius: 2,
           }}
         >
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <Typography
             component={"h1"}
             sx={{
@@ -284,6 +313,7 @@ const MentorSessionDetails = () => {
                 },
               }}
               href={currentSession?.link}
+              target="_blank"
               underline="none"
             >
               <Typography
@@ -501,7 +531,21 @@ const MentorSessionDetails = () => {
                 </Box>
               ))
             ) : (
-              <Typography>No discussions in this session</Typography>
+              <Typography
+                variant="h6"
+                color="text.primary"
+                fontWeight="bold"
+                sx={{
+                  width: "75%",
+                  margin: "auto",
+                  backgroundColor: "#f2f2f2",
+                  padding: 2,
+                  borderRadius: 2,
+                  textAlign: "center",
+                }}
+              >
+                No discussion in this session
+              </Typography>
             )}
           </List>
         </Container>

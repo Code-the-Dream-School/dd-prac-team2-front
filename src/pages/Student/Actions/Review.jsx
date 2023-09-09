@@ -15,12 +15,13 @@ import AuthFormControl from "../../../components/FormControl/AuthFormControl";
 import styles from "../Student.module.css";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
 import TextArea from "../../../components/TextField/TextArea";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const Review = ({ sessionId }) => {
+const Review = ({ sessionId, onToast }) => {
   const axiosPrivate = useAxiosPrivate();
   const [review, setReview] = useState();
   const [openDialog, setOpenDialog] = useState(false);
@@ -30,6 +31,11 @@ const Review = ({ sessionId }) => {
       error: false,
       errorMessage: "Please enter a valid review",
     },
+  });
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
   });
   const handleOpenReview = () => {
     setOpenDialog(true);
@@ -56,6 +62,11 @@ const Review = ({ sessionId }) => {
     });
     console.log(data);
     setReview("");
+    onToast({
+      isOpened: true,
+      severity: "success",
+      message: `Success! You have submitted your review!`,
+    });
     handleCloseReview();
   };
   return (
@@ -80,6 +91,16 @@ const Review = ({ sessionId }) => {
           fullWidth
           maxWidth="sm"
         >
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <DialogTitle
             display={"flex"}
             justifyContent={"space-between"}

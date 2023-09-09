@@ -32,6 +32,7 @@ import Review from "./Actions/Review";
 import { LocalGasStation, VideoCameraFrontRounded } from "@mui/icons-material";
 import { formatDateAndTime } from "../../util";
 import Loader from "../../components/Loader/Loader";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const StudentSession = () => {
   const [currentSession, setCurrentSession] = useState();
@@ -48,6 +49,11 @@ const StudentSession = () => {
       error: false,
       errorMessage: "Please enter a valid comment",
     },
+  });
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
   });
   console.log(currentSession);
 
@@ -94,29 +100,44 @@ const StudentSession = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    const { data } = await axiosPrivate.post("/session/comment", {
-      name: auth.userName,
-      content: e.target.comment.value.trim(),
-      sessionId: sessionId,
-    });
-    console.log(data);
-    setComment("");
-    setReset(true);
-    setCurrentSession((prevCurrentSession) => ({
-      ...prevCurrentSession,
-      discussion: [
-        ...prevCurrentSession.discussion,
-        {
-          name: {
-            _id: auth.userId,
-            avatarUrl: auth.avatarUrl,
-            name: auth.userName,
+    const errors = Object.values(formError);
+    if (!errors.some((error) => error.error === true)) {
+      const { data } = await axiosPrivate.post("/session/comment", {
+        name: auth.userName,
+        content: e.target.comment.value.trim(),
+        sessionId: sessionId,
+      });
+      console.log(data);
+      setComment("");
+      setReset(true);
+      setCurrentSession((prevCurrentSession) => ({
+        ...prevCurrentSession,
+        discussion: [
+          ...prevCurrentSession.discussion,
+          {
+            name: {
+              _id: auth.userId,
+              avatarUrl: auth.avatarUrl,
+              name: auth.userName,
+            },
+            content: e.target.comment.value.trim(),
+            _id: sessionId,
           },
-          content: e.target.comment.value.trim(),
-          _id: sessionId,
-        },
-      ],
-    }));
+        ],
+      }));
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! You have added a new comment!`,
+      });
+    }
+    else{
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! Please submit a valid comment`,
+      });
+    }
   };
   useEffect(() => {
     getCurrentSession();
@@ -140,6 +161,16 @@ const StudentSession = () => {
         <Loader />
       ) : (
         <Container>
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <Box
             sx={{
               display: "flex",
@@ -202,7 +233,7 @@ const StudentSession = () => {
                 alignItems: "center",
               }}
             >
-              <Review sessionId={sessionId} />
+              <Review sessionId={sessionId} onToast={setToast} />
             </Box>
           </Box>
           <Box
@@ -291,6 +322,7 @@ const StudentSession = () => {
                   },
                 }}
                 href={currentSession?.link}
+                target="_blank"
                 underline="none"
               >
                 <Typography
