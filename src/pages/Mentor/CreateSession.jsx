@@ -43,7 +43,7 @@ function CreateSession({ updateSessions, onLoading, onToast }) {
       severity: "success",
       message: `Success! The session(s) has/have been created`,
     });
-    updateSessions(res.data.session);
+    updateSessions(res.data.sessions);
     onLoading(false);
   };
 
