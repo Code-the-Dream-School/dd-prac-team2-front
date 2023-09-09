@@ -253,13 +253,13 @@ const StudentCohort = () => {
                       }}
                       primary={
                         <Box sx={{ display: "inline-flex" }}>
-                          {`Host `}
+                          {`Host:  `}
                           <Typography
                             component={"p"}
                             variant="h7"
                             color="#112f58"
                           >
-                            {`  --   ${session.creator.name ?? "Not assigned"}`}
+                            {`${session.creator.name ?? "Not assigned"}`}
                           </Typography>
                         </Box>
                       }

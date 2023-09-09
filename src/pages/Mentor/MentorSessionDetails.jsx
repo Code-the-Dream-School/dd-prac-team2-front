@@ -16,6 +16,7 @@ import {
   AddCommentRounded,
   ScheduleRounded,
   TodayRounded,
+  VideoCameraFrontRounded,
 } from "@mui/icons-material";
 import styles from "./Mentor.module.css";
 import AuthFormControl from "../../components/FormControl/AuthFormControl";
@@ -274,7 +275,7 @@ const MentorSessionDetails = () => {
           >
             <Link
               sx={{
-                backgroundColor: "#C84B31",
+                backgroundColor: "#0F3460",
                 padding: 2,
                 borderRadius: 2,
                 "&:hover": {
@@ -287,11 +288,16 @@ const MentorSessionDetails = () => {
             >
               <Typography
                 sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 1,
                   fontSize: "1.3rem",
                   fontWeight: "bold",
                   color: "white",
                 }}
               >
+                <VideoCameraFrontRounded fontSize="large"></VideoCameraFrontRounded>
                 Access zoom session
               </Typography>
             </Link>

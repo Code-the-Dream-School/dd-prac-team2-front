@@ -78,6 +78,7 @@ function CohortHeader({ cohort, currentWeek, getWeek }) {
             <Typography
               sx={{
                 color: "background.paper",
+                textAlign:"center",
                 fontWeight: "bold",
                 fontSize: 25,
               }}

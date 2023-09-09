@@ -29,7 +29,7 @@ import AppButton from "../../components/Button/AppButton";
 import styles from "./Student.module.css";
 import useAuth from "../../hooks/useAuth";
 import Review from "./Actions/Review";
-import { LocalGasStation } from "@mui/icons-material";
+import { LocalGasStation, VideoCameraFrontRounded } from "@mui/icons-material";
 import { formatDateAndTime } from "../../util";
 import Loader from "../../components/Loader/Loader";
 
@@ -154,8 +154,17 @@ const StudentSession = () => {
             }}
           >
             <Button variant="contained">{currentSession?.type} Session</Button>
-            <Button variant="contained" color="success" sx={{display:"flex", justifyContent:"center", alignItems:"center", gap:1}}>
-            <Avatar
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Avatar
                 src={currentSession?.creator.avatarUrl}
                 alt={currentSession?.creator.name}
                 sx={{
@@ -273,7 +282,7 @@ const StudentSession = () => {
             >
               <Link
                 sx={{
-                  backgroundColor: "#C84B31",
+                  backgroundColor: "#0F3460",
                   padding: 2,
                   borderRadius: 2,
                   "&:hover": {
@@ -286,11 +295,16 @@ const StudentSession = () => {
               >
                 <Typography
                   sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 1,
                     fontSize: "1.3rem",
                     fontWeight: "bold",
                     color: "white",
                   }}
                 >
+                  <VideoCameraFrontRounded fontSize="large"></VideoCameraFrontRounded>
                   Access zoom session
                 </Typography>
               </Link>

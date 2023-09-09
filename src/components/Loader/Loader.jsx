@@ -46,7 +46,9 @@ import {
   */
 import React, { useState } from "react";
 
-const StyledLoader = styled(CircularProgress)(() => ({}));
+const StyledLoader = styled(CircularProgress)(() => ({
+  color:"#C84B31"
+}));
 
 const Loader = ({
   color,
@@ -72,7 +74,7 @@ const Loader = ({
           <StyledLoader size="4rem" />
           <Typography
             variant="h6"
-            style={{ color: "#1976D2", padding: "1rem" }}
+            style={{ color: "#C84B31", padding: "1rem" }}
           >
             <b>Loading...</b>
           </Typography>
