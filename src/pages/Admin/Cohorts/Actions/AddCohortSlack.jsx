@@ -63,6 +63,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
   */
   const [slackChannels, setSlackChannels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingCover, setLoadingCover] = useState(false);
   /*
     ==========================
     =      AUX VARIABLES     =
@@ -129,6 +130,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
           params={params}
           onRegisterSlackChannel={setSlackChannels}
           onRegisterCohort={onRegisterCohort}
+          onLoading={setLoadingCover}
         ></CohortsSlackAction>
       ),
     },
@@ -262,6 +264,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
                 rows={slackChannels}
                 fieldToBeSorted={"class"}
                 sortType={"asc"}
+                loading={loadingCover}
                 variant={"dark"}
               />
             </DialogContent>

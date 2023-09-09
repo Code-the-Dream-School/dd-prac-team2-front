@@ -61,7 +61,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
+const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit, onLoading }) => {
   /*
     ==========================
     =          HOOKS         =
@@ -131,6 +131,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
   //Form submit:
   const handleRegisterOnCohortSubmit = async (event) => {
     event.preventDefault();
+    onLoading(true);
     const formattedUserRegistration = {
       users: [
         {
@@ -168,13 +169,16 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
         } else if (response.data.errors.length > 0) {
           console.error(response.data.errors);
         }
+        onLoading(false);
       } else {
+        onLoading(false);
         console.error(
           "There is an error preventing the form submission: check that your entires are correctly validated"
         );
       }
     } catch (error) {
       if (error.response.status === 403) {
+        onLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -189,6 +193,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           accessToken: "",
         });
       } else {
+        onLoading(false);
         console.error(error);
       }
     }
@@ -364,5 +369,6 @@ export default RegisterCohortUser;
 RegisterCohortUser.propTypes = {
   open: PropTypes.bool.isRequired,
   handleOpen: PropTypes.func.isRequired,
-  onRegisterCohortSubmit: PropTypes.func.isRequired
+  onRegisterCohortSubmit: PropTypes.func.isRequired,
+  onLoading: PropTypes.func,
 }

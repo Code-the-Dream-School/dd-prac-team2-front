@@ -75,6 +75,7 @@ const AddCohort = ({
   onRegisterSlackChannel,
   onRegisterCohort,
   slackChannelData,
+  onLoading
 }) => {
   console.log(slackChannelData);
   /*
@@ -88,7 +89,6 @@ const AddCohort = ({
   const [startDate, setStartDate] = useState(
     dayjs(slackChannelData?.startDate) ?? dayjs()
   );
-  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -207,13 +207,12 @@ const AddCohort = ({
     const errors = Object.values(formError);
 
     try {
-      setLoading(true);
+      onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
         console.log(response);
-        setLoading(false); // Stop loading
         if (response.status === 201) {
-          setLoading(false); // Stop loading in case of error
+          onLoading(false); // Stop loading
           const options = { year: "2-digit", month: "numeric", day: "numeric" };
           const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
@@ -242,8 +241,10 @@ const AddCohort = ({
           setErrorMessage("");
           setSuccessMessage("Success. New cohort has been added successfully!");
           setOpenSuccessToast(true);
+          handleOpen(false);
         }
       } else {
+        onLoading(false); // Stop loading
         setSuccessMessage("");
         setErrorMessage("");
         setOpenErrorToast(true);
@@ -252,7 +253,7 @@ const AddCohort = ({
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
-      setLoading(false);
+      onLoading(false); // Stop loading
       console.log(error);
     } finally {
       setReset(true);
@@ -308,7 +309,6 @@ const AddCohort = ({
           onSubmit={handleCohortSubmit}
         >
           <>
-            {loading ? <Loader /> : null}
             <DialogContent
               sx={{
                 width: "100%",
@@ -443,4 +443,5 @@ AddCohort.propTypes = {
   onRegisterCohort: PropTypes.func.isRequired,
   slackChannelData: PropTypes.object,
   onRegisterCohort: PropTypes.func.isRequired,
+  onLoading: PropTypes.func
 };

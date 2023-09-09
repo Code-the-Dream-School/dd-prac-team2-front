@@ -69,6 +69,7 @@ const RegisterOnCohort = () => {
     ==========================
   */
   const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
   console.log(cohortUsers);
@@ -167,7 +168,7 @@ const RegisterOnCohort = () => {
         <RegisterOnCohortActions
           params={params}
           cohortData={cohortData}
-          onLoading={setLoading}
+          onLoading={setLoadingCover}
           onHandleCohortUsers={setCohortUsers}
         ></RegisterOnCohortActions>
       ),
@@ -332,9 +333,9 @@ const RegisterOnCohort = () => {
             pageSize={15}
             fieldToBeSorted={"userName"}
             sortType={"asc"}
+            loading={loadingCover}
           />
         )}
-
         <div className={styles.buttonContainer}>
           <AppButton
             text={"Go back"}
@@ -350,6 +351,7 @@ const RegisterOnCohort = () => {
             open={openNewUserDialog}
             handleOpen={setOpenNewUserDialog}
             onRegisterCohortSubmit={setCohortUsers}
+            onLoading={setLoadingCover}
           ></RegisterCohortUser>
         ) : null}
         {openExistingUserDialog ? (
@@ -357,6 +359,7 @@ const RegisterOnCohort = () => {
             open={openExistingUserDialog}
             handleOpen={setOpenExistingUserDialog}
             onRegisterCohortSubmit={setCohortUsers}
+            onLoading={setLoadingCover}
           ></RegisterExistingUser>
         ) : null}
         {openNewSlackUserDialog ? (
