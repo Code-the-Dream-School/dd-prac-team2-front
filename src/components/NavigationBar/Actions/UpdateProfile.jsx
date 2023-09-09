@@ -44,6 +44,7 @@ import AuthFormControl from "../../FormControl/AuthFormControl";
 import useAuth from "./../../../hooks/useAuth";
 import FormTextField from "../../TextField/FormTextField";
 import { useLocation, useNavigate } from "react-router-dom";
+import ToastMessage from "../../ToastMessage/ToastMessage";
 
 /*
     ==========================
@@ -80,6 +81,11 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
     },
   });
   const [reset, setReset] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   console.log(auth);
 
   /*
@@ -121,8 +127,17 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
           userName: response.data.profile.name,
         }));
         console.log(auth);
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Your name has been updated`,
+        });
       } else {
-        console.error("There is an error preventing the form submission");
+        setToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -148,6 +163,11 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
   const handleDeleteAccount = async () => {
     try {
       const response = await axiosPrivate.delete("/profile");
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! Your account has been deleted from MentorUp`,
+      });
       console.log(response);
       navigate("/login", { state: { from: location }, replace: true });
       setAuth({
@@ -187,7 +207,18 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
   });
 
   return (
-    <Dialog
+    <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
+      <Dialog
       open={open}
       TransitionComponent={Transition}
       onClose={() => handleOpenDialog(false)}
@@ -354,6 +385,7 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
         </DialogActions>
       </Box>
     </Dialog>
+    </>
   );
 };
 

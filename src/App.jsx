@@ -3,7 +3,7 @@
     =     REACT LIBRARIES    =
     ==========================
 */
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 /*
     ==========================
@@ -40,6 +40,7 @@ import StudentCohort from "./pages/Student/StudentCohort";
 import StudentSession from "./pages/Student/StudentSession";
 import MentorSessionDetails from "./pages/Mentor/MentorSessionDetails";
 import StudentContext from "./pages/Student/StudentContext";
+import ToastMessage from "./components/ToastMessage/ToastMessage";
 /*
     ==========================
     =    AUX MUI VARIABLES   =
@@ -65,6 +66,11 @@ const App = () => {
   */
   //1. User auth status:
   const { auth, setAuth } = useAuth();
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
 
   /*
       ==========================
@@ -76,7 +82,11 @@ const App = () => {
       const response = await axios(`auth/logout`, {
         withCredentials: true,
       });
-      console.log("LOGOUT", response);
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! You have signed out of MentorUp`,
+      });
       setAuth({
         userId: "",
         slackId: undefined,
@@ -105,6 +115,16 @@ const App = () => {
         </ThemeProvider>
       </header>
       <main>
+        <ToastMessage
+          open={toast.isOpened}
+          severity={toast.severity}
+          variant="filled"
+          onClose={() =>
+            setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+          }
+          dismissible
+          message={toast.message}
+        ></ToastMessage>
         <br />
         <Routes>
           {/* Public routes */}
@@ -116,7 +136,7 @@ const App = () => {
                   <Navigate to="/"></Navigate>
                 ) : (
                   <ThemeProvider theme={theme}>
-                    <Login />
+                    <Login onToast={setToast} />
                   </ThemeProvider>
                 )
               }

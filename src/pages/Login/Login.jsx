@@ -37,7 +37,7 @@ import AuthFormControl from "../../components/FormControl/AuthFormControl";
 
 import { BASE_URL } from "../../config";
 
-const Login = () => {
+const Login = ({onToast}) => {
   /*
         ==========================
         =        CONTEXT         =
@@ -102,15 +102,25 @@ const Login = () => {
           accessToken: response.data.token,
         });
         setReset(true);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Welcome back ${response.data.user.name}`,
+        });
         navigate(from, { replace: true });
       } else {
-        console.log(
-          "There is an error that is preventing the form submission",
-          errors
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
-      console.error(error.response.data);
+      onToast({
+        isOpened: true,
+        severity: "error",
+        message: `Error! ${error.response.data.msg}`,
+      });
     }
   };
 
@@ -276,4 +286,6 @@ const Login = () => {
 
 export default Login;
 
-Login.propTypes = {};
+Login.propTypes = {
+  onToast: PropTypes.func
+};
