@@ -25,13 +25,14 @@ const AppDataGrid = ({
   pageSize,
   fieldToBeSorted,
   sortType,
+  loading=false,
   rowId = "id",
   checkBoxSelection = false,
   onSelectBox = () => {},
   variant = "light",
 }) => {
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-
+  console.log(loading);
   console.log(rowId);
   return (
     <DataGrid
@@ -212,6 +213,7 @@ const AppDataGrid = ({
       }}
       rowSelectionModel={rowSelectionModel}
       autoHeight={true}
+      loading={loading}
     />
   );
 };
@@ -224,6 +226,7 @@ AppDataGrid.propTypes = {
   pageSize: PropTypes.number,
   fieldToBeSorted: PropTypes.string.isRequired,
   sortType: PropTypes.string.isRequired,
+  loading: PropTypes.bool,
   rowId: PropTypes.string,
   checkBoxSelection: PropTypes.bool,
   onSelectBox: PropTypes.func,

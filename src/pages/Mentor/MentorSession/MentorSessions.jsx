@@ -4,16 +4,19 @@ import { Box, Typography, Container } from "@mui/material";
 import CreateSession from "../CreateSession";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import MentorSessionsTableActions from "./Actions/MentorSessionsActions";
+import Loader from "./../../../components/Loader/Loader";
 
 function MentorSessions() {
   const axiosPrivate = useAxiosPrivate();
   const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
 
   useEffect(() => {
     const getUpcomingSessions = async () => {
       const res = await axiosPrivate.get("/session/upcoming");
-
       setSessions(res.data.sessions.map(mapSessionToDataGrid));
+      setLoading(false);
     };
     getUpcomingSessions();
   }, [axiosPrivate]);
@@ -69,34 +72,42 @@ function MentorSessions() {
         <MentorSessionsTableActions
           id={row.id}
           removeSession={removeSession}
+          onLoading={setLoadingCover}
         ></MentorSessionsTableActions>
       ),
     },
   ];
 
   return (
-    <Container maxWidth="lg">
-      <Box
-        sx={{
-          padding: 4,
-          marginBlockEnd: 2,
-          backgroundColor: "#1A1A2E",
-          borderRadius: 2,
-          color: "#FFFFFF",
-        }}
-      >
-        <Typography component="h1" sx={{ fontSize: "2rem" }}>
-          Upcoming Sessions
-        </Typography>
-        <AppDataGrid
-          columns={columns}
-          rows={sessions}
-          fieldToBeSorted="class"
-          sortType="asc"
-        />
-      </Box>
-      <CreateSession updateSessions={updateSessions} />
-    </Container>
+    <>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Container maxWidth="lg">
+          <Box
+            sx={{
+              padding: 4,
+              marginBlockEnd: 2,
+              backgroundColor: "#1A1A2E",
+              borderRadius: 2,
+              color: "#FFFFFF",
+            }}
+          >
+            <Typography component="h1" sx={{ fontSize: "2rem" }}>
+              Upcoming Sessions
+            </Typography>
+            <AppDataGrid
+              columns={columns}
+              rows={sessions}
+              fieldToBeSorted="class"
+              sortType="asc"
+              loading={loadingCover}
+            />
+          </Box>
+          <CreateSession updateSessions={updateSessions} onLoading={setLoadingCover} />
+        </Container>
+      )}
+    </>
   );
 }
 

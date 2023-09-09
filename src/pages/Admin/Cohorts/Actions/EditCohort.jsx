@@ -73,6 +73,7 @@ const EditCohort = ({
   cohortInfo,
   onCloseDialog,
   onHandleCohorts,
+  onLoading
 }) => {
   /*
     ==========================
@@ -102,8 +103,6 @@ const EditCohort = ({
     },
   });
   const [reset, setReset] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [openSuccessToast, setOpenSuccessToast] = useState(false);
@@ -131,13 +130,11 @@ const EditCohort = ({
         editedCohort
       );
       console.log(response);
-      setLoading(false);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
         console.error(error);
         //User is required to validate auth again
-
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",
@@ -192,11 +189,10 @@ const EditCohort = ({
     };
     const errors = Object.values(formError);
     try {
-      setLoading(true);
+      onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
         console.log(response);
-        setLoading(false); // Stop loading
         const options = { year: "2-digit", month: "numeric", day: "numeric" };
         const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
@@ -217,12 +213,14 @@ const EditCohort = ({
               }
             })
           );
+          onLoading(false); // Stop loading
           setReset(true);
           setCohortName("");
           setClassName("");
           onCloseDialog(true);
         }
       } else {
+        onLoading(false); // Stop loading
         setSuccessMessage("");
         setErrorMessage("");
         setOpenErrorToast(true);
@@ -237,7 +235,7 @@ const EditCohort = ({
         );
       }
     } catch (error) {
-      setLoading(false);
+      onLoading(false); // Stop loading
       setSuccessMessage("");
       setErrorMessage("");
       setErrorMessage(`Error. ${error}. Please try again!`);
@@ -248,19 +246,13 @@ const EditCohort = ({
 
   const handleDeleteCohort = async () => {
     try {
-      setLoading(true);
+      onLoading(true);
       const response = await axiosPrivate.delete(
         `/cohort/${cohortInfo.row.id}`,
         {
           withCredentials: true,
         }
       );
-      setSuccessMessage("");
-      setErrorMessage("");
-      setSuccessMessage("Success. New cohort has been removed successfully!");
-      setOpenSuccessToast(true);
-      console.log(response);
-      setLoading(false); // Stop loading
       if (response.status === 200) {
         onHandleCohorts((prevCohorts) => {
           return prevCohorts.filter(
@@ -269,13 +261,12 @@ const EditCohort = ({
         });
         setSuccessMessage("");
         setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage("error! Cohor was not removed!");
-        console.error(response);
+        setSuccessMessage("Success. New cohort has been removed successfully!");
+        setOpenSuccessToast(true);
+        console.log(response);
+        onLoading(false); // Stop loading
       }
     } catch (error) {
-      setLoading(false);
       console.log(error);
       setSuccessMessage("");
       setErrorMessage("");
@@ -285,6 +276,7 @@ const EditCohort = ({
       setOpenErrorToast(true);
       if (error.response.status === 403) {
         //User is required to validate auth again
+        onLoading(false);
         console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -298,6 +290,7 @@ const EditCohort = ({
           accessToken: "",
         });
       } else {
+        onLoading(false);
         console.error(error);
         setSuccessMessage("");
         setErrorMessage("");
@@ -305,7 +298,6 @@ const EditCohort = ({
         setOpenErrorToast(true);
       }
     }
-    setLoading(false);
   };
 
   return (
@@ -355,17 +347,6 @@ const EditCohort = ({
         autoComplete="off"
         onSubmit={handleEditCohortSubmit}
       >
-        {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Loader />
-          </Box>
-        ) : null}
         <DialogContent
           sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
           dividers
@@ -487,4 +468,5 @@ EditCohort.propTypes = {
   cohortInfo: PropTypes.object.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
   onHandleCohorts: PropTypes.func.isRequired,
+  onLoading: PropTypes.func
 };

@@ -15,6 +15,7 @@ import {
 import { Close, DateRangeRounded, MenuBook } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 
 /*
     ==========================
@@ -45,6 +46,7 @@ import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
     ==========================
 */
 import useAuth from "../../../../hooks/useAuth";
+import Loader from "../../../../components/Loader/Loader";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -55,6 +57,7 @@ const EditCohortWeek = ({
   cohortId,
   cohortData,
   weekInfo,
+  onLoadingCover,
   onCloseDialog,
   onHandleCohortWeeks,
 }) => {
@@ -115,6 +118,7 @@ const EditCohortWeek = ({
   //3. Handler for onSubmit event:
   const handleEditCohortWeekSubmit = async (event) => {
     event.preventDefault();
+    onLoadingCover(true);
     const weekToBeUpdated = weekInfo.row.id;
     const formattedUpdatedWeek = {
       name: event.target.weekName.value,
@@ -143,16 +147,19 @@ const EditCohortWeek = ({
               }
             })
           );
+          onLoadingCover(false);
           onCloseDialog();
           setReset(true);
           setWeekName("");
           setWeekStartDate(dayjs(weekInfo.row.weekStartDate));
         }
       } else {
+        onLoadingCover(false);
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
       if (error.response.status === 403) {
+        onLoadingCover(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -167,6 +174,7 @@ const EditCohortWeek = ({
           accessToken: "",
         });
       } else {
+        onLoadingCover(false);
         console.error(error);
       }
     }
@@ -288,3 +296,13 @@ const EditCohortWeek = ({
 };
 
 export default EditCohortWeek;
+
+EditCohortWeek.propTypes = {
+  openDialog: PropTypes.bool,
+  cohortId: PropTypes.string,
+  cohortData: PropTypes.object,
+  weekInfo: PropTypes.object ,
+  onLoadingCover: PropTypes.bool,
+  onCloseDialog: PropTypes.func,
+  onHandleCohortWeeks: PropTypes.func,
+}

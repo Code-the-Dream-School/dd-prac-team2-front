@@ -81,7 +81,10 @@ const RegisterSlackUser = ({
   const [newUsers, setNewUsers] = useState([]);
   const [newUsersToCohort, setNewUsersToCohort] = useState([]);
   const [newCohortId, setNewCohortId] = useState(undefined);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingCoverUsers, setLoadingCoverUsers] = useState(false);
+  const [loadingCoverExistingUsers, setLoadingCoverExistingUsers] = useState(false);
+
   /*
     ==========================
     =     AUX VARIABLES      =
@@ -247,7 +250,7 @@ const RegisterSlackUser = ({
         <RegisterExistingSlackUserActions
           params={params}
           newCohortId={newCohortId}
-          onLoading={setLoading}
+          onLoading={setLoadingCoverExistingUsers}
           onRegisterCohortSubmit={onRegisterCohortSubmit}
           onHandleNewExistingUsers={setNewUsersToCohort}
         ></RegisterExistingSlackUserActions>
@@ -261,7 +264,6 @@ const RegisterSlackUser = ({
   */
   const fetchNewUsersFromSlack = async () => {
     try {
-      setLoading(true);
       const response = await axiosPrivate.get(
         `slack/channels/${cohortData.cohortSlackId}/members`,
         { withCredentials: true }
@@ -295,7 +297,7 @@ const RegisterSlackUser = ({
       });
     if (users.length > 0) {
       try {
-        setLoading(true);
+        setLoadingCoverUsers(true);
         const body = {
           users,
           cohort: newCohortId,
@@ -317,11 +319,11 @@ const RegisterSlackUser = ({
             userActivatedStatus: user.isActivated,
           })),
         ]);
-        setLoading(false);
+        setLoadingCoverUsers(false);
       } catch (error) {
         if (error.response.status === 403) {
           console.error(error);
-          setLoading(false);
+          setLoadingCoverUsers(false);
           navigate("/login", { state: { from: location }, replace: true });
           setAuth({
             userId: "",
@@ -334,7 +336,7 @@ const RegisterSlackUser = ({
             accessToken: "",
           });
         } else {
-          setLoading(false);
+          setLoadingCoverUsers(false);
           console.error(error);
         }
       }
@@ -350,7 +352,7 @@ const RegisterSlackUser = ({
     console.log(users);
     if (users.length > 0) {
       try {
-        setLoading(true);
+        setLoadingCoverExistingUsers(true);
         const body = {
           userIDs: users.map((user) => user.id),
         };
@@ -377,9 +379,26 @@ const RegisterSlackUser = ({
             userActivatedStatus: user.isActivated,
           })),
         ]);
-        setLoading(false);
+        setLoadingCoverExistingUsers(false);
       } catch (error) {
-        console.log(error);
+        if (error.response.status === 403) {
+          console.error(error);
+          setLoadingCoverExistingUsers(false);
+          navigate("/login", { state: { from: location }, replace: true });
+          setAuth({
+            userId: "",
+            userName: "",
+            userEmail: "",
+            role: [],
+            loggedIn: false,
+            avatarUrl: "",
+            isActive: undefined,
+            accessToken: "",
+          });
+        } else {
+          setLoadingCoverExistingUsers(false);
+          console.error(error);
+        }
       }
     } else {
       console.warn("Select at least one user");
@@ -473,6 +492,7 @@ const RegisterSlackUser = ({
                     rows={newUsers}
                     fieldToBeSorted={"name"}
                     sortType={"asc"}
+                    loading={loadingCoverUsers}
                     rowId="slackId"
                     checkBoxSelection={true}
                     onSelectBox={setNewUsers}
@@ -515,6 +535,7 @@ const RegisterSlackUser = ({
                     rows={newUsersToCohort}
                     fieldToBeSorted={"name"}
                     sortType={"asc"}
+                    loading={loadingCoverExistingUsers}
                     checkBoxSelection={true}
                     onSelectBox={setNewUsersToCohort}
                     variant={"dark"}

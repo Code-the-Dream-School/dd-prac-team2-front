@@ -51,6 +51,7 @@ const Cohorts = () => {
   */
   const [cohorts, setCohorts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
   const columns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
@@ -136,6 +137,7 @@ const Cohorts = () => {
         <CohortsActions
           params={params}
           onHandleCohorts={setCohorts}
+          onLoading={setLoadingCover}
         ></CohortsActions>
       ),
     },
@@ -144,11 +146,6 @@ const Cohorts = () => {
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
   const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] =
     useState(false);
-  const [error, setError] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [openSuccessToast, setOpenSuccessToast] = useState(false);
-  const [openErrorToast, setOpenErrorToast] = useState(false);
 
   /*
     ==========================
@@ -282,6 +279,7 @@ const Cohorts = () => {
               pageSize={10}
               fieldToBeSorted={"class"}
               sortType={"asc"}
+              loading={loadingCover}
               variant="light"
             />
             {openNewCohortDialog ? (
@@ -289,6 +287,7 @@ const Cohorts = () => {
                 open={openNewCohortDialog}
                 handleOpen={setOpenNewCohortDialog}
                 onRegisterCohort={setCohorts}
+                onLoading={setLoadingCover}
               ></AddCohort>
             ) : null}
             {openNewCohortSlackDialog ? (

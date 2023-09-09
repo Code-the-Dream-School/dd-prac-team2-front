@@ -20,7 +20,7 @@ import React, { useState } from "react";
 */
 import EditCohort from "./EditCohort";
 
-const CohortsActions = ({ params, onHandleCohorts }) => {
+const CohortsActions = ({ params, onHandleCohorts, onLoading }) => {
   /*
       ==========================
       =         STATES         =
@@ -69,6 +69,7 @@ const CohortsActions = ({ params, onHandleCohorts }) => {
           cohortInfo={params}
           onCloseDialog={handleCloseEditCohort}
           onHandleCohorts={onHandleCohorts}
+          onLoading={onLoading}
         />
       ) : null}
     </>
@@ -80,4 +81,5 @@ export default CohortsActions;
 CohortsActions.propTypes = {
   params: PropTypes.object.isRequired,
   onHandleCohorts: PropTypes.func.isRequired,
+  onLoading: PropTypes.func
 };
