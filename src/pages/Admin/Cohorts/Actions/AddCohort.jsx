@@ -72,12 +72,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 const AddCohort = ({
   open,
   handleOpen,
+  toast,
   onRegisterSlackChannel,
   onRegisterCohort,
   slackChannelData,
-  onLoading
+  onLoading,
+  onToast
 }) => {
-  console.log(slackChannelData);
   /*
     ==========================
     =         STATES         =
@@ -103,10 +104,7 @@ const AddCohort = ({
       errorMessage: "Please select a start date for this cohort",
     },
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [openSuccessToast, setOpenSuccessToast] = useState(false);
-  const [openErrorToast, setOpenErrorToast] = useState(false);
+
   /*
     ==========================
     =         HOOKS          =
@@ -144,12 +142,11 @@ const AddCohort = ({
         });
       } else {
         console.error(error);
-        setSuccessMessage("");
-        setErrorMessage("");
-        setErrorMessage(
-          `Error. New cohort was not added. ${error.response.data.msg}.`
-        );
-        setOpenErrorToast(true);
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The new cohort was not added: ${error.response.data.msg}.`,
+        });
       }
     }
   };
@@ -191,12 +188,20 @@ const AddCohort = ({
   };
   //3. Start date handler
   const handleStartDateChange = (newStartDate) => {
+    const errors = Object.values(newStartDate);
+    console.log(errors);
     setStartDate(newStartDate);
+    setFormError((prevState) => ({
+      ...prevState,
+      startDateError: {
+        ...prevState.startDateError,
+        error: (errors.some((error)=>isNaN(error)) ? true:false),
+      },
+    }));
   };
 
   //4. Form onSubmit event handler
   const handleCohortSubmit = async (event) => {
-    console.log("I entered");
     event.preventDefault();
     const newCohort = {
       slackId: slackChannelData?.slackId ?? null,
@@ -205,7 +210,6 @@ const AddCohort = ({
       type: className,
     };
     const errors = Object.values(formError);
-
     try {
       onLoading(true);
       if (!errors.some((error) => error.error === true)) {
@@ -237,29 +241,43 @@ const AddCohort = ({
               )
             );
           }
-          setSuccessMessage("");
-          setErrorMessage("");
-          setSuccessMessage("Success. New cohort has been added successfully!");
-          setOpenSuccessToast(true);
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! The new cohort ${response.data.cohort.name} has been added.`,
+          });
           handleOpen(false);
         }
       } else {
         onLoading(false); // Stop loading
-        setSuccessMessage("");
-        setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage("Form validation is not letting form submission.");
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
-      onLoading(false); // Stop loading
-      console.log(error);
+      onLoading(false);
     } finally {
       setReset(true);
       setCohortName("");
       setClassName("");
       setStartDate(dayjs());
+      setFormError({
+        cohortError: {
+          error: false,
+          errorMessage: "Please enter a valid name",
+        },
+        classNameError: {
+          error: slackChannelData === undefined ? true : false, //Initial value is blank, this is why I set the error to true.
+          errorMessage: "Please select a class for this cohort",
+        },
+        startDateError: {
+          error: false,
+          errorMessage: "Please select a start date for this cohort",
+        },
+      });
     }
   };
 
@@ -404,28 +422,6 @@ const AddCohort = ({
                 width="auto"
                 handlerFunction={() => {}}
               ></AppButton>
-              <ToastMessage
-                open={openErrorToast}
-                severity="error"
-                variant="filled"
-                onClose={() => setOpenErrorToast(false)}
-                dismissible
-                // sx={{ background: "white", color: "#CD1818" }}
-                // background="#cd1818"
-                // color="white"
-                message={errorMessage}
-              ></ToastMessage>
-
-              <ToastMessage
-                open={openSuccessToast}
-                severity="success"
-                variant="filled"
-                // autoHideDuration={3000}
-                onClose={() => setOpenSuccessToast(false)}
-                dismissible
-                // sx={{ background: "white", color: "#CD1818" }}
-                message={successMessage}
-              ></ToastMessage>
             </DialogActions>
           </>
         </Box>
@@ -443,5 +439,7 @@ AddCohort.propTypes = {
   onRegisterCohort: PropTypes.func.isRequired,
   slackChannelData: PropTypes.object,
   onRegisterCohort: PropTypes.func.isRequired,
-  onLoading: PropTypes.func
+  onLoading: PropTypes.func,
+  toast: PropTypes.object,
+  onToast: PropTypes.func
 };
