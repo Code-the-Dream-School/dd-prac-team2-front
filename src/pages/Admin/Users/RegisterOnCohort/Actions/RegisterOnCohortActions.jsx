@@ -33,6 +33,7 @@ const RegisterOnCohortActions = ({
   cohortData,
   onLoading,
   onHandleCohortUsers,
+  onToast,
 }) => {
   /*
     ==========================
@@ -84,6 +85,11 @@ const RegisterOnCohortActions = ({
         return prevCohortUsers.filter(
           (user) => user.id !== cohortUserToBeDeleted
         );
+      });
+      onToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! User ${userToBeDeletedFromCohort.data.user.name} has been deleted from cohort`,
       });
       onLoading(false);
     } catch (error) {
@@ -154,6 +160,7 @@ const RegisterOnCohortActions = ({
           onCloseDialog={handleCloseEditCohortUserDialog}
           onLoading={onLoading}
           onHandleCohortUsers={onHandleCohortUsers}
+          onToast={onToast}
         ></EditCohortUser>
       ) : null}
     </>
@@ -167,4 +174,5 @@ RegisterOnCohortActions.propTypes = {
   cohortData: PropTypes.object.isRequired,
   onLoading: PropTypes.func.isRequired,
   onHandleCohortUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func,
 };
