@@ -113,7 +113,13 @@ const AppDatePicker = ({
       onChange={handleValueChange}
       minDate={minDate}
       maxDate={maxDate}
-      onError={(newError) => (newError ? setError(newError) : setError(" "))}
+      onError={(newError) => {
+        newError
+          ? newError === "maxDate"
+            ? setError("Date is greater than max date")
+            : setError("Date is less than min date")
+          : setError(" ");
+      }}
     />
   );
 };

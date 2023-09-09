@@ -4,9 +4,7 @@
     ==========================
 */
 import { Box, Container, Paper, Typography } from "@mui/material";
-import {
-  PersonAddRounded,
-} from "@mui/icons-material";
+import { PersonAddRounded } from "@mui/icons-material";
 
 /*
     ==========================
@@ -274,82 +272,83 @@ const RegisterUsers = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg">
-      <Paper
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "#1A1A2E",
-          color: "#FFFFFF",
-          borderRadius: "10px",
-          padding: 2,
-          height: "auto",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {" "}
-          Users Management{" "}
-        </Typography>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-        >
-          <div className={styles.formContainer}>
-            <AuthFormControl width="30%">
-              <AppButton
-                text={"Add new user"}
-                type="button"
-                width="100%"
-                handlerFunction={() => setOpenAddUserDialog(true)}
-              >
-                <PersonAddRounded fontSize="large"></PersonAddRounded>
-              </AppButton>
-            </AuthFormControl>
-          </div>
-        </Box>
-        {loading ? (
-          <Loader />
-        ) : (
-          // null}
-          <AppDataGrid
-            columns={columns}
-            rows={users}
-            pageSize={10}
-            fieldToBeSorted={"userName"}
-            sortType={"asc"}
-          />
-        )}
-        {openAddUserDialog ? (
-          <AddUser
-            open={openAddUserDialog}
-            cohorts={cohorts}
-            handleOpen={setOpenAddUserDialog}
-            onHandleUsers={setUsers}
-            onLoading={setLoading}
-          ></AddUser>
-        ) : null}
-      </Paper>
-    </Container>
+    <>
+      {loading ? (
+        <Loader></Loader>
+      ) : (
+        <Container maxWidth="lg">
+          <Paper
+            elevation={3}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              bgcolor: "#1A1A2E",
+              color: "#FFFFFF",
+              borderRadius: "10px",
+              padding: 2,
+              height: "auto",
+            }}
+          >
+            <Typography
+              component={"h1"}
+              sx={{
+                backgroundColor: "#C84B31",
+                borderRadius: 2,
+                padding: 1,
+                margin: 1,
+                textAlign: "center",
+                textTransform: "uppercase",
+                fontWeight: "bold",
+                fontSize: 25,
+              }}
+            >
+              {" "}
+              Users Management{" "}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "100%",
+              }}
+            >
+              <div className={styles.formContainer}>
+                <AuthFormControl width="30%">
+                  <AppButton
+                    text={"Add new user"}
+                    type="button"
+                    width="100%"
+                    handlerFunction={() => setOpenAddUserDialog(true)}
+                  >
+                    <PersonAddRounded fontSize="large"></PersonAddRounded>
+                  </AppButton>
+                </AuthFormControl>
+              </div>
+            </Box>
+            <AppDataGrid
+              columns={columns}
+              rows={users}
+              pageSize={10}
+              fieldToBeSorted={"userName"}
+              sortType={"asc"}
+            />
+            {openAddUserDialog ? (
+              <AddUser
+                open={openAddUserDialog}
+                cohorts={cohorts}
+                handleOpen={setOpenAddUserDialog}
+                onHandleUsers={setUsers}
+                onLoading={setLoading}
+              ></AddUser>
+            ) : null}
+          </Paper>
+        </Container>
+      )}
+    </>
   );
 };
 

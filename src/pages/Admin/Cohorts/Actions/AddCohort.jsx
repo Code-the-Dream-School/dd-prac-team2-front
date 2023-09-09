@@ -77,7 +77,7 @@ const AddCohort = ({
   onRegisterCohort,
   slackChannelData,
   onLoading,
-  onToast
+  onToast,
 }) => {
   /*
     ==========================
@@ -190,14 +190,14 @@ const AddCohort = ({
   const handleStartDateChange = (newStartDate) => {
     const errors = Object.values(newStartDate);
     console.log(errors);
-    setStartDate(newStartDate);
     setFormError((prevState) => ({
       ...prevState,
       startDateError: {
         ...prevState.startDateError,
-        error: (errors.some((error)=>isNaN(error)) ? true:false),
+        error: !dayjs(errors[2]).isValid() ? true : false,
       },
     }));
+    setStartDate(newStartDate);
   };
 
   //4. Form onSubmit event handler
@@ -441,5 +441,5 @@ AddCohort.propTypes = {
   onRegisterCohort: PropTypes.func.isRequired,
   onLoading: PropTypes.func,
   toast: PropTypes.object,
-  onToast: PropTypes.func
+  onToast: PropTypes.func,
 };

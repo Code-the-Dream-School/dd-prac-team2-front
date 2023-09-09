@@ -37,6 +37,7 @@ const WeeksActions = ({
   onLoadingCover,
   cohortId,
   onHandleCohortWeeks,
+  onToast
 }) => {
   /*
         ==========================
@@ -67,6 +68,12 @@ const WeeksActions = ({
             }
           })
         );
+        console.log(response);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! The week has been deleted.`,
+        });
         onLoadingCover(false);
       }
     } catch (error) {
@@ -137,6 +144,7 @@ const WeeksActions = ({
           cohortData={cohortData}
           weekInfo={params}
           onLoadingCover={onLoadingCover}
+          onToast={onToast}
           onCloseDialog={handleCloseEditCohortWeek}
           onHandleCohortWeeks={onHandleCohortWeeks}
         ></EditCohortWeek>
@@ -154,4 +162,5 @@ WeeksActions.propTypes = {
   onLoadingCover: PropTypes.func,
   cohortId: PropTypes.string,
   onHandleCohortWeeks: PropTypes.func,
+  onToast: PropTypes.func,
 }
