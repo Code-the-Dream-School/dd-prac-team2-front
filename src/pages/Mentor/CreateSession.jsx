@@ -12,7 +12,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import AppDateTimePicker from "../../components/DateTimePicker/AppDateTimePicker";
 import AppButton from "../../components/Button/AppButton";
 
-function CreateSession({ updateSessions }) {
+function CreateSession({ updateSessions, onLoading }) {
   const navigate = useNavigate();
   const [start, setStart] = useState(dayjs(Date.now()));
   const [end, setEnd] = useState(dayjs(Date.now() + 60 * 60 * 1000));
@@ -29,6 +29,7 @@ function CreateSession({ updateSessions }) {
   }, []);
 
   const handleClick = async () => {
+    onLoading(true);
     const res = await axiosPrivate.post("/session", {
       start: start.toDate(),
       end: end.toDate(),
@@ -37,8 +38,8 @@ function CreateSession({ updateSessions }) {
       cohortId: cohort._id,
       multipleSessions: shouldRepeat,
     });
-
     updateSessions(res.data.session);
+    onLoading(false);
   };
 
   const handleChangeStartDate = (val) => {
