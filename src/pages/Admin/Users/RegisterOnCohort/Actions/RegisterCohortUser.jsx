@@ -61,7 +61,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit, onLoading }) => {
+const RegisterCohortUser = ({
+  open,
+  handleOpen,
+  onRegisterCohortSubmit,
+  onLoading,
+  onToast,
+}) => {
   /*
     ==========================
     =          HOOKS         =
@@ -166,20 +172,30 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit, onLoadin
           setReset(true);
           setUserRoles([]);
           handleOpen(false);
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! User ${response.data.users[0].name} has been added.`,
+          });
         } else if (response.data.errors.length > 0) {
-          console.error(response.data.errors);
+          onToast({
+            isOpened: true,
+            severity: "error",
+            message: `Error! ${response.data.errors}`,
+          });
         }
         onLoading(false);
       } else {
         onLoading(false);
-        console.error(
-          "There is an error preventing the form submission: check that your entires are correctly validated"
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
         onLoading(false);
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -194,7 +210,6 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit, onLoadin
         });
       } else {
         onLoading(false);
-        console.error(error);
       }
     }
   };
@@ -371,4 +386,5 @@ RegisterCohortUser.propTypes = {
   handleOpen: PropTypes.func.isRequired,
   onRegisterCohortSubmit: PropTypes.func.isRequired,
   onLoading: PropTypes.func,
-}
+  onToast: PropTypes.func,
+};

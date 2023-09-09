@@ -24,7 +24,8 @@ const CohortsSlackAction = ({
   params,
   onRegisterSlackChannel,
   onRegisterCohort,
-  onLoading
+  onLoading,
+  onToast
 }) => {
   /*
     ==========================
@@ -76,6 +77,7 @@ const CohortsSlackAction = ({
           onRegisterCohort={onRegisterCohort}
           slackChannelData={slackChannelData}
           onLoading={onLoading}
+          onToast={onToast}
         ></AddCohort>
       ) : null}
     </>
@@ -88,5 +90,6 @@ CohortsSlackAction.propTypes = {
   params: PropTypes.object.isRequired,
   onRegisterSlackChannel: PropTypes.func.isRequired,
   onRegisterCohort: PropTypes.func.isRequired,
-  onLoading: PropTypes.func
+  onLoading: PropTypes.func,
+  onToast: PropTypes.func
 };

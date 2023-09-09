@@ -11,7 +11,7 @@ const ToastMessage = ({ open, onClose, severity, message }) => {
     <>
       <Snackbar
         open={open}
-        autoHideDuration={6000}
+        autoHideDuration={3000}
         onClose={onClose}
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         sx={{ width: "30rem" }}

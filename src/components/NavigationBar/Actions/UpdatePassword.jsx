@@ -37,6 +37,7 @@ import AuthFormControl from "../../FormControl/AuthFormControl";
 import useAuth from "./../../../hooks/useAuth";
 import FormTextField from "../../TextField/FormTextField";
 import { useLocation, useNavigate } from "react-router-dom";
+import ToastMessage from "../../ToastMessage/ToastMessage";
 
 /*
     ==========================
@@ -73,6 +74,11 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
     },
   });
   const [reset, setReset] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
 
   /*
         ==========================
@@ -89,10 +95,20 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
     try {
       if (!errors.some((error) => error.error === true)) {
         const response = await axiosPrivate.patch("profile/password", body);
-        console.log(response);
-        handleOpenDialog(false);
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Your password has been updated`,
+        });
+        setTimeout(()=>{
+          handleOpenDialog(false);
+        },1500);
       } else {
-        console.error("There is an error preventing the form submission");
+        setToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please follow the password requirements`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -110,7 +126,11 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
           accessToken: "",
         });
       } else {
-        console.error(error);
+        setToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! ${error.response.data.msg}`,
+        });
       }
     }
   };
@@ -137,6 +157,16 @@ const UpdatePassword = ({ open, handleOpenDialog }) => {
 
   return (
     <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
       <Dialog
         open={open}
         TransitionComponent={Transition}

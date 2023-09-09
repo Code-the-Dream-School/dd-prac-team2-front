@@ -49,6 +49,7 @@ import UserAvatarRender from "../TableRenders/UserAvatarRender";
 import UserCohortRender from "../../Register/TableRenders/UserCohortRender";
 import RegisterSlackUserActions from "./RegisterSlackUserActions";
 import RegisterExistingSlackUserActions from "./RegisterExistingSlackUserActions";
+import ToastMessage from "../../../../../components/ToastMessage/ToastMessage";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -83,8 +84,13 @@ const RegisterSlackUser = ({
   const [newCohortId, setNewCohortId] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [loadingCoverUsers, setLoadingCoverUsers] = useState(false);
-  const [loadingCoverExistingUsers, setLoadingCoverExistingUsers] = useState(false);
-
+  const [loadingCoverExistingUsers, setLoadingCoverExistingUsers] =
+    useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   /*
     ==========================
     =     AUX VARIABLES      =
@@ -161,6 +167,7 @@ const RegisterSlackUser = ({
         <RegisterSlackUserActions
           params={params}
           onHandleNewUsers={setNewUsers}
+          onToast={setToast}
         ></RegisterSlackUserActions>
       ),
     },
@@ -253,6 +260,7 @@ const RegisterSlackUser = ({
           onLoading={setLoadingCoverExistingUsers}
           onRegisterCohortSubmit={onRegisterCohortSubmit}
           onHandleNewExistingUsers={setNewUsersToCohort}
+          onToast={setToast}
         ></RegisterExistingSlackUserActions>
       ),
     },
@@ -319,6 +327,11 @@ const RegisterSlackUser = ({
             userActivatedStatus: user.isActivated,
           })),
         ]);
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Users ${response.data.users.map((user)=>user.name)} have been added`,
+        });
         setLoadingCoverUsers(false);
       } catch (error) {
         if (error.response.status === 403) {
@@ -341,7 +354,11 @@ const RegisterSlackUser = ({
         }
       }
     } else {
-      console.warn("Select at least one user");
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! You must select at least one user`,
+      });
     }
   };
 
@@ -357,7 +374,7 @@ const RegisterSlackUser = ({
           userIDs: users.map((user) => user.id),
         };
         console.log(body);
-        console.log(newCohortId)
+        console.log(newCohortId);
         const response = await axiosPrivate.patch(
           `/users/add-to-cohort/${newCohortId}`,
           body
@@ -379,6 +396,11 @@ const RegisterSlackUser = ({
             userActivatedStatus: user.isActivated,
           })),
         ]);
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Users have been added to the cohort`,
+        });
         setLoadingCoverExistingUsers(false);
       } catch (error) {
         if (error.response.status === 403) {
@@ -401,7 +423,11 @@ const RegisterSlackUser = ({
         }
       }
     } else {
-      console.warn("Select at least one user");
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! You must select at least one user`,
+      });
     }
   };
 
@@ -411,6 +437,16 @@ const RegisterSlackUser = ({
 
   return (
     <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
       <Dialog
         open={open}
         TransitionComponent={Transition}

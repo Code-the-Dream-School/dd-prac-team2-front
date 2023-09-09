@@ -49,7 +49,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
+const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit, onToast }) => {
   /*
     ==========================
     =          HOOKS         =
@@ -165,13 +165,20 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
             userActivatedStatus: user.isActivated,
           })),
         ]);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `${response.data.message}`,
+        });
         setLoading(false);
         handleOpen(false);
       } else {
         setLoading(false);
-        console.error(
-          "There is an error preventing the form submission: check that your entires are correctly validated"
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -333,4 +340,5 @@ RegisterExistingUser.propTypes = {
   open: PropTypes.bool.isRequired,
   handleOpen: PropTypes.func.isRequired,
   onRegisterCohortSubmit: PropTypes.func.isRequired,
+  onToast: PropTypes.func
 };

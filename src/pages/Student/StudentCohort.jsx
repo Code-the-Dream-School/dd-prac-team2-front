@@ -33,6 +33,7 @@ import AppButton from "../../components/Button/AppButton";
 import Loader from "../../components/Loader/Loader";
 import useAuth from "../../hooks/useAuth";
 import CohortHeader from "../../components/CohortHeader/CohortHeader";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const StudentCohort = () => {
   /*
@@ -52,6 +53,11 @@ const StudentCohort = () => {
   */
   const [currentWeek, setCurrentWeek] = useState();
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   /*
       ==========================
       =      AUX FUNCTION      =
@@ -122,6 +128,11 @@ const StudentCohort = () => {
             }
           }),
         }));
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! You are now enrolled!`,
+        });
       } catch (error) {
         if (error.response.status === 403) {
           navigate("/login", { state: { from: location }, replace: true });
@@ -163,6 +174,11 @@ const StudentCohort = () => {
             }
           }),
         }));
+        setToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! You have cancelled your participation`,
+        });
       } catch (error) {
         if (error.response.status === 403) {
           navigate("/login", { state: { from: location }, replace: true });
@@ -211,6 +227,16 @@ const StudentCohort = () => {
         <Loader></Loader>
       ) : (
         <Container>
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <CohortHeader
             cohort={cohort}
             currentWeek={currentWeek}

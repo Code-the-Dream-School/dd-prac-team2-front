@@ -20,7 +20,7 @@ import React, { useState } from "react";
 */
 import EditCohort from "./EditCohort";
 
-const CohortsActions = ({ params, onHandleCohorts, onLoading }) => {
+const CohortsActions = ({ params, onHandleCohorts, onLoading, onToast }) => {
   /*
       ==========================
       =         STATES         =
@@ -70,6 +70,7 @@ const CohortsActions = ({ params, onHandleCohorts, onLoading }) => {
           onCloseDialog={handleCloseEditCohort}
           onHandleCohorts={onHandleCohorts}
           onLoading={onLoading}
+          onToast={onToast}
         />
       ) : null}
     </>
@@ -81,5 +82,6 @@ export default CohortsActions;
 CohortsActions.propTypes = {
   params: PropTypes.object.isRequired,
   onHandleCohorts: PropTypes.func.isRequired,
-  onLoading: PropTypes.func
+  onLoading: PropTypes.func,
+  onToast: PropTypes.func
 };

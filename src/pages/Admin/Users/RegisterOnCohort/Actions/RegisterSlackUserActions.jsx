@@ -20,7 +20,7 @@ import React, { useState } from "react";
 import AppButton from "../../../../../components/Button/AppButton";
 import EditSlackProfile from "./EditSlackProfile";
 
-const RegisterSlackUserActions = ({ params, onHandleNewUsers }) => {
+const RegisterSlackUserActions = ({ params, onHandleNewUsers, onToast }) => {
   /*
         ==========================
         =         STATES         =
@@ -56,6 +56,7 @@ const RegisterSlackUserActions = ({ params, onHandleNewUsers }) => {
           handleOpen={setOpenEditSlackProfileDialog}
           slackProfileInfo={params}
           onHandleNewUsers={onHandleNewUsers}
+          onToast={onToast}
         ></EditSlackProfile>
       ) : null}
     </>
@@ -67,4 +68,5 @@ export default RegisterSlackUserActions;
 RegisterSlackUserActions.propTypes = {
   params: PropTypes.object.isRequired,
   onHandleNewUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func
 };

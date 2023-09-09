@@ -57,6 +57,7 @@ const EditSlackProfile = ({
   handleOpen,
   slackProfileInfo,
   onHandleNewUsers,
+  onToast
 }) => {
   console.log(slackProfileInfo);
   /*
@@ -116,6 +117,11 @@ const EditSlackProfile = ({
           }
         })
       );
+      onToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! User ${slackProfileInfo.row.name} has been updated`,
+      });
       handleOpen(false);
     } else {
       console.error("There is an error preventing form submission");
@@ -225,4 +231,5 @@ EditSlackProfile.propTypes = {
   handleOpen: PropTypes.func.isRequired,
   slackProfileInfo: PropTypes.object.isRequired,
   onHandleNewUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func
 };
