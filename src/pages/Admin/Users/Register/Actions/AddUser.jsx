@@ -26,6 +26,7 @@ import {
 */
 import React, { forwardRef, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 /*
     ==========================
     =        STYLES          =
@@ -62,7 +63,7 @@ const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
+const AddUser = ({ open, cohorts, handleOpen, onHandleUsers, onToast }) => {
   /*
     ==========================
     =          HOOKS         =
@@ -143,20 +144,21 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
   // Form submit:
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
-    const formattedUserRegistration = {
-      users: [
-        {
-          name: event.target.userName.value.trim(),
-          email: event.target.userEmail.value.trim(),
-          role: userRoles.map((role) => role.toLowerCase()),
-        },
-      ],
-      cohort: cohortsValueSelected.id,
-    };
     const errors = Object.values(formError);
     try {
       setLoading(true);
+      console.log(errors);
       if (!errors.some((error) => error.error === true)) {
+        const formattedUserRegistration = {
+          users: [
+            {
+              name: event.target.userName.value.trim(),
+              email: event.target.userEmail.value.trim(),
+              role: userRoles.map((role) => role.toLowerCase()),
+            },
+          ],
+          cohort: cohortsValueSelected.id,
+        };
         const response = await axiosPrivate.post(
           "auth/register",
           formattedUserRegistration
@@ -174,18 +176,30 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
               userActivatedStatus: response.data.users[0].isActivated,
             },
           ]);
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! User ${response.data.users[0].name} has been registered`,
+          });
           setLoading(false);
           setReset(true);
           setCohortsValueSelected(cohorts[0]);
           setUserRoles([]);
         } else if (response.data.errors.length > 0) {
-          console.error(response.data.errors);
+          onToast({
+            isOpened: true,
+            severity: "error",
+            message: `Error! ${response.data.errors}`,
+          });
+          setLoading(false);
         }
       } else {
         setLoading(false);
-        console.error(
-          "There is an error preventing the form submission: check that your entires are correctly validated"
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -428,3 +442,11 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers }) => {
 };
 
 export default AddUser;
+
+AddUser.propTypes = {
+  open: PropTypes.bool,
+  cohorts: PropTypes.array,
+  handleOpen: PropTypes.func,
+  onHandleUsers: PropTypes.func,
+  onToast: PropTypes.func,
+};

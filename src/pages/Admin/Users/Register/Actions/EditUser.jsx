@@ -63,6 +63,7 @@ const EditUser = ({
   fetchedCohorts,
   onCloseDialog,
   onHandleUsers,
+  onToast,
 }) => {
   /*
     ==========================
@@ -148,11 +149,18 @@ const EditUser = ({
             }
           })
         );
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! User ${userInfo.row.userName} has been updated`,
+        });
         onCloseDialog();
       } else {
-        console.error(
-          "There are some errors preventing the form to be submitted"
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -330,4 +338,5 @@ EditUser.propTypes = {
   fetchedCohorts: PropTypes.array.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
   onHandleUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func.isRequired,
 };
