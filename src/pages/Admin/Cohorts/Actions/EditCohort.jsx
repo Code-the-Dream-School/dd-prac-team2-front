@@ -73,6 +73,8 @@ const EditCohort = ({
   cohortInfo,
   onCloseDialog,
   onHandleCohorts,
+  onLoading,
+  onToast
 }) => {
   /*
     ==========================
@@ -102,12 +104,6 @@ const EditCohort = ({
     },
   });
   const [reset, setReset] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [openSuccessToast, setOpenSuccessToast] = useState(false);
-  const [openErrorToast, setOpenErrorToast] = useState(false);
 
   /*
     ==========================
@@ -131,13 +127,10 @@ const EditCohort = ({
         editedCohort
       );
       console.log(response);
-      setLoading(false);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
-
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",
@@ -150,7 +143,11 @@ const EditCohort = ({
           accessToken: "",
         });
       } else {
-        console.error(error);
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The cohort could not be updated: ${error.response.data.msg}`,
+        });
       }
     }
   };
@@ -192,11 +189,10 @@ const EditCohort = ({
     };
     const errors = Object.values(formError);
     try {
-      setLoading(true);
+      onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
         console.log(response);
-        setLoading(false); // Stop loading
         const options = { year: "2-digit", month: "numeric", day: "numeric" };
         const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
@@ -217,74 +213,56 @@ const EditCohort = ({
               }
             })
           );
+          onLoading(false); // Stop loading
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! The cohort ${response.data.cohort.name} has been updated.`,
+          });
           setReset(true);
           setCohortName("");
           setClassName("");
           onCloseDialog(true);
         }
       } else {
-        setSuccessMessage("");
-        setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage(
-          "There is an error that is preventing the form submission",
-          errors
-        );
+        onLoading(false); // Stop loading
         console.log(
           "There is an error that is preventing the form submission",
           errors
         );
       }
     } catch (error) {
-      setLoading(false);
-      setSuccessMessage("");
-      setErrorMessage("");
-      setErrorMessage(`Error. ${error}. Please try again!`);
-      setOpenErrorToast(true);
-      console.error(error.response.data);
+      onLoading(false);
     }
   };
 
   const handleDeleteCohort = async () => {
     try {
-      setLoading(true);
+      onLoading(true);
       const response = await axiosPrivate.delete(
         `/cohort/${cohortInfo.row.id}`,
         {
           withCredentials: true,
         }
       );
-      setSuccessMessage("");
-      setErrorMessage("");
-      setSuccessMessage("Success. New cohort has been removed successfully!");
-      setOpenSuccessToast(true);
-      console.log(response);
-      setLoading(false); // Stop loading
       if (response.status === 200) {
         onHandleCohorts((prevCohorts) => {
           return prevCohorts.filter(
             (cohort) => cohort.id !== cohortInfo.row.id
           );
         });
-        setSuccessMessage("");
-        setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage("error! Cohor was not removed!");
-        console.error(response);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `${response.data.status}`,
+        });
+        onLoading(false); // Stop loading
       }
     } catch (error) {
-      setLoading(false);
       console.log(error);
-      setSuccessMessage("");
-      setErrorMessage("");
-      setErrorMessage(
-        `Error. New cohort was not rempved. ${error}. Please try again!`
-      );
-      setOpenErrorToast(true);
       if (error.response.status === 403) {
         //User is required to validate auth again
+        onLoading(false);
         console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -298,14 +276,14 @@ const EditCohort = ({
           accessToken: "",
         });
       } else {
-        console.error(error);
-        setSuccessMessage("");
-        setErrorMessage("");
-        setErrorMessage(`Error.${error}. Please try again!`);
-        setOpenErrorToast(true);
+        onLoading(false);
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The cohort could not be updated: ${error.response.data.msg}`,
+        });
       }
     }
-    setLoading(false);
   };
 
   return (
@@ -355,17 +333,6 @@ const EditCohort = ({
         autoComplete="off"
         onSubmit={handleEditCohortSubmit}
       >
-        {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <Loader />
-          </Box>
-        ) : null}
         <DialogContent
           sx={{ width: "100%", paddingX: 0, paddingY: 1 }}
           dividers
@@ -453,27 +420,6 @@ const EditCohort = ({
               <DeleteRounded></DeleteRounded>
             </AppButton>
           ) : null}
-          <ToastMessage
-            open={openErrorToast}
-            severity="error"
-            variant="filled"
-            onClose={() => setOpenErrorToast(false)}
-            dismissible
-            // sx={{ background: "white", color: "#CD1818" }}
-            // background="#cd1818"
-            // color="white"
-            message={errorMessage}
-          ></ToastMessage>
-          <ToastMessage
-            open={openSuccessToast}
-            severity="success"
-            variant="filled"
-            // autoHideDuration={3000}
-            onClose={() => setOpenSuccessToast(false)}
-            dismissible
-            // sx={{ background: "white", color: "#CD1818" }}
-            message={successMessage}
-          ></ToastMessage>
         </DialogActions>
       </Box>
     </Dialog>
@@ -487,4 +433,6 @@ EditCohort.propTypes = {
   cohortInfo: PropTypes.object.isRequired,
   onCloseDialog: PropTypes.func.isRequired,
   onHandleCohorts: PropTypes.func.isRequired,
+  onLoading: PropTypes.func,
+  onToast: PropTypes.func,
 };

@@ -72,11 +72,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 const AddCohort = ({
   open,
   handleOpen,
+  toast,
   onRegisterSlackChannel,
   onRegisterCohort,
   slackChannelData,
+  onLoading,
+  onToast,
 }) => {
-  console.log(slackChannelData);
   /*
     ==========================
     =         STATES         =
@@ -88,7 +90,6 @@ const AddCohort = ({
   const [startDate, setStartDate] = useState(
     dayjs(slackChannelData?.startDate) ?? dayjs()
   );
-  const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState({
     cohortError: {
       error: false,
@@ -103,10 +104,7 @@ const AddCohort = ({
       errorMessage: "Please select a start date for this cohort",
     },
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [openSuccessToast, setOpenSuccessToast] = useState(false);
-  const [openErrorToast, setOpenErrorToast] = useState(false);
+
   /*
     ==========================
     =         HOOKS          =
@@ -144,12 +142,11 @@ const AddCohort = ({
         });
       } else {
         console.error(error);
-        setSuccessMessage("");
-        setErrorMessage("");
-        setErrorMessage(
-          `Error. New cohort was not added. ${error.response.data.msg}.`
-        );
-        setOpenErrorToast(true);
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The new cohort was not added: ${error.response.data.msg}.`,
+        });
       }
     }
   };
@@ -191,12 +188,20 @@ const AddCohort = ({
   };
   //3. Start date handler
   const handleStartDateChange = (newStartDate) => {
+    const errors = Object.values(newStartDate);
+    console.log(errors);
+    setFormError((prevState) => ({
+      ...prevState,
+      startDateError: {
+        ...prevState.startDateError,
+        error: !dayjs(errors[2]).isValid() ? true : false,
+      },
+    }));
     setStartDate(newStartDate);
   };
 
   //4. Form onSubmit event handler
   const handleCohortSubmit = async (event) => {
-    console.log("I entered");
     event.preventDefault();
     const newCohort = {
       slackId: slackChannelData?.slackId ?? null,
@@ -205,15 +210,13 @@ const AddCohort = ({
       type: className,
     };
     const errors = Object.values(formError);
-
     try {
-      setLoading(true);
+      onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
         console.log(response);
-        setLoading(false); // Stop loading
         if (response.status === 201) {
-          setLoading(false); // Stop loading in case of error
+          onLoading(false); // Stop loading
           const options = { year: "2-digit", month: "numeric", day: "numeric" };
           const dateTimeFormat = new Intl.DateTimeFormat("en", options);
           onRegisterCohort((prevCohorts) => [
@@ -238,27 +241,43 @@ const AddCohort = ({
               )
             );
           }
-          setSuccessMessage("");
-          setErrorMessage("");
-          setSuccessMessage("Success. New cohort has been added successfully!");
-          setOpenSuccessToast(true);
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! The new cohort ${response.data.cohort.name} has been added.`,
+          });
+          handleOpen(false);
         }
       } else {
-        setSuccessMessage("");
-        setErrorMessage("");
-        setOpenErrorToast(true);
-        // setErrorMessage(response.data.msg);
-        setErrorMessage("Form validation is not letting form submission.");
+        onLoading(false); // Stop loading
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
         console.error("Form validation is not letting form submission");
       }
     } catch (error) {
-      setLoading(false);
-      console.log(error);
+      onLoading(false);
     } finally {
       setReset(true);
       setCohortName("");
       setClassName("");
       setStartDate(dayjs());
+      setFormError({
+        cohortError: {
+          error: false,
+          errorMessage: "Please enter a valid name",
+        },
+        classNameError: {
+          error: slackChannelData === undefined ? true : false, //Initial value is blank, this is why I set the error to true.
+          errorMessage: "Please select a class for this cohort",
+        },
+        startDateError: {
+          error: false,
+          errorMessage: "Please select a start date for this cohort",
+        },
+      });
     }
   };
 
@@ -308,7 +327,6 @@ const AddCohort = ({
           onSubmit={handleCohortSubmit}
         >
           <>
-            {loading ? <Loader /> : null}
             <DialogContent
               sx={{
                 width: "100%",
@@ -404,28 +422,6 @@ const AddCohort = ({
                 width="auto"
                 handlerFunction={() => {}}
               ></AppButton>
-              <ToastMessage
-                open={openErrorToast}
-                severity="error"
-                variant="filled"
-                onClose={() => setOpenErrorToast(false)}
-                dismissible
-                // sx={{ background: "white", color: "#CD1818" }}
-                // background="#cd1818"
-                // color="white"
-                message={errorMessage}
-              ></ToastMessage>
-
-              <ToastMessage
-                open={openSuccessToast}
-                severity="success"
-                variant="filled"
-                // autoHideDuration={3000}
-                onClose={() => setOpenSuccessToast(false)}
-                dismissible
-                // sx={{ background: "white", color: "#CD1818" }}
-                message={successMessage}
-              ></ToastMessage>
             </DialogActions>
           </>
         </Box>
@@ -443,4 +439,7 @@ AddCohort.propTypes = {
   onRegisterCohort: PropTypes.func.isRequired,
   slackChannelData: PropTypes.object,
   onRegisterCohort: PropTypes.func.isRequired,
+  onLoading: PropTypes.func,
+  toast: PropTypes.object,
+  onToast: PropTypes.func,
 };

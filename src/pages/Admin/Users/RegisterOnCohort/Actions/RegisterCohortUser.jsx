@@ -61,7 +61,13 @@ const Transition = forwardRef(function Transition(props, ref) {
 */
 const rolesList = ["Admin", "Mentor", "Student"];
 
-const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
+const RegisterCohortUser = ({
+  open,
+  handleOpen,
+  onRegisterCohortSubmit,
+  onLoading,
+  onToast,
+}) => {
   /*
     ==========================
     =          HOOKS         =
@@ -131,6 +137,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
   //Form submit:
   const handleRegisterOnCohortSubmit = async (event) => {
     event.preventDefault();
+    onLoading(true);
     const formattedUserRegistration = {
       users: [
         {
@@ -165,17 +172,30 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           setReset(true);
           setUserRoles([]);
           handleOpen(false);
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! User ${response.data.users[0].name} has been added.`,
+          });
         } else if (response.data.errors.length > 0) {
-          console.error(response.data.errors);
+          onToast({
+            isOpened: true,
+            severity: "error",
+            message: `Error! ${response.data.errors}`,
+          });
         }
+        onLoading(false);
       } else {
-        console.error(
-          "There is an error preventing the form submission: check that your entires are correctly validated"
-        );
+        onLoading(false);
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
+        onLoading(false);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -189,7 +209,7 @@ const RegisterCohortUser = ({ open, handleOpen, onRegisterCohortSubmit }) => {
           accessToken: "",
         });
       } else {
-        console.error(error);
+        onLoading(false);
       }
     }
   };
@@ -364,5 +384,7 @@ export default RegisterCohortUser;
 RegisterCohortUser.propTypes = {
   open: PropTypes.bool.isRequired,
   handleOpen: PropTypes.func.isRequired,
-  onRegisterCohortSubmit: PropTypes.func.isRequired
-}
+  onRegisterCohortSubmit: PropTypes.func.isRequired,
+  onLoading: PropTypes.func,
+  onToast: PropTypes.func,
+};

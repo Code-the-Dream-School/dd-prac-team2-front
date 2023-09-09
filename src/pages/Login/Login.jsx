@@ -35,13 +35,15 @@ import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 import AuthFormControl from "../../components/FormControl/AuthFormControl";
 
-const Login = () => {
+import { BASE_URL } from "../../config";
+
+const Login = ({onToast}) => {
   /*
         ==========================
         =        CONTEXT         =
         ==========================
     */
-  const {auth, setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   /*
         ==========================
         =         STATES         =
@@ -100,15 +102,25 @@ const Login = () => {
           accessToken: response.data.token,
         });
         setReset(true);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! Welcome back ${response.data.user.name}`,
+        });
         navigate(from, { replace: true });
       } else {
-        console.log(
-          "There is an error that is preventing the form submission",
-          errors
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
-      console.error(error.response.data);
+      onToast({
+        isOpened: true,
+        severity: "error",
+        message: `Error! ${error.response.data.msg}`,
+      });
     }
   };
 
@@ -137,7 +149,7 @@ const Login = () => {
   const handleGoogleAuthUrl = () => {
     const rootURL = "https://accounts.google.com/o/oauth2/v2/auth";
     const options = {
-      redirect_uri: "https://prac-team2.onrender.com/auth/google/callback",
+      redirect_uri: `${BASE_URL}/auth/google/callback`,
       client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
       access_type: "offline",
       response_type: "code",
@@ -243,9 +255,7 @@ const Login = () => {
                   isFocused={false}
                   width="100%"
                   variant="light"
-                  errorMessage={
-                    "This field is required"
-                  }
+                  errorMessage={"This field is required"}
                   onHandleError={handlePasswordError}
                   reset={reset}
                 ></FormTextField>
@@ -276,4 +286,6 @@ const Login = () => {
 
 export default Login;
 
-Login.propTypes = {};
+Login.propTypes = {
+  onToast: PropTypes.func
+};

@@ -60,6 +60,7 @@ const EditCohortUser = ({
   onCloseDialog,
   onLoading,
   onHandleCohortUsers,
+  onToast,
 }) => {
   /*
     ==========================
@@ -148,14 +149,21 @@ const EditCohortUser = ({
             }
           })
         );
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! User ${response.data.profile.name} has been updated`,
+        });
         setReset(true);
         setUserRoles([]);
         onCloseDialog();
         onLoading(false);
       } else {
-        console.error(
-          "There is an error preventing the form submission: check that your entires are correctly validated"
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
@@ -174,8 +182,12 @@ const EditCohortUser = ({
           accessToken: "",
         });
       } else {
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! ${error}`,
+        });
         onLoading(false);
-        console.error(error);
       }
     }
   };
@@ -284,4 +296,5 @@ EditCohortUser.propTypes = {
   onCloseDialog: PropTypes.func.isRequired,
   onLoading: PropTypes.func,
   onHandleCohortUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func,
 };

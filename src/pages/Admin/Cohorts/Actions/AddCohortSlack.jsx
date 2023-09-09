@@ -37,6 +37,7 @@ import Loader from "../../../../components/Loader/Loader";
 import CohortsSlackAction from "./CohortsSlackAction";
 import AppDataGrid from "../../../../components/DataGrid/AppDataGrid";
 import Slack from "../TableRender/Slack";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 /*
     ==========================
     =     AUX VARIABLES      =
@@ -63,6 +64,12 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
   */
   const [slackChannels, setSlackChannels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingCover, setLoadingCover] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   /*
     ==========================
     =      AUX VARIABLES     =
@@ -129,6 +136,8 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
           params={params}
           onRegisterSlackChannel={setSlackChannels}
           onRegisterCohort={onRegisterCohort}
+          onLoading={setLoadingCover}
+          onToast={setToast}
         ></CohortsSlackAction>
       ),
     },
@@ -194,6 +203,16 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
 
   return (
     <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
       <Dialog
         open={open}
         TransitionComponent={Transition}
@@ -262,6 +281,7 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
                 rows={slackChannels}
                 fieldToBeSorted={"class"}
                 sortType={"asc"}
+                loading={loadingCover}
                 variant={"dark"}
               />
             </DialogContent>

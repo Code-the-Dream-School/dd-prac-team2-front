@@ -3,7 +3,7 @@ import {
   Container,
   Typography,
   List,
-  Card,
+  Link,
   Chip,
   Stack,
   ListItemText,
@@ -29,9 +29,10 @@ import AppButton from "../../components/Button/AppButton";
 import styles from "./Student.module.css";
 import useAuth from "../../hooks/useAuth";
 import Review from "./Actions/Review";
-import { LocalGasStation } from "@mui/icons-material";
+import { LocalGasStation, VideoCameraFrontRounded } from "@mui/icons-material";
 import { formatDateAndTime } from "../../util";
 import Loader from "../../components/Loader/Loader";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const StudentSession = () => {
   const [currentSession, setCurrentSession] = useState();
@@ -48,6 +49,11 @@ const StudentSession = () => {
       error: false,
       errorMessage: "Please enter a valid comment",
     },
+  });
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
   });
   console.log(currentSession);
 
@@ -94,29 +100,44 @@ const StudentSession = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    const { data } = await axiosPrivate.post("/session/comment", {
-      name: auth.userName,
-      content: e.target.comment.value.trim(),
-      sessionId: sessionId,
-    });
-    console.log(data);
-    setComment("");
-    setReset(true);
-    setCurrentSession((prevCurrentSession) => ({
-      ...prevCurrentSession,
-      discussion: [
-        ...prevCurrentSession.discussion,
-        {
-          name: {
-            _id: auth.userId,
-            avatarUrl: auth.avatarUrl,
-            name: auth.userName,
+    const errors = Object.values(formError);
+    if (!errors.some((error) => error.error === true)) {
+      const { data } = await axiosPrivate.post("/session/comment", {
+        name: auth.userName,
+        content: e.target.comment.value.trim(),
+        sessionId: sessionId,
+      });
+      console.log(data);
+      setComment("");
+      setReset(true);
+      setCurrentSession((prevCurrentSession) => ({
+        ...prevCurrentSession,
+        discussion: [
+          ...prevCurrentSession.discussion,
+          {
+            name: {
+              _id: auth.userId,
+              avatarUrl: auth.avatarUrl,
+              name: auth.userName,
+            },
+            content: e.target.comment.value.trim(),
+            _id: sessionId,
           },
-          content: e.target.comment.value.trim(),
-          _id: sessionId,
-        },
-      ],
-    }));
+        ],
+      }));
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! You have added a new comment!`,
+      });
+    }
+    else{
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! Please submit a valid comment`,
+      });
+    }
   };
   useEffect(() => {
     getCurrentSession();
@@ -140,6 +161,16 @@ const StudentSession = () => {
         <Loader />
       ) : (
         <Container>
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <Box
             sx={{
               display: "flex",
@@ -154,8 +185,17 @@ const StudentSession = () => {
             }}
           >
             <Button variant="contained">{currentSession?.type} Session</Button>
-            <Button variant="contained" color="success" sx={{display:"flex", justifyContent:"center", alignItems:"center", gap:1}}>
-            <Avatar
+            <Button
+              variant="contained"
+              color="success"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 1,
+              }}
+            >
+              <Avatar
                 src={currentSession?.creator.avatarUrl}
                 alt={currentSession?.creator.name}
                 sx={{
@@ -193,7 +233,7 @@ const StudentSession = () => {
                 alignItems: "center",
               }}
             >
-              <Review sessionId={sessionId} />
+              <Review sessionId={sessionId} onToast={setToast} />
             </Box>
           </Box>
           <Box
@@ -263,6 +303,43 @@ const StudentSession = () => {
                   }}
                 />
               </Stack>
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                marginBottom: 2,
+              }}
+            >
+              <Link
+                sx={{
+                  backgroundColor: "#0F3460",
+                  padding: 2,
+                  borderRadius: 2,
+                  "&:hover": {
+                    transform: "scale(1.05)",
+                    transition: "all 0.2s ease-in-out",
+                  },
+                }}
+                href={currentSession?.link}
+                target="_blank"
+                underline="none"
+              >
+                <Typography
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 1,
+                    fontSize: "1.3rem",
+                    fontWeight: "bold",
+                    color: "white",
+                  }}
+                >
+                  <VideoCameraFrontRounded fontSize="large"></VideoCameraFrontRounded>
+                  Access zoom session
+                </Typography>
+              </Link>
             </Box>
             <Box
               sx={{
@@ -394,7 +471,7 @@ const StudentSession = () => {
               variant="h5"
               fontWeight="bold"
               color="White"
-              sx={{ textAlign: "center", marginTop: 1 }}
+              sx={{ textAlign: "center", margin: 1 }}
             >
               Discussion
             </Typography>

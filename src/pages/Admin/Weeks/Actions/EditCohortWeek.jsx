@@ -15,6 +15,7 @@ import {
 import { Close, DateRangeRounded, MenuBook } from "@mui/icons-material";
 import dayjs from "dayjs";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 
 /*
     ==========================
@@ -45,6 +46,7 @@ import AppDatePicker from "../../../../components/DatePicker/AppDatePicker";
     ==========================
 */
 import useAuth from "../../../../hooks/useAuth";
+import Loader from "../../../../components/Loader/Loader";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -55,8 +57,10 @@ const EditCohortWeek = ({
   cohortId,
   cohortData,
   weekInfo,
+  onLoadingCover,
   onCloseDialog,
   onHandleCohortWeeks,
+  onToast,
 }) => {
   const axiosPrivate = useAxiosPrivate();
   const navigate = useNavigate();
@@ -102,19 +106,53 @@ const EditCohortWeek = ({
 
   //2. Handler for week start date:
   const handleWeekStartDateChange = (newStartDate) => {
-    setWeekStartDate(newStartDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      weekStartDateError: {
-        ...prevState.weekStartDateError,
-        error: cohortData.startDate > newStartDate ? true : false,
-      },
-    }));
+    const errors = Object.values(newStartDate);
+    if (!dayjs(errors[2]).isValid()) {
+      setFormError((prevState) => ({
+        ...prevState,
+        weekStartDateError: {
+          ...prevState.weekStartDateError,
+          error: true,
+        },
+      }));
+      setWeekStartDate(dayjs(newStartDate));
+    } else {
+      setFormError((prevState) => ({
+        ...prevState,
+        weekStartDateError: {
+          ...prevState.weekStartDateError,
+          error: false,
+        },
+      }));
+      if (
+        newStartDate < dayjs(cohortData.cohortStartDate) ||
+        newStartDate > dayjs(cohortData.cohortEndDate)
+      ) {
+        setFormError((prevState) => ({
+          ...prevState,
+          weekStartDateError: {
+            ...prevState.weekStartDateError,
+            error: true,
+          },
+        }));
+        setWeekStartDate(dayjs(newStartDate));
+      } else {
+        setFormError((prevState) => ({
+          ...prevState,
+          weekStartDateError: {
+            ...prevState.weekStartDateError,
+            error: false,
+          },
+        }));
+        setWeekStartDate(dayjs(newStartDate));
+      }
+    }
   };
 
   //3. Handler for onSubmit event:
   const handleEditCohortWeekSubmit = async (event) => {
     event.preventDefault();
+    onLoadingCover(true);
     const weekToBeUpdated = weekInfo.row.id;
     const formattedUpdatedWeek = {
       name: event.target.weekName.value,
@@ -143,17 +181,25 @@ const EditCohortWeek = ({
               }
             })
           );
+          onToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! Week, '${response.data.week.name}', has been updated.`,
+          });
+          onLoadingCover(false);
           onCloseDialog();
-          setReset(true);
-          setWeekName("");
-          setWeekStartDate(dayjs(weekInfo.row.weekStartDate));
         }
       } else {
-        console.error("Form validation is not letting form submission");
+        onLoadingCover(false);
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
+        onLoadingCover(false);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -167,8 +213,28 @@ const EditCohortWeek = ({
           accessToken: "",
         });
       } else {
+        onToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The week was not updated: ${error.response.data.msg}.`,
+        });
+        onLoadingCover(false);
         console.error(error);
       }
+    } finally {
+      setReset(true);
+      setWeekName("");
+      setWeekStartDate(dayjs(weekInfo.row.weekStartDate));
+      setFormError({
+        weekNameError: {
+          error: false,
+          errorMessage: "Please enter a valid name",
+        },
+        weekStartDateError: {
+          error: false,
+          errorMessage: "Please enter a valid date",
+        },
+      });
     }
   };
 
@@ -288,3 +354,14 @@ const EditCohortWeek = ({
 };
 
 export default EditCohortWeek;
+
+EditCohortWeek.propTypes = {
+  openDialog: PropTypes.bool,
+  cohortId: PropTypes.string,
+  cohortData: PropTypes.object,
+  weekInfo: PropTypes.object,
+  onLoadingCover: PropTypes.func,
+  onCloseDialog: PropTypes.func,
+  onHandleCohortWeeks: PropTypes.func,
+  onToast: PropTypes.func,
+};

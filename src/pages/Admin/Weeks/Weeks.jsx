@@ -37,6 +37,8 @@ import FormTextField from "../../../components/TextField/FormTextField";
 import AppDatePicker from "../../../components/DatePicker/AppDatePicker";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import WeeksActions from "./Actions/WeeksActions";
+import Loader from "./../../../components/Loader/Loader";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 const Weeks = () => {
   /*
@@ -63,7 +65,7 @@ const Weeks = () => {
   // Main state for Cohorts table data:
   const [cohortWeeks, setCohortWeeks] = useState([]);
   // Controlled states for inputs:
-  const [weekStartDate, setWeekStartDate] = useState(dayjs());
+  const [weekStartDate, setWeekStartDate] = useState();
   const [reset, setReset] = useState(false);
   // Error handling states for form inputs:
   const [formError, setFormError] = useState({
@@ -75,6 +77,14 @@ const Weeks = () => {
       error: false,
       errorMessage: "Please enter a valid date",
     },
+  });
+  console.log(formError.weekStartDateError);
+  const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
   });
 
   /*
@@ -120,8 +130,11 @@ const Weeks = () => {
         <WeeksActions
           params={params}
           cohortId={cohortId}
+          loadingCover={loadingCover}
+          onLoadingCover={setLoadingCover}
           cohortData={cohortData}
           onHandleCohortWeeks={setCohortWeeks}
+          onToast={setToast}
         ></WeeksActions>
       ),
     },
@@ -150,11 +163,14 @@ const Weeks = () => {
         });
         setWeekStartDate(dayjs(response.data.cohort[0].start));
         setCohortWeeks(formattedWeeks);
+        setLoading(false);
       } else {
         console.error("There was an error fetching the cohortWeeks");
+        setLoading(false);
       }
     } catch (error) {
       if (error.response.status === 403) {
+        setLoading(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -169,6 +185,7 @@ const Weeks = () => {
           accessToken: "",
         });
       } else {
+        setLoading(false);
         console.error(error);
       }
     }
@@ -195,6 +212,11 @@ const Weeks = () => {
         });
       } else {
         console.error(error);
+        setToast({
+          isOpened: true,
+          severity: "error",
+          message: `Error! The new week was not added: ${error.response.data.msg}.`,
+        });
       }
     }
   };
@@ -207,6 +229,10 @@ const Weeks = () => {
   useEffect(() => {
     fetchCohortWeeks();
   }, []);
+
+  useEffect(() => {
+    setReset(false);
+  });
 
   /*
         ==========================
@@ -226,19 +252,53 @@ const Weeks = () => {
 
   //2. Handler for week start date:
   const handleWeekStartDateChange = (newStartDate) => {
-    setWeekStartDate(newStartDate);
-    setFormError((prevState) => ({
-      ...prevState,
-      weekStartDateError: {
-        ...prevState.weekStartDateError,
-        error: weekStartDate > newStartDate ? true : false,
-      },
-    }));
+    const errors = Object.values(newStartDate);
+    if (!dayjs(errors[2]).isValid()) {
+      setFormError((prevState) => ({
+        ...prevState,
+        weekStartDateError: {
+          ...prevState.weekStartDateError,
+          error: true,
+        },
+      }));
+      setWeekStartDate(dayjs(newStartDate));
+    } else {
+      setFormError((prevState) => ({
+        ...prevState,
+        weekStartDateError: {
+          ...prevState.weekStartDateError,
+          error: false,
+        },
+      }));
+      if (
+        newStartDate < dayjs(cohortData.cohortStartDate) ||
+        newStartDate > dayjs(cohortData.cohortEndDate)
+      ) {
+        setFormError((prevState) => ({
+          ...prevState,
+          weekStartDateError: {
+            ...prevState.weekStartDateError,
+            error: true,
+          },
+        }));
+        setWeekStartDate(dayjs(newStartDate));
+      } else {
+        setFormError((prevState) => ({
+          ...prevState,
+          weekStartDateError: {
+            ...prevState.weekStartDateError,
+            error: false,
+          },
+        }));
+        setWeekStartDate(dayjs(newStartDate));
+      }
+    }
   };
 
   //3. Handler for form onSubmit:
   const handleWeeksSubmit = async (event) => {
     event.preventDefault();
+    setLoadingCover(true);
     const formattedWeek = {
       name: event.target.weekName.value.trim(),
       start: weekStartDate.format(),
@@ -258,15 +318,38 @@ const Weeks = () => {
               weekEndDate: new Date(response.data.week.end),
             },
           ]);
+          setLoadingCover(false);
+          setToast({
+            isOpened: true,
+            severity: "success",
+            message: `Success! A new week, '${response.data.week.name}', has been added.`,
+          });
         }
       } else {
-        console.error("Form validation is not letting form submission");
+        setLoadingCover(false);
+        setToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please enter valid data into the form fields`,
+        });
       }
     } catch (error) {
+      setLoadingCover(false);
       console.error(error);
     } finally {
       setReset(true);
       setWeekStartDate(dayjs(cohortData.cohortStartDate));
+      setFormError({
+        weekNameError: {
+          error: false,
+          errorMessage: "Please enter a valid name",
+        },
+        weekStartDateError: {
+          error: false,
+          errorMessage: "Please enter a valid date",
+        },
+      });
+      console.log(cohortData.cohortStartDate);
     }
   };
 
@@ -276,124 +359,143 @@ const Weeks = () => {
   };
 
   return (
-    <Container maxWidth="md">
-      <Paper
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "#1A1A2E",
-          color: "#FFFFFF",
-          borderRadius: "10px",
-          padding: 2,
-          height: "auto",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {" "}
-          {cohortData.cohortName}'S weeks management{" "}
-        </Typography>
-        <Box
-          component={"form"}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-          }}
-          autoComplete="off"
-          onSubmit={handleWeeksSubmit}
-        >
-          <div className={styles.formContainer}>
-            <AuthFormControl width="75%">
+    <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Container maxWidth="md">
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "#1A1A2E",
+                color: "#FFFFFF",
+                borderRadius: "10px",
+                padding: 2,
+                height: "auto",
+              }}
+            >
+              <Typography
+                component={"h1"}
+                sx={{
+                  backgroundColor: "#C84B31",
+                  borderRadius: 2,
+                  padding: 1,
+                  margin: 1,
+                  textAlign: "center",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                  fontSize: 25,
+                }}
+              >
+                {" "}
+                {cohortData.cohortName}'S weeks management{" "}
+              </Typography>
               <Box
+                component={"form"}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
+                  alignItems: "center",
+                  width: "100%",
                 }}
+                autoComplete="off"
+                onSubmit={handleWeeksSubmit}
               >
-                <MenuBook fontSize="large"></MenuBook>
-                <br></br>
-                <br></br>
+                <div className={styles.formContainer}>
+                  <AuthFormControl width="75%">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <MenuBook fontSize="large"></MenuBook>
+                      <br></br>
+                      <br></br>
+                    </Box>
+                    <FormTextField
+                      required
+                      type="text"
+                      label="Week name:"
+                      name="weekName"
+                      isFocused={true}
+                      width="100%"
+                      variant="light"
+                      onHandleError={handleWeekNameError}
+                      errorMessage={"Please enter a valid name"}
+                      reset={reset}
+                    ></FormTextField>
+                  </AuthFormControl>
+                  <AuthFormControl width="75%">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <DateRangeRounded fontSize="large"></DateRangeRounded>
+                      <br></br>
+                    </Box>
+                    <AppDatePicker
+                      id={"weekStartDate"}
+                      name={"weekStartDate"}
+                      label={"Start date:"}
+                      dateValue={weekStartDate}
+                      onDateValueChange={handleWeekStartDateChange}
+                      minDate={dayjs(cohortData.cohortStartDate)}
+                      maxDate={dayjs(cohortData.cohortEndDate)}
+                      variant={"light"}
+                    ></AppDatePicker>
+                  </AuthFormControl>
+                  <AppButton
+                    text={"Add new week"}
+                    type="submit"
+                    width="25%"
+                    handlerFunction={() => {}}
+                  />
+                </div>
               </Box>
-              <FormTextField
-                required
-                type="text"
-                label="Week name:"
-                name="weekName"
-                isFocused={true}
-                width="100%"
-                variant="light"
-                onHandleError={handleWeekNameError}
-                errorMessage={"Please enter a valid name"}
-                reset={reset}
-              ></FormTextField>
-            </AuthFormControl>
-            <AuthFormControl width="75%">
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <DateRangeRounded fontSize="large"></DateRangeRounded>
-                <br></br>
-              </Box>
-              <AppDatePicker
-                id={"weekStartDate"}
-                name={"weekStartDate"}
-                label={"Start date:"}
-                dateValue={weekStartDate}
-                onDateValueChange={handleWeekStartDateChange}
-                minDate={dayjs(cohortData.cohortStartDate)}
-                maxDate={dayjs(cohortData.cohortEndDate)}
-                variant={"light"}
-              ></AppDatePicker>
-            </AuthFormControl>
-            <AppButton
-              text={"Add new week"}
-              type="submit"
-              width="25%"
-              handlerFunction={() => {}}
-            />
-          </div>
-        </Box>
-        <AppDataGrid
-          columns={columns}
-          rows={cohortWeeks}
-          pageSize={9}
-          fieldToBeSorted={"weekStartDate"}
-          sortType={"asc"}
-        />
-        <div className={styles.buttonContainer}>
-          <AppButton
-            text={"Go back"}
-            type="button"
-            width="100%"
-            handlerFunction={() => {
-              goBack();
-            }}
-          ></AppButton>
-        </div>
-      </Paper>
-    </Container>
+              <AppDataGrid
+                columns={columns}
+                rows={cohortWeeks}
+                pageSize={9}
+                fieldToBeSorted={"weekStartDate"}
+                sortType={"asc"}
+                loading={loadingCover}
+              />
+              <div className={styles.buttonContainer}>
+                <AppButton
+                  text={"Go back"}
+                  type="button"
+                  width="100%"
+                  handlerFunction={() => {
+                    goBack();
+                  }}
+                ></AppButton>
+              </div>
+            </Paper>
+          </Container>
+        </>
+      )}
+    </>
   );
 };
 

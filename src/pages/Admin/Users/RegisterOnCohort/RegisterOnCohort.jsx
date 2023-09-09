@@ -50,6 +50,7 @@ import RegisterSlackUser from "./Actions/RegisterSlackUser";
 import Loader from "../../../../components/Loader/Loader";
 import Slack from "../../Cohorts/TableRender/Slack";
 import UserAvatarRender from "./TableRenders/UserAvatarRender";
+import ToastMessage from "../../../../components/ToastMessage/ToastMessage";
 
 const RegisterOnCohort = () => {
   /*
@@ -69,6 +70,12 @@ const RegisterOnCohort = () => {
     ==========================
   */
   const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
   console.log(cohortUsers);
@@ -89,7 +96,13 @@ const RegisterOnCohort = () => {
   */
   const columns = [
     { field: "id", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
-    { field: "slackId", headerName: "ID", minWidth: 100, maxWidth: 130, flex: 1 },
+    {
+      field: "slackId",
+      headerName: "ID",
+      minWidth: 100,
+      maxWidth: 130,
+      flex: 1,
+    },
     {
       field: "slack",
       headerName: "Created on:",
@@ -114,7 +127,10 @@ const RegisterOnCohort = () => {
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => (
-        <UserAvatarRender name={params.row.userName} avatarUrl={params.row.userAvatar}></UserAvatarRender>
+        <UserAvatarRender
+          name={params.row.userName}
+          avatarUrl={params.row.userAvatar}
+        ></UserAvatarRender>
       ),
     },
     {
@@ -167,8 +183,9 @@ const RegisterOnCohort = () => {
         <RegisterOnCohortActions
           params={params}
           cohortData={cohortData}
-          onLoading={setLoading}
+          onLoading={setLoadingCover}
           onHandleCohortUsers={setCohortUsers}
+          onToast={setToast}
         ></RegisterOnCohortActions>
       ),
     },
@@ -251,124 +268,146 @@ const RegisterOnCohort = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg">
-      <Paper
-        elevation={3}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          bgcolor: "#1A1A2E",
-          color: "#FFFFFF",
-          borderRadius: "10px",
-          padding: 2,
-          height: "auto",
-        }}
-      >
-        <Typography
-          component={"h1"}
-          sx={{
-            backgroundColor: "#C84B31",
-            borderRadius: 2,
-            padding: 1,
-            margin: 1,
-            textAlign: "center",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            fontSize: 25,
-          }}
-        >
-          {" "}
-          {cohortData.cohortName}'S users management{" "}
-        </Typography>
-        <div className={styles.formContainer}>
-          <AuthFormControl width="75%">
-            <AppButton
-              text={"Add new user"}
-              type="button"
-              width="100%"
-              handlerFunction={() => setOpenNewUserDialog(true)}
+    <>
+      {loading ? (
+        <Loader></Loader>
+      ) : (
+        <>
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
+          <Container maxWidth="lg">
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                bgcolor: "#1A1A2E",
+                color: "#FFFFFF",
+                borderRadius: "10px",
+                padding: 2,
+                height: "auto",
+              }}
             >
-              <PersonAddRounded fontSize="large"></PersonAddRounded>
-            </AppButton>
-            <AppButton
-              text={"Add existing user"}
-              type="button"
-              width="100%"
-              handlerFunction={() => setOpenExistingUserDialog(true)}
-            >
-              <PersonSearch fontSize="large"></PersonSearch>
-            </AppButton>
-            {cohortData.cohortSlackId !== null ? (
-              <AppButton
-                text={"Add users from Slack"}
-                type="button"
-                width="100%"
-                handlerFunction={() => setOpenNewSlackUserDialog(true)}
+              <Typography
+                component={"h1"}
+                sx={{
+                  backgroundColor: "#C84B31",
+                  borderRadius: 2,
+                  padding: 1,
+                  margin: 1,
+                  textAlign: "center",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                  fontSize: 25,
+                }}
               >
-                <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
-              </AppButton>
-            ) : null}
-          </AuthFormControl>
-        </div>
-        {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              width: "100%",
-              height: "100px",
-            }}
-          >
-            <Loader />
-          </Box>
-        ) : (
-          <AppDataGrid
-            columns={columns}
-            rows={cohortUsers}
-            pageSize={15}
-            fieldToBeSorted={"userName"}
-            sortType={"asc"}
-          />
-        )}
-
-        <div className={styles.buttonContainer}>
-          <AppButton
-            text={"Go back"}
-            type="button"
-            width="100%"
-            handlerFunction={() => {
-              goBack();
-            }}
-          ></AppButton>
-        </div>
-        {openNewUserDialog ? (
-          <RegisterCohortUser
-            open={openNewUserDialog}
-            handleOpen={setOpenNewUserDialog}
-            onRegisterCohortSubmit={setCohortUsers}
-          ></RegisterCohortUser>
-        ) : null}
-        {openExistingUserDialog ? (
-          <RegisterExistingUser
-            open={openExistingUserDialog}
-            handleOpen={setOpenExistingUserDialog}
-            onRegisterCohortSubmit={setCohortUsers}
-          ></RegisterExistingUser>
-        ) : null}
-        {openNewSlackUserDialog ? (
-          <RegisterSlackUser
-            open={openNewSlackUserDialog}
-            cohortData={cohortData}
-            handleOpen={setOpenNewSlackUserDialog}
-            onRegisterCohortSubmit={setCohortUsers}
-          />
-        ) : null}
-      </Paper>
-    </Container>
+                {" "}
+                {cohortData.cohortName}'S users management{" "}
+              </Typography>
+              <div className={styles.formContainer}>
+                <AuthFormControl width="75%">
+                  <AppButton
+                    text={"Add new user"}
+                    type="button"
+                    width="100%"
+                    handlerFunction={() => setOpenNewUserDialog(true)}
+                  >
+                    <PersonAddRounded fontSize="large"></PersonAddRounded>
+                  </AppButton>
+                  <AppButton
+                    text={"Add existing user"}
+                    type="button"
+                    width="100%"
+                    handlerFunction={() => setOpenExistingUserDialog(true)}
+                  >
+                    <PersonSearch fontSize="large"></PersonSearch>
+                  </AppButton>
+                  {cohortData.cohortSlackId !== null ? (
+                    <AppButton
+                      text={"Add users from Slack"}
+                      type="button"
+                      width="100%"
+                      handlerFunction={() => setOpenNewSlackUserDialog(true)}
+                    >
+                      <CloudDownloadRounded fontSize="large"></CloudDownloadRounded>
+                    </AppButton>
+                  ) : null}
+                </AuthFormControl>
+              </div>
+              {loading ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    width: "100%",
+                    height: "100px",
+                  }}
+                >
+                  <Loader />
+                </Box>
+              ) : (
+                <AppDataGrid
+                  columns={columns}
+                  rows={cohortUsers}
+                  pageSize={15}
+                  fieldToBeSorted={"userName"}
+                  sortType={"asc"}
+                  loading={loadingCover}
+                />
+              )}
+              <div className={styles.buttonContainer}>
+                <AppButton
+                  text={"Go back"}
+                  type="button"
+                  width="100%"
+                  handlerFunction={() => {
+                    goBack();
+                  }}
+                ></AppButton>
+              </div>
+              {openNewUserDialog ? (
+                <RegisterCohortUser
+                  open={openNewUserDialog}
+                  handleOpen={setOpenNewUserDialog}
+                  onRegisterCohortSubmit={setCohortUsers}
+                  onLoading={setLoadingCover}
+                  onToast={setToast}
+                ></RegisterCohortUser>
+              ) : null}
+              {openExistingUserDialog ? (
+                <RegisterExistingUser
+                  open={openExistingUserDialog}
+                  handleOpen={setOpenExistingUserDialog}
+                  onRegisterCohortSubmit={setCohortUsers}
+                  onLoading={setLoadingCover}
+                  onToast={setToast}
+                ></RegisterExistingUser>
+              ) : null}
+              {openNewSlackUserDialog ? (
+                <RegisterSlackUser
+                  open={openNewSlackUserDialog}
+                  cohortData={cohortData}
+                  handleOpen={setOpenNewSlackUserDialog}
+                  onRegisterCohortSubmit={setCohortUsers}
+                />
+              ) : null}
+            </Paper>
+          </Container>
+        </>
+      )}
+    </>
   );
 };
 

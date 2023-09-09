@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import AppButton from "../../../../../components/Button/AppButton";
 import EditUser from "./EditUser";
 
-const RegisterUserActions = ({ params, fetchedCohorts, onHandleUsers }) => {
+const RegisterUserActions = ({ params, fetchedCohorts, onHandleUsers, onToast }) => {
   /*
     ==========================
     =         STATES         =
@@ -70,6 +70,7 @@ const RegisterUserActions = ({ params, fetchedCohorts, onHandleUsers }) => {
           fetchedCohorts={fetchedCohorts}
           onCloseDialog={handleCloseEditUserDialog}
           onHandleUsers={onHandleUsers}
+          onToast={onToast}
         ></EditUser>
       ) : null}
     </>
@@ -82,4 +83,5 @@ RegisterUserActions.propTypes = {
   params: PropTypes.object.isRequired,
   fetchedCohorts: PropTypes.array.isRequired,
   onHandleUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func,
 };

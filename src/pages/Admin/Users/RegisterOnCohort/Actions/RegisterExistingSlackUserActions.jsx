@@ -33,6 +33,7 @@ const RegisterExistingSlackUserActions = ({
   onLoading,
   onRegisterCohortSubmit,
   onHandleNewExistingUsers,
+  onToast,
 }) => {
   /*
     ==========================
@@ -76,6 +77,11 @@ const RegisterExistingSlackUserActions = ({
           (prevNewExistingUser) => prevNewExistingUser.id !== params.row.id
         )
       );
+      onToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! User ${response.data.profile.name} has been added`,
+      });
       onLoading(false);
     } catch (error) {
       if (error.response.status === 403) {
@@ -132,4 +138,5 @@ RegisterExistingSlackUserActions.propTypes = {
   onLoading: PropTypes.func.isRequired,
   onRegisterCohortSubmit: PropTypes.func.isRequired,
   onHandleNewExistingUsers: PropTypes.func.isRequired,
+  onToast: PropTypes.func
 };

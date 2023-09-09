@@ -5,25 +5,25 @@ import {
   List,
   CardContent,
   ListItem,
-  TextField,
-  Button,
+  Link,
   Avatar,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import useAuth from "../../hooks/useAuth";
-import { blue } from "@mui/material/colors";
 import {
   AddCommentRounded,
   ScheduleRounded,
   TodayRounded,
+  VideoCameraFrontRounded,
 } from "@mui/icons-material";
 import styles from "./Mentor.module.css";
 import AuthFormControl from "../../components/FormControl/AuthFormControl";
 import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
-import Loader from './../../components/Loader/Loader';
+import Loader from "./../../components/Loader/Loader";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const MentorSessionDetails = () => {
   const { sessionId } = useParams();
@@ -39,6 +39,11 @@ const MentorSessionDetails = () => {
       errorMessage: "Please enter a valid comment",
     },
   });
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
 
   const getCurrentSession = async () => {
     setLoading(true);
@@ -50,29 +55,46 @@ const MentorSessionDetails = () => {
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
+    const errors = Object.values(formError);
+    if (!errors.some((error) => error.error === true)) {
+      const { data } = await axiosPrivate.post("/session/comment", {
+        name: auth.userName,
+        content: e.target.comment.value.trim(),
+        sessionId: sessionId,
+      });
 
-    const { data } = await axiosPrivate.post("/session/comment", {
-      name: auth.userName,
-      content: e.target.comment.value.trim(),
-      sessionId: sessionId,
-    });
-
-    const newComment = data.comment;
-    newComment.name = { _id: auth.userId, name: auth.userName, avatarUrl: auth.avatarUrl };
-    const newSession = {
-      ...currentSession,
-      discussion: [...currentSession.discussion, newComment],
-    };
-    setCurrentSession(newSession);
-    setComment("");
-    setReset(true);
+      const newComment = data.comment;
+      newComment.name = {
+        _id: auth.userId,
+        name: auth.userName,
+        avatarUrl: auth.avatarUrl,
+      };
+      const newSession = {
+        ...currentSession,
+        discussion: [...currentSession.discussion, newComment],
+      };
+      setToast({
+        isOpened: true,
+        severity: "success",
+        message: `Success! You have added a new comment!`,
+      });
+      setCurrentSession(newSession);
+      setComment("");
+      setReset(true);
+    } else {
+      setToast({
+        isOpened: true,
+        severity: "warning",
+        message: `Warning! Please submit a valid comment`,
+      });
+    }
   };
 
   useEffect(() => {
     getCurrentSession();
   }, [sessionId]);
 
-  useEffect(()=>{
+  useEffect(() => {
     setReset(false);
   });
 
@@ -118,7 +140,7 @@ const MentorSessionDetails = () => {
   return (
     <>
       {loading ? (
-        <Loader/>
+        <Loader />
       ) : (
         <Container
           sx={{
@@ -134,6 +156,16 @@ const MentorSessionDetails = () => {
             borderRadius: 2,
           }}
         >
+          <ToastMessage
+            open={toast.isOpened}
+            severity={toast.severity}
+            variant="filled"
+            onClose={() =>
+              setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+            }
+            dismissible
+            message={toast.message}
+          ></ToastMessage>
           <Typography
             component={"h1"}
             sx={{
@@ -262,6 +294,43 @@ const MentorSessionDetails = () => {
                 </Typography>
               </Box>
             </Box>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              marginBottom: 2,
+            }}
+          >
+            <Link
+              sx={{
+                backgroundColor: "#0F3460",
+                padding: 2,
+                borderRadius: 2,
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  transition: "all 0.2s ease-in-out",
+                },
+              }}
+              href={currentSession?.link}
+              target="_blank"
+              underline="none"
+            >
+              <Typography
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 1,
+                  fontSize: "1.3rem",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                <VideoCameraFrontRounded fontSize="large"></VideoCameraFrontRounded>
+                Access zoom session
+              </Typography>
+            </Link>
           </Box>
           <Box
             sx={{
@@ -420,17 +489,25 @@ const MentorSessionDetails = () => {
                   key={d._id}
                   sx={{
                     display: "flex",
-                    flexDirection:{xs:"column", sm:"row"},
-                    justifyContent: {xs:"flex-start", sm:"space-between"},
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: { xs: "flex-start", sm: "space-between" },
                     alignItems: "center",
                     marginBlockEnd: 1,
                     backgroundColor: "#fefefe",
                     borderRadius: 2,
-                    width:"100%",
+                    width: "100%",
                   }}
                 >
-                  <Box display={"flex"} width={{xs:"100%", sm:"30%"}}>
-                    <CardContent sx={{display:"flex", flexDirection:"row", justifyContent:"center", alignItems:"center", gap:1}}>
+                  <Box display={"flex"} width={{ xs: "100%", sm: "30%" }}>
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
                       <Avatar
                         src={d.name.avatarUrl}
                         alt={d.name.name}
@@ -441,10 +518,12 @@ const MentorSessionDetails = () => {
                           height: "32px",
                         }}
                       />
-                      <Typography sx={{fontWeight:"bold"}}>{d.name.name}</Typography>
+                      <Typography sx={{ fontWeight: "bold" }}>
+                        {d.name.name}
+                      </Typography>
                     </CardContent>
                   </Box>
-                  <Box display={"flex"} width={{xs:"100%", sm:"70%"}}>
+                  <Box display={"flex"} width={{ xs: "100%", sm: "70%" }}>
                     <CardContent>
                       <Typography>{d.content}</Typography>
                     </CardContent>
@@ -452,7 +531,21 @@ const MentorSessionDetails = () => {
                 </Box>
               ))
             ) : (
-              <Typography>No discussions in this session</Typography>
+              <Typography
+                variant="h6"
+                color="text.primary"
+                fontWeight="bold"
+                sx={{
+                  width: "75%",
+                  margin: "auto",
+                  backgroundColor: "#f2f2f2",
+                  padding: 2,
+                  borderRadius: 2,
+                  textAlign: "center",
+                }}
+              >
+                No discussion in this session
+              </Typography>
             )}
           </List>
         </Container>

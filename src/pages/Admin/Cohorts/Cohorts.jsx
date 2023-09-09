@@ -51,6 +51,7 @@ const Cohorts = () => {
   */
   const [cohorts, setCohorts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingCover, setLoadingCover] = useState(false);
   const columns = [
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
@@ -109,7 +110,7 @@ const Cohorts = () => {
       valueGetter: (params) => params,
       renderCell: (params) => <Members params={params}></Members>,
       sortComparator: (v1, v2) => {
-        return Number(v1.value)-Number(v2.value);
+        return Number(v1.value) - Number(v2.value);
       },
     },
     {
@@ -136,19 +137,21 @@ const Cohorts = () => {
         <CohortsActions
           params={params}
           onHandleCohorts={setCohorts}
+          onLoading={setLoadingCover}
+          onToast={setToast}
         ></CohortsActions>
       ),
     },
   ];
+  const [toast, setToast] = useState({
+    isOpened: false,
+    severity: "",
+    message: "",
+  });
   // Dialog states
   const [openNewCohortDialog, setOpenNewCohortDialog] = useState(false);
   const [openNewCohortSlackDialog, setOpenNewCohortSlackDialog] =
     useState(false);
-  const [error, setError] = useState({});
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [openSuccessToast, setOpenSuccessToast] = useState(false);
-  const [openErrorToast, setOpenErrorToast] = useState(false);
 
   /*
     ==========================
@@ -223,6 +226,16 @@ const Cohorts = () => {
 
   return (
     <>
+      <ToastMessage
+        open={toast.isOpened}
+        severity={toast.severity}
+        variant="filled"
+        onClose={() =>
+          setToast((prevToast) => ({ ...prevToast, isOpened: false }))
+        }
+        dismissible
+        message={toast.message}
+      ></ToastMessage>
       {loading ? (
         <Loader />
       ) : (
@@ -282,13 +295,17 @@ const Cohorts = () => {
               pageSize={10}
               fieldToBeSorted={"class"}
               sortType={"asc"}
+              loading={loadingCover}
               variant="light"
             />
             {openNewCohortDialog ? (
               <AddCohort
                 open={openNewCohortDialog}
                 handleOpen={setOpenNewCohortDialog}
+                toast={toast}
                 onRegisterCohort={setCohorts}
+                onLoading={setLoadingCover}
+                onToast={setToast}
               ></AddCohort>
             ) : null}
             {openNewCohortSlackDialog ? (

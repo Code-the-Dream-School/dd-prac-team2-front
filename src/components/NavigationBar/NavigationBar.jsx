@@ -103,7 +103,11 @@ const adminPages = [
 ];
 
 const studentPages = [
-  { title: "Home", icon: <HomeRounded sx={{ color: "white" }} />, link: "/" },
+  {
+    title: "Home",
+    icon: <HomeRounded sx={{ color: "white" }} />,
+    link: "/student",
+  },
 ];
 
 const mentorPages = [

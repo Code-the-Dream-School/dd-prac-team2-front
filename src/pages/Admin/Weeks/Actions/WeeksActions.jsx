@@ -6,6 +6,7 @@
 import { Container } from "@mui/material";
 import { DeleteRounded, EditRounded } from "@mui/icons-material";
 import useAxiosPrivate from "../../../../hooks/useAxiosPrivate";
+import PropTypes from "prop-types";
 
 /*
     ==========================
@@ -27,12 +28,16 @@ import useAuth from "../../../../hooks/useAuth";
 */
 import AppButton from "../../../../components/Button/AppButton";
 import EditCohortWeek from "./EditCohortWeek";
+import Loader from "../../../../components/Loader/Loader";
 
 const WeeksActions = ({
   params,
   cohortData,
+  loadingCover,
+  onLoadingCover,
   cohortId,
   onHandleCohortWeeks,
+  onToast
 }) => {
   /*
         ==========================
@@ -52,6 +57,7 @@ const WeeksActions = ({
 
   const handleDeleteCohortWeek = async () => {
     const weekId = params.row.id;
+    onLoadingCover(true);
     try {
       const response = await axiosPrivate.delete(`/week/${cohortId}/${weekId}`);
       if (response.status === 204) {
@@ -62,9 +68,17 @@ const WeeksActions = ({
             }
           })
         );
+        console.log(response);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! The week has been deleted.`,
+        });
+        onLoadingCover(false);
       }
     } catch (error) {
       if (error.response.status === 403) {
+        onLoadingCover(false);
         console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
@@ -79,6 +93,7 @@ const WeeksActions = ({
           accessToken: "",
         });
       } else {
+        onLoadingCover(false);
         console.error(error);
       }
     }
@@ -128,6 +143,8 @@ const WeeksActions = ({
           openDialog={openEditDialog}
           cohortData={cohortData}
           weekInfo={params}
+          onLoadingCover={onLoadingCover}
+          onToast={onToast}
           onCloseDialog={handleCloseEditCohortWeek}
           onHandleCohortWeeks={onHandleCohortWeeks}
         ></EditCohortWeek>
@@ -137,3 +154,13 @@ const WeeksActions = ({
 };
 
 export default WeeksActions;
+
+WeeksActions.propTypes = {
+  params: PropTypes.object,
+  cohortData: PropTypes.object,
+  loadingCover: PropTypes.bool,
+  onLoadingCover: PropTypes.func,
+  cohortId: PropTypes.string,
+  onHandleCohortWeeks: PropTypes.func,
+  onToast: PropTypes.func,
+}
