@@ -126,7 +126,6 @@ const EditCohort = ({
         `/cohort/${cohortId}`,
         editedCohort
       );
-      console.log(response);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
@@ -192,7 +191,6 @@ const EditCohort = ({
       onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await editCohort(cohortToBeUpdated, editedCohort);
-        console.log(response);
         const options = { year: "2-digit", month: "numeric", day: "numeric" };
         const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         if (response.status === 201) {
@@ -226,10 +224,11 @@ const EditCohort = ({
         }
       } else {
         onLoading(false); // Stop loading
-        console.log(
-          "There is an error that is preventing the form submission",
-          errors
-        );
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! Please check you have submitted valid data`,
+        });
       }
     } catch (error) {
       onLoading(false);
@@ -259,11 +258,9 @@ const EditCohort = ({
         onLoading(false); // Stop loading
       }
     } catch (error) {
-      console.log(error);
       if (error.response.status === 403) {
         //User is required to validate auth again
         onLoading(false);
-        console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",

@@ -98,7 +98,6 @@ const StudentCohort = () => {
       const { data } = await axiosPrivate.get(`/week/${cohort._id}/current`);
       setCurrentWeek(data.currentWeek);
       setLoading(false);
-      console.log(data);
     } catch (err) {
       console.log(err);
       setLoading(false);
@@ -114,7 +113,6 @@ const StudentCohort = () => {
             status: true,
           }
         );
-        console.log(data);
         setCurrentWeek((prevState) => ({
           ...prevState,
           sessions: prevState.sessions.map((session) => {

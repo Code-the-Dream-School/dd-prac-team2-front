@@ -60,8 +60,6 @@ const RegisterUsers = () => {
   // Fetched data states:
   const [users, setUsers] = useState([]);
   const [cohorts, setCohorts] = useState([]);
-
-  console.log(users);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState({
     isOpened: false,
@@ -192,7 +190,6 @@ const RegisterUsers = () => {
     try {
       setLoading(true); //Set loading before sending API request//
       const response = await axiosPrivate.get("/users");
-      console.log(response);
       if (response.status === 200) {
         const formattedUsers = response.data.users.map((user) => {
           return {
@@ -216,7 +213,6 @@ const RegisterUsers = () => {
       }
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({

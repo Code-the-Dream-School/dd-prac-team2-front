@@ -147,7 +147,6 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers, onToast }) => {
     const errors = Object.values(formError);
     try {
       setLoading(true);
-      console.log(errors);
       if (!errors.some((error) => error.error === true)) {
         const formattedUserRegistration = {
           users: [
@@ -163,7 +162,6 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers, onToast }) => {
           "auth/register",
           formattedUserRegistration
         );
-        console.log(response);
         if (response.data.users.length > 0) {
           onHandleUsers((prevState) => [
             ...prevState,
@@ -204,7 +202,6 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers, onToast }) => {
     } catch (error) {
       if (error.response.status === 403) {
         setLoading(false);
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -219,7 +216,6 @@ const AddUser = ({ open, cohorts, handleOpen, onHandleUsers, onToast }) => {
         });
       } else {
         setLoading(false);
-        console.error(error);
       }
     }
   };

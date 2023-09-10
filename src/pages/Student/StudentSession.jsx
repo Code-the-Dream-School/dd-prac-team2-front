@@ -55,7 +55,6 @@ const StudentSession = () => {
     severity: "",
     message: "",
   });
-  console.log(currentSession);
 
   const getCurrentSession = async () => {
     try {
@@ -63,8 +62,6 @@ const StudentSession = () => {
       setCurrentSession(data.session);
       await loggedInUserStatus();
       setLoading(false);
-      console.log(data);
-      console.log(formatDateAndTime(data.session.end));
     } catch (error) {
       console.error(error);
     }
@@ -90,7 +87,6 @@ const StudentSession = () => {
     const { data } = await axiosPrivate.get(
       `/session/${sessionId}/student/status`
     );
-    console.log(data);
     if (data) {
       setUserStatus("Confirm");
     } else {
@@ -107,7 +103,6 @@ const StudentSession = () => {
         content: e.target.comment.value.trim(),
         sessionId: sessionId,
       });
-      console.log(data);
       setComment("");
       setReset(true);
       setCurrentSession((prevCurrentSession) => ({
@@ -152,8 +147,6 @@ const StudentSession = () => {
       },
     }));
   };
-  console.log(currentSession);
-  console.log("Discussion:", currentSession?.discussion);
 
   return (
     <>

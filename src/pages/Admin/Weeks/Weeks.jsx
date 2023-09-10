@@ -78,7 +78,6 @@ const Weeks = () => {
       errorMessage: "Please enter a valid date",
     },
   });
-  console.log(formError.weekStartDateError);
   const [loading, setLoading] = useState(true);
   const [loadingCover, setLoadingCover] = useState(false);
   const [toast, setToast] = useState({
@@ -165,7 +164,6 @@ const Weeks = () => {
         setCohortWeeks(formattedWeeks);
         setLoading(false);
       } else {
-        console.error("There was an error fetching the cohortWeeks");
         setLoading(false);
       }
     } catch (error) {
@@ -349,7 +347,6 @@ const Weeks = () => {
           errorMessage: "Please enter a valid date",
         },
       });
-      console.log(cohortData.cohortStartDate);
     }
   };
 

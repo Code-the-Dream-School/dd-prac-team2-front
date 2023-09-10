@@ -78,7 +78,6 @@ const RegisterOnCohort = () => {
   });
   //Fetched data states:
   const [cohortUsers, setCohortUsers] = useState([]);
-  console.log(cohortUsers);
   const [cohortData, setCohortData] = useState({
     cohortId: "",
     cohortSlackId: null,
@@ -198,10 +197,8 @@ const RegisterOnCohort = () => {
   const fetchCohortUsers = async () => {
     try {
       const response = await axiosPrivate(`cohort/${cohortId}`);
-      console.log(response);
       if (response.status === 200) {
         const participants = response.data.cohort[0].participants;
-        console.log(participants);
         const formattedUsers = participants.map((participant) => {
           return {
             id: participant._id,
@@ -218,7 +215,6 @@ const RegisterOnCohort = () => {
           cohortSlackId: response.data.cohort[0].slackId,
           cohortName: response.data.cohort[0].name,
         };
-        console.log(formattedUsers);
         setCohortUsers(formattedUsers);
         setCohortData(formattedCohortData);
         setLoading(false);
@@ -228,7 +224,6 @@ const RegisterOnCohort = () => {
     } catch (error) {
       if (error.response.status === 403) {
         setLoading(false);
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -243,7 +238,6 @@ const RegisterOnCohort = () => {
         });
       } else {
         setLoading(false);
-        console.error(error);
       }
     }
   };

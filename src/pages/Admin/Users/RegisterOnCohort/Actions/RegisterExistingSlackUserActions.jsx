@@ -54,12 +54,10 @@ const RegisterExistingSlackUserActions = ({
           ...params.row.cohorts.map((cohort) => cohort._id),
         ],
       };
-      console.log(body);
       const response = await axiosPrivate.patch(
         `/users/${params.row.id}`,
         body
       );
-      console.log(response);
       onRegisterCohortSubmit((prevCohortUsers) => [
         ...prevCohortUsers,
         {
@@ -86,7 +84,6 @@ const RegisterExistingSlackUserActions = ({
     } catch (error) {
       if (error.response.status === 403) {
         onLoading(false);
-        console.error(error);
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
           userId: "",

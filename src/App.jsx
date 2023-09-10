@@ -148,7 +148,7 @@ const App = () => {
                   <Navigate to="/"></Navigate>
                 ) : (
                   <ThemeProvider theme={theme}>
-                    <AccountConfirmation />
+                    <AccountConfirmation onToast={setToast}/>
                   </ThemeProvider>
                 )
               }

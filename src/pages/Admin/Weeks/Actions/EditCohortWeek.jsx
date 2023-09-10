@@ -87,7 +87,6 @@ const EditCohortWeek = ({
       errorMessage: "Please enter a valid date",
     },
   });
-  console.log(formError);
   /*
         ==========================
         =   HANDLER FUNCTIONS    =
@@ -168,7 +167,6 @@ const EditCohortWeek = ({
         if (response.status === 201) {
           onHandleCohortWeeks((prevCohortWeeks) =>
             prevCohortWeeks.map((week) => {
-              console.log(week);
               if (week.id === weekToBeUpdated) {
                 return {
                   id: weekToBeUpdated,

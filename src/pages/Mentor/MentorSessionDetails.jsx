@@ -48,7 +48,6 @@ const MentorSessionDetails = () => {
   const getCurrentSession = async () => {
     setLoading(true);
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
-    console.log(data);
     setCurrentSession(data.session);
     setLoading(false);
   };

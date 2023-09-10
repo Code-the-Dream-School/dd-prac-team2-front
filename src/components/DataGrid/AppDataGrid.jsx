@@ -25,15 +25,13 @@ const AppDataGrid = ({
   pageSize,
   fieldToBeSorted,
   sortType,
-  loading=false,
+  loading = false,
   rowId = "id",
   checkBoxSelection = false,
   onSelectBox = () => {},
   variant = "light",
 }) => {
   const [rowSelectionModel, setRowSelectionModel] = React.useState([]);
-  console.log(loading);
-  console.log(rowId);
   return (
     <DataGrid
       sx={{
@@ -60,9 +58,9 @@ const AppDataGrid = ({
         },
         "& .MuiDataGrid-columnHeaders": {
           borderBottom: "3px solid #C84B31",
-          "& .MuiDataGrid-columnHeaderCheckbox":{
-            outline: "0px"
-          }
+          "& .MuiDataGrid-columnHeaderCheckbox": {
+            outline: "0px",
+          },
         },
         "& .MuiDataGrid-columnHeader, .MuiDataGrid-cell": {
           color: variant === "light" ? "white" : "#16213E",
@@ -108,43 +106,44 @@ const AppDataGrid = ({
               },
           },
         },
-        '& .MuiCheckbox-root svg': {
+        "& .MuiCheckbox-root svg": {
           width: 16,
           height: 16,
-          backgroundColor: 'white',
+          backgroundColor: "white",
           border: "2px solid #C84B31",
           borderRadius: 2,
         },
-        '& .MuiCheckbox-root svg path': {
-          display: 'none',
+        "& .MuiCheckbox-root svg path": {
+          display: "none",
         },
-        '& .MuiCheckbox-root.Mui-checked:not(.MuiCheckbox-indeterminate) svg': {
-          backgroundColor: '#16213E',
-          border: '2px solid white',
+        "& .MuiCheckbox-root.Mui-checked:not(.MuiCheckbox-indeterminate) svg": {
+          backgroundColor: "#16213E",
+          border: "2px solid white",
         },
-        '& .MuiCheckbox-root.Mui-checked .MuiIconButton-label:after': {
-          position: 'absolute',
-          display: 'table',
-          border: '2px solid #fff',
+        "& .MuiCheckbox-root.Mui-checked .MuiIconButton-label:after": {
+          position: "absolute",
+          display: "table",
+          border: "2px solid #fff",
           borderTop: 0,
           borderLeft: 0,
-          transform: 'rotate(45deg) translate(-50%,-50%)',
+          transform: "rotate(45deg) translate(-50%,-50%)",
           opacity: 1,
-          transition: 'all .2s cubic-bezier(.12,.4,.29,1.46) .1s',
+          transition: "all .2s cubic-bezier(.12,.4,.29,1.46) .1s",
           content: '""',
-          top: '50%',
-          left: '39%',
+          top: "50%",
+          left: "39%",
           width: 5.71428571,
           height: 9.14285714,
         },
-        '& .MuiCheckbox-root.MuiCheckbox-indeterminate .MuiIconButton-label:after': {
-          width: 8,
-          height: 8,
-          backgroundColor: '#16213E',
-          transform: 'none',
-          top: '39%',
-          border: 0,
-        },
+        "& .MuiCheckbox-root.MuiCheckbox-indeterminate .MuiIconButton-label:after":
+          {
+            width: 8,
+            height: 8,
+            backgroundColor: "#16213E",
+            transform: "none",
+            top: "39%",
+            border: 0,
+          },
       }}
       rows={rows}
       columns={columns}
@@ -190,13 +189,16 @@ const AppDataGrid = ({
         slackId: false,
       }}
       getRowId={(row) => {
-        return (row[rowId]);
+        return row[rowId];
       }}
       checkboxSelection={checkBoxSelection}
       onRowSelectionModelChange={(newRowSelectionModel) => {
         onSelectBox((prevNewUsers) =>
           prevNewUsers.map((user) => {
-            if (newRowSelectionModel.includes(user.slackId) || newRowSelectionModel.includes(user.id)) {
+            if (
+              newRowSelectionModel.includes(user.slackId) ||
+              newRowSelectionModel.includes(user.id)
+            ) {
               return {
                 ...user,
                 isSelected: true,

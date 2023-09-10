@@ -310,7 +310,6 @@ const RegisterSlackUser = ({
           users,
           cohort: newCohortId,
         };
-        console.log(body);
         const response = await axiosPrivate.post("/auth/register", body);
         setNewUsers((prevNewUsers) =>
           prevNewUsers.filter((newUser) => newUser.isSelected === false)
@@ -366,15 +365,12 @@ const RegisterSlackUser = ({
     const users = newUsersToCohort.filter(
       (newUsersToCohort) => newUsersToCohort.isSelected
     );
-    console.log(users);
     if (users.length > 0) {
       try {
         setLoadingCoverExistingUsers(true);
         const body = {
           userIDs: users.map((user) => user.id),
         };
-        console.log(body);
-        console.log(newCohortId);
         const response = await axiosPrivate.patch(
           `/users/add-to-cohort/${newCohortId}`,
           body
