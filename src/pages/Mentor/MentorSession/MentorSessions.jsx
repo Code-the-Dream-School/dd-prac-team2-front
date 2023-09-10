@@ -34,11 +34,11 @@ function MentorSessions() {
     };
   };
 
-  const updateSessions = (session) => {
-    const dataGridSession = mapSessionToDataGrid(session);
-    const newSessions = [...sessions, dataGridSession];
-    newSessions.sort((a, b) => (a.date > b.date ? 1 : -1));
-    setSessions(newSessions);
+  const updateSessions = (newSessions) => {
+    const dataGridSessions = newSessions.map(mapSessionToDataGrid);
+    const updatedSessions = sessions.concat(dataGridSessions);
+    updatedSessions.sort((a, b) => (a.date > b.date ? 1 : -1));
+    setSessions(updatedSessions);
   };
 
   const removeSession = (sessionId) => {
