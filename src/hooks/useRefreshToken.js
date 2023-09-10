@@ -28,9 +28,6 @@ const useRefreshToken = () => {
       withCredentials: true,
     });
     setAuth((prevAuth) => {
-      console.log("prevAuth", prevAuth);
-      //console.log(response.data.accessToken);
-      console.log("refresh", response);
       return {
         userId: response.data.user.id,
         slackId: response.data.user.slackId,
