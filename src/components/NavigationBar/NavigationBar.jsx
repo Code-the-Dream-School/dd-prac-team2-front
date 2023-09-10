@@ -108,6 +108,11 @@ const studentPages = [
     icon: <HomeRounded sx={{ color: "white" }} />,
     link: "/student",
   },
+  {
+    title: "Choose Cohort",
+    icon: <HolidayVillage sx={{ color: "white" }} />,
+    link: "/student?resetCohort=true",
+  },
 ];
 
 const mentorPages = [
