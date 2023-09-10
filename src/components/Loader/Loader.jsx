@@ -3,35 +3,6 @@
     =  THIRD PARTY LIBRARIES =
     ==========================
 */
-// import { CircularProgress, styled } from "@mui/material";
-/*
-    ==========================
-    =     REACT LIBRARIES    =
-    ==========================
-*/
-// import React from "react";
-
-// const StyledLoader = styled(CircularProgress)(() => ({}));
-
-// const Loader = ({
-//   color,
-//   disableShrink,
-//   size,
-//   thickness,
-//   value,
-//   variant,
-//   handlerFunction,
-// }) => {
-//   return <StyledLoader size="4rem" />;
-// };
-
-// export default Loader;
-
-/*
-    ==========================
-    =  THIRD PARTY LIBRARIES =
-    ==========================
-*/
 import {
   Box,
   Typography,
@@ -47,11 +18,10 @@ import {
 import React, { useState } from "react";
 
 const StyledLoader = styled(CircularProgress)(() => ({
-  color:"#C84B31",
+  color: "#C84B31",
 }));
 
-const Loader = ({
-}) => {
+const Loader = ({}) => {
   const [loading, setLoading] = useState(true); // Set this to false when the loading is complete
   return (
     <div>
@@ -63,7 +33,10 @@ const Loader = ({
         alignContent="center"
         position="relative" // Ensure the backdrop covers the entire container
       >
-        <Backdrop open={loading} sx={{ zIndex: 1, backgroundColor: "rgba(22,33,62, 0.2)" }}>
+        <Backdrop
+          open={loading}
+          sx={{ zIndex: 1, backgroundColor: "rgba(22,33,62, 0.2)" }}
+        >
           <StyledLoader size="4rem" />
           <Typography
             variant="h6"

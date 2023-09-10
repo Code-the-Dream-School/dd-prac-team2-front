@@ -86,8 +86,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
     severity: "",
     message: "",
   });
-  console.log(auth);
-
   /*
         ==========================
         =   HANDLER FUNCTIONS    =
@@ -126,7 +124,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
           ...prevState,
           userName: response.data.profile.name,
         }));
-        console.log(auth);
         setToast({
           isOpened: true,
           severity: "success",
@@ -141,7 +138,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
       }
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -168,7 +164,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
         severity: "success",
         message: `Success! Your account has been deleted from MentorUp`,
       });
-      console.log(response);
       navigate("/login", { state: { from: location }, replace: true });
       setAuth({
         userId: "",
@@ -183,7 +178,6 @@ const UpdateProfile = ({ open, handleOpenDialog }) => {
       handleOpenDialog(false);
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({

@@ -24,7 +24,6 @@ const FormSelect = ({
   multiple,
   error,
 }) => {
-  console.log(selectValue);
   /*
     ==========================
     =       HANDLERS         =
