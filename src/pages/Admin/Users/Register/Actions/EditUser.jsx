@@ -100,7 +100,6 @@ const EditUser = ({
       errorMessage: "Please select a role for this user",
     },
   });
-  console.log(cohorts, userInfo.row.userCohort);
   /*
     ==========================
     =   HANDLER FUNCTIONS    =
@@ -135,7 +134,6 @@ const EditUser = ({
           `users/${userToBeUpdated}`,
           body
         );
-        console.log(response);
         onHandleUsers((prevUsers) =>
           prevUsers.map((user) => {
             if (user.id === userToBeUpdated) {
@@ -164,7 +162,6 @@ const EditUser = ({
       }
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({

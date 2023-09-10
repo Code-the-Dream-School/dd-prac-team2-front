@@ -74,13 +74,11 @@ const RegisterOnCohortActions = ({
       const body = {
         cohorts: newUserCohorts.map((newUserCohort) => newUserCohort._id),
       };
-      console.log(body);
       //Create a new request to update the user cohort's:
       const response = await axiosPrivate.patch(
         `/users/${cohortUserToBeDeleted}`,
         body
       );
-      console.log(response);
       onHandleCohortUsers((prevCohortUsers) => {
         return prevCohortUsers.filter(
           (user) => user.id !== cohortUserToBeDeleted

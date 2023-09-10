@@ -59,7 +59,6 @@ const EditSlackProfile = ({
   onHandleNewUsers,
   onToast
 }) => {
-  console.log(slackProfileInfo);
   /*
     ==========================
     =         STATES         =

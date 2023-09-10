@@ -60,7 +60,6 @@ const Review = ({ sessionId, onToast }) => {
       content: e.target.review.value.trim(),
       sessionId: sessionId,
     });
-    console.log(data);
     setReview("");
     onToast({
       isOpened: true,

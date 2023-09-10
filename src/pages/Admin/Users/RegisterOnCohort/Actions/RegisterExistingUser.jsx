@@ -96,7 +96,6 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit, onToas
             return user;
           }
         });
-        console.log(availableUsers);
         setUsers(availableUsers);
         setUsersValueSelected([availableUsers[0]]);
         setLoading(false);
@@ -139,11 +138,9 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit, onToas
   //Users submission
   const handleExistingUserSubmission = async (event) => {
     event.preventDefault();
-    console.log(usersValueSelected);
     const formattedUserRegistration = {
       userIDs: usersValueSelected.map((user) => user.id),
     };
-    console.log(formattedUserRegistration);
     const errors = Object.values(formError);
     try {
       if (!errors.some((error) => error.error === true)) {
@@ -152,7 +149,6 @@ const RegisterExistingUser = ({ open, handleOpen, onRegisterCohortSubmit, onToas
           `/users/add-to-cohort/${cohortId}`,
           formattedUserRegistration
         );
-        console.log(response);
         onRegisterCohortSubmit((prevState) => [
           ...prevState,
           ...usersValueSelected.map((user) => ({

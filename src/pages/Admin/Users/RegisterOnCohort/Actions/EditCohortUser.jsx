@@ -123,11 +123,9 @@ const EditCohortUser = ({
   const handleEditCohortUserSubmit = async (event) => {
     event.preventDefault();
     const cohortUserToBeUpdated = cohortUserInfo.row.id;
-    console.log(userRoles);
     const body = {
       role: userRoles.map((role) => role.toLowerCase()),
     };
-    console.log(body);
     const errors = Object.values(formError);
     try {
       onLoading(true);
@@ -136,7 +134,6 @@ const EditCohortUser = ({
           `/users/${cohortUserToBeUpdated}`,
           body
         );
-        console.log(response);
         onHandleCohortUsers((prevCohortUsers) =>
           prevCohortUsers.map((prevCohortUser) => {
             if (prevCohortUser.id === cohortUserToBeUpdated) {
@@ -168,7 +165,6 @@ const EditCohortUser = ({
     } catch (error) {
       if (error.response.status === 403) {
         onLoading(false);
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({

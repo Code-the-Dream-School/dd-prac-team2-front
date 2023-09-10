@@ -121,13 +121,11 @@ const AddCohort = ({
     ==========================
   */
   const postCohorts = async (newCohort) => {
-    console.log(newCohort);
     try {
       const response = await axiosPrivate.post("/cohort", newCohort);
       return response;
     } catch (error) {
       if (error.response.status === 403) {
-        console.error(error);
         //User is required to validate auth again
         navigate("/login", { state: { from: location }, replace: true });
         setAuth({
@@ -141,7 +139,6 @@ const AddCohort = ({
           accessToken: "",
         });
       } else {
-        console.error(error);
         onToast({
           isOpened: true,
           severity: "error",
@@ -189,7 +186,6 @@ const AddCohort = ({
   //3. Start date handler
   const handleStartDateChange = (newStartDate) => {
     const errors = Object.values(newStartDate);
-    console.log(errors);
     setFormError((prevState) => ({
       ...prevState,
       startDateError: {
@@ -214,7 +210,6 @@ const AddCohort = ({
       onLoading(true);
       if (!errors.some((error) => error.error === true)) {
         const response = await postCohorts(newCohort);
-        console.log(response);
         if (response.status === 201) {
           onLoading(false); // Stop loading
           const options = { year: "2-digit", month: "numeric", day: "numeric" };
@@ -255,7 +250,6 @@ const AddCohort = ({
           severity: "warning",
           message: `Warning! Please enter valid data into the form fields`,
         });
-        console.error("Form validation is not letting form submission");
       }
     } catch (error) {
       onLoading(false);

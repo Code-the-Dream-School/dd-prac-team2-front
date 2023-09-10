@@ -30,7 +30,6 @@ const StudentHome = () => {
       try {
         setLoading(true);
         const { data } = await axiosPrivate.get("/profile", {});
-        console.log(data);
         setCohorts(data.profile.cohorts);
         setLoading(false);
       } catch (err) {

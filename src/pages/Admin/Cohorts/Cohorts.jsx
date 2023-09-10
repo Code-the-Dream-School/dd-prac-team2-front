@@ -72,7 +72,6 @@ const Cohorts = () => {
       sortComparator: (v1, v2) => {
         v1.value = v1.row.slackId === null ? "0" : "1";
         v2.value = v2.row.slackId === null ? "0" : "1";
-        console.log(v1, v2);
         return v1.value.localeCompare(v2.value);
       },
     },
@@ -174,7 +173,6 @@ const Cohorts = () => {
         const response = await axiosPrivate.get("/cohort", {
           signal: controller.signal,
         });
-        console.log(response);
         const options = { year: "2-digit", month: "numeric", day: "numeric" };
         const dateTimeFormat = new Intl.DateTimeFormat("en", options);
         const formattedCohorts = response.data.cohorts.map((cohort) => {
@@ -190,11 +188,9 @@ const Cohorts = () => {
             ),
           };
         });
-        console.log(formattedCohorts);
         isMounted && setCohorts(formattedCohorts);
         setLoading(false);
       } catch (error) {
-        console.error(error);
         setLoading(false);
         if (error.response.status === 403) {
           //User is required to validate auth again
@@ -211,7 +207,6 @@ const Cohorts = () => {
           });
         } else {
           setLoading(false);
-          console.error(error);
         }
       }
     };

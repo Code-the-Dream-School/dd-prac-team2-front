@@ -152,14 +152,6 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
       setLoading(true);
       const response = await axiosPrivate.get("/slack/channels");
       const channels = response.data.channels.list;
-      console.log(
-        channels.map((channel) => ({
-          ...channel,
-          id: channel?.slackId,
-          startDate: new Date(channel?.startDate),
-        }))
-      );
-      console.log(new Date(channels[0]?.startDate));
       setSlackChannels(
         channels.map((channel) => ({
           ...channel,
@@ -168,10 +160,8 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
           startDate: new Date(channel?.startDate),
         }))
       );
-      console.log(response);
       setLoading(false);
     } catch (error) {
-      console.error(error);
       if (error.response.status === 403) {
         setLoading(false);
         //User is required to validate auth again
@@ -188,7 +178,6 @@ const AddCohortSlack = ({ open, handleOpen, onRegisterCohort }) => {
         });
       } else {
         setLoading(false);
-        console.error(error);
       }
     }
   };

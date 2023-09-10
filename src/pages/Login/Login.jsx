@@ -161,7 +161,6 @@ const Login = ({onToast}) => {
       ].join(" "),
     };
     const qs = new URLSearchParams(options);
-    console.log(qs.toString());
     window.location.assign(`${rootURL}?${qs.toString()}`);
   };
 

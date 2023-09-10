@@ -28,7 +28,7 @@ import AuthFormControl from "../../components/FormControl/AuthFormControl";
 import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 
-const AccountConfirmation = () => {
+const AccountConfirmation = ({onToast}) => {
   /*
         ==========================
         =     AUX VARIABLES      =
@@ -76,10 +76,18 @@ const AccountConfirmation = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(response);
+        onToast({
+          isOpened: true,
+          severity: "success",
+          message: `Success! You have confirmed your account`,
+        });
         navigate("/login", { replace: true });
       } else {
-        console.error("There is an error preventing form submission");
+        onToast({
+          isOpened: true,
+          severity: "warning",
+          message: `Warning! You must enter a valid password`,
+        });
       }
     } catch (error) {
       console.error(error);

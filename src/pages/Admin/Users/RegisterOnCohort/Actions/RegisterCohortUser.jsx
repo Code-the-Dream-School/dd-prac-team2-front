@@ -155,7 +155,6 @@ const RegisterCohortUser = ({
           "auth/register",
           formattedUserRegistration
         );
-        console.log(response);
         if (response.data.users.length > 0) {
           onRegisterCohortSubmit((prevState) => [
             ...prevState,

@@ -68,7 +68,6 @@ const WeeksActions = ({
             }
           })
         );
-        console.log(response);
         onToast({
           isOpened: true,
           severity: "success",
