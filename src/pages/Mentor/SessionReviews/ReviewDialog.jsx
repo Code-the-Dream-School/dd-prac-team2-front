@@ -6,7 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const ReviewDialog = () => {
+const ReviewDialog = ({ studentReviews }) => {
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState("paper");
 
@@ -55,14 +55,14 @@ const ReviewDialog = () => {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-            {[...new Array(50)]
-              .map(
-                () => `Cras mattis consectetur purus sit amet fermentum.
-Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-Praesent commodo cursus magna, vel scelerisque nisl consectetur et.`
-              )
-              .join("\n")}
+            <ul>
+              {
+                /* {RENDER REVIEWS HERE} */
+                studentReviews.map((review) => {
+                  return <li key={review._id}>{review.content}</li>;
+                })
+              }
+            </ul>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

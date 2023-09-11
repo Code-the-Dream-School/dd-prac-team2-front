@@ -7,7 +7,6 @@ import {
   ListItem,
   Link,
   Avatar,
-  Button,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -32,6 +31,7 @@ const MentorSessionDetails = () => {
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const [currentSession, setCurrentSession] = useState();
+  const [studentReviews, setStudentReviews] = useState();
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
   const [reset, setReset] = useState(false);
@@ -52,11 +52,12 @@ const MentorSessionDetails = () => {
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
     setLoading(false);
-    console.log("Session Data: ", data.session.creator);
+    // console.log("Session Data: ", data.session.creator);
   };
 
   const getStudentReviews = async () => {
     const { data } = await axiosPrivate.get(`session/${sessionId}/review`);
+    setStudentReviews(data.review)
     console.log("Review Data: ", data.review);
   };
 
@@ -102,9 +103,8 @@ const MentorSessionDetails = () => {
   }, [sessionId]);
 
   useEffect(() => {
-    const obj = getStudentReviews();
-    console.log(obj);
-    obj.catch((err) => {
+    const returnedData = getStudentReviews();
+    returnedData.catch((err) => {
       console.log(err.response);
     });
   }, []);
@@ -347,7 +347,7 @@ const MentorSessionDetails = () => {
               </Typography>
             </Link>
           </Box>
-          <ReviewDialog></ReviewDialog>
+          <ReviewDialog studentReviews={studentReviews}></ReviewDialog>
           <Box
             sx={{
               display: "flex",
