@@ -50,7 +50,14 @@ const MentorSessionDetails = () => {
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
     setLoading(false);
+    console.log("Session Data: ", data.session.creator)
   };
+
+  const getStudentReviews = async () => {
+    const { data } = await axiosPrivate.get(`session/${sessionId}/review`);
+    console.log("Review Data: ", data.review);
+  };
+
 
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
@@ -92,6 +99,12 @@ const MentorSessionDetails = () => {
   useEffect(() => {
     getCurrentSession();
   }, [sessionId]);
+
+  useEffect(() => {
+    const obj = getStudentReviews();
+    console.log(obj);
+    obj.catch(err => {console.log(err.response)})
+  }, [])
 
   useEffect(() => {
     setReset(false);
@@ -330,6 +343,21 @@ const MentorSessionDetails = () => {
                 Access zoom session
               </Typography>
             </Link>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 1,
+              borderRadius: 2,
+              padding: 1,
+              width: { xs: "100%", md: "20%" },
+              backgroundColor: "white",
+            }}
+          >
+            <Typography sx={{ fontSize: "1.2rem", color: "#0F3460" }}>
+              {"Session Reviews"}
+            </Typography>
           </Box>
           <Box
             sx={{
