@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import useAxiosPrivate from "../../../hooks/useAxiosPrivate";
-import { Box, Typography, Container } from "@mui/material";
+import { Box, Typography, Container, Chip } from "@mui/material";
 import CreateSession from "../CreateSession";
 import AppDataGrid from "../../../components/DataGrid/AppDataGrid";
 import MentorSessionsTableActions from "./Actions/MentorSessionsActions";
@@ -31,6 +31,7 @@ function MentorSessions() {
     return {
       id: session._id,
       date: session.start,
+      cohort: session.cohortName,
     };
   };
 
@@ -68,6 +69,22 @@ function MentorSessions() {
       headerName: "DATE",
       flex: 4,
       valueFormatter: (params) => getFormattedDate(params.value),
+    },
+    {
+      field: "cohort",
+      headerName: "COHORT",
+      flex: 1,
+      renderCell: (params) => (
+        <Chip
+          sx={{
+            backgroundColor: "#0F3460",
+            color: "white",
+            fontWeight: "bold",
+            textTransform: "capitalize",
+          }}
+          label={params.value}
+        ></Chip>
+      ),
     },
     {
       field: "actions",

@@ -36,6 +36,7 @@ function CreateSession({ updateSessions, onLoading, onToast }) {
       link: "https://us02web.zoom.us/j/88579364493?pwd=loNkjaIa9sJA9slajs2jY5dz09",
       cohortId: cohort._id,
       multipleSessions: shouldRepeat,
+      cohortName: cohort.name,
     });
     onToast({
       isOpened: true,
