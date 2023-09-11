@@ -100,7 +100,7 @@ const RegisterSlackUser = ({
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
       field: "slack",
-      headerName: "Created on:",
+      headerName: "Created with:",
       minWidth: 100,
       maxWidth: 100,
       flex: 1,
@@ -177,7 +177,7 @@ const RegisterSlackUser = ({
     { field: "id", headerName: "ID", maxWidth: 130, flex: 1 },
     {
       field: "slack",
-      headerName: "Created on:",
+      headerName: "Created with:",
       minWidth: 100,
       maxWidth: 100,
       flex: 1,
@@ -276,6 +276,7 @@ const RegisterSlackUser = ({
         `slack/channels/${cohortData.cohortSlackId}/members`,
         { withCredentials: true }
       );
+      console.log(response);
       setNewUsers(
         response.data.newUsers.list.map((user) => ({
           ...user,

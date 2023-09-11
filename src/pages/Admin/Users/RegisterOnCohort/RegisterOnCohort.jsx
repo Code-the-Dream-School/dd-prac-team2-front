@@ -104,15 +104,15 @@ const RegisterOnCohort = () => {
     },
     {
       field: "slack",
-      headerName: "Created on:",
+      headerName: "Created with:",
       minWidth: 100,
       maxWidth: 100,
       flex: 1,
       valueGetter: (params) => params,
       renderCell: (params) => <Slack params={params}></Slack>,
       sortComparator: (v1, v2) => {
-        v1.value = v1.row.slackId === null ? "0" : "1";
-        v2.value = v2.row.slackId === null ? "0" : "1";
+        v1.value = v1.row.slackId === undefined ? "0" : "1";
+        v2.value = v2.row.slackId === undefined ? "0" : "1";
         return v1.value.localeCompare(v2.value);
       },
     },

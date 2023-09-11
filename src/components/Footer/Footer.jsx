@@ -29,37 +29,37 @@ import { getCurrentYear } from "../../util";
 const contributors = [
   {
     name: "Saul Castillo",
-    picture: "https://avatars.githubusercontent.com/u/42615340?v=4",
+    picture: "/images/Saul.jpg",
     url: "https://github.com/secch97",
   },
   {
     name: "Tam Pham",
-    picture: "https://avatars.githubusercontent.com/u/109603295?v=4",
+    picture: "/images/Tam.jpg",
     url: "https://github.com/Miminiverse",
   },
   {
     name: "Carlos Paiva",
-    picture: "https://avatars.githubusercontent.com/u/55894222?v=4",
+    picture: "/images/Carlos.jpg",
     url: "https://github.com/cdpaiva",
   },
   {
     name: "Aleksey K",
-    picture: undefined,
+    picture: "/images/Aleksey.jpg",
     url: "https://github.com/akabishau",
   },
   {
     name: "Mohamed Mbareck",
-    picture: "https://avatars.githubusercontent.com/u/93048977?v=4",
+    picture: "/images/Mohamed.jpg",
     url: "https://github.com/Mbareck21",
   },
   {
     name: "Dior Shelton",
-    picture: "https://avatars.githubusercontent.com/u/63883205?v=4",
+    picture: "/images/Dior.jpg",
     url: "https://github.com/diorshelton",
   },
   {
     name: "Liubov Rodin",
-    picture: "https://avatars.githubusercontent.com/u/112579936?v=4",
+    picture: "/images/Liubov.png",
     url: "https://github.com/LiubovCass",
   },
 ];
