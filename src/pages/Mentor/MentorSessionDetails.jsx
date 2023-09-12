@@ -24,12 +24,14 @@ import FormTextField from "../../components/TextField/FormTextField";
 import AppButton from "../../components/Button/AppButton";
 import Loader from "./../../components/Loader/Loader";
 import ToastMessage from "../../components/ToastMessage/ToastMessage";
+import ReviewDialog from "./SessionReviews/ReviewDialog";
 
 const MentorSessionDetails = () => {
   const { sessionId } = useParams();
   const axiosPrivate = useAxiosPrivate();
   const { auth } = useAuth();
   const [currentSession, setCurrentSession] = useState();
+  const [studentReviews, setStudentReviews] = useState();
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState("");
   const [reset, setReset] = useState(false);
@@ -50,6 +52,12 @@ const MentorSessionDetails = () => {
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
     setLoading(false);
+  };
+
+  const getStudentReviews = async () => {
+    const { data } = await axiosPrivate.get(`session/${sessionId}/review`);
+    setStudentReviews(data.review)
+    console.log("Review Data: ", data.review);
   };
 
   const handleCommentSubmit = async (e) => {
@@ -92,6 +100,13 @@ const MentorSessionDetails = () => {
   useEffect(() => {
     getCurrentSession();
   }, [sessionId]);
+
+  useEffect(() => {
+    const returnedData = getStudentReviews();
+    returnedData.catch((err) => {
+    console.log(err.response)
+    });
+  }, []);
 
   useEffect(() => {
     setReset(false);
@@ -331,6 +346,7 @@ const MentorSessionDetails = () => {
               </Typography>
             </Link>
           </Box>
+          <ReviewDialog studentReviews={studentReviews}></ReviewDialog>
           <Box
             sx={{
               display: "flex",
