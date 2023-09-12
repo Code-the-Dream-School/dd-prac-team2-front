@@ -55,14 +55,14 @@ const ReviewDialog = ({ studentReviews }) => {
             ref={descriptionElementRef}
             tabIndex={-1}
           >
-            <ul>
-              {
+            {
                 /* {RENDER REVIEWS HERE} */
-                studentReviews.map((review) => {
-                  return <li key={review._id}>{review.content}</li>;
+              studentReviews.map((review) => {
+                  return <ul>
+                    <li key={review._id}>{review.content}</li>
+                  </ul>;
                 })
               }
-            </ul>
           </DialogContentText>
         </DialogContent>
         <DialogActions>

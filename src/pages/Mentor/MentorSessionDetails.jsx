@@ -52,7 +52,6 @@ const MentorSessionDetails = () => {
     const { data } = await axiosPrivate.get(`/session/${sessionId}`);
     setCurrentSession(data.session);
     setLoading(false);
-    // console.log("Session Data: ", data.session.creator);
   };
 
   const getStudentReviews = async () => {
@@ -105,7 +104,7 @@ const MentorSessionDetails = () => {
   useEffect(() => {
     const returnedData = getStudentReviews();
     returnedData.catch((err) => {
-      console.log(err.response);
+    console.log(err.response)
     });
   }, []);
 
